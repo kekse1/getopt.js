@@ -1,3 +1,8 @@
+// 
+// Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
+// https://kekse.biz/
+// 
+
 //
 const VECTOR = [ 'long', 'short', 'env', 'args', 'group', 'default', 'null', 'undefined', 'help' ]; // 'call', again??
 
@@ -15,7 +20,7 @@ Reflect.defineProperty(getopt, 'vector', { get: () => [ ... VECTOR ] });
 export default getopt;
 
 //
-const vectorIncludesLongShortEnv = (_result, _key) => {
+const vectorIncludesLongShortEnv = (_result, _key, _throw = false) => {
 	if(_result.LONG.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'long') : true);
 	else if(_result.SHORT.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'short') : true);
 	else if(_result.ENV.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'env') : true);
