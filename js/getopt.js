@@ -8,6 +8,7 @@ const VECTOR = [ 'long', 'short', 'env', 'args', 'group', 'default', 'null', 'un
 
 //
 const DEFAULT_PARSE = true;
+const DEFAULT_ASSIGN = true;
 const DEFAULT_ASSIGNED_LIST = true;
 const DEFAULT_EXPAND = true;
 
@@ -111,11 +112,12 @@ const expandShorts = (_list, _vector) => { if(!DEFAULT_EXPAND) return _list;
 //
 	return _list; };
 
-const tryAssignment = (_word, _dashes, _vector, _result, _index, _assigned_list = DEFAULT_ASSIGNED_LIST) => { const idx = _word.indexOf('='); if(idx === -1) return false;
-	const key = _word.substr(0, idx); const value = checkAssignedList(_word.substr(idx + 1), _assigned_list); const given = find(_vector, key, _dashes, true);
-	if(!given) return false; else if(typeof value === 'string') _result[given] = [ value ]; else _result[given] = value; if(given in _index) ++_index[given];
-	else _index[given] = 1; return true; };
-const checkAssignedList = (_value, _assigned_list = DEFAULT_ASSIGNED_LIST) => { if(!_assigned_list) return _value; else if(_value.length === 0) return _value;
+const tryAssignment = (_word, _dashes, _vector, _result, _index, _assigned_list = DEFAULT_ASSIGNED_LIST) => { if(!DEFAULT_ASSIGN) return null;
+	const idx = _word.indexOf('='); if(idx === -1) return false; const key = _word.substr(0, idx); const value = tryAssignment.checkAssignedList(_word.substr(idx + 1), _assigned_list);
+	const given = find(_vector, key, _dashes, true); if(!given) return false; else if(typeof value === 'string') _result[given] = [ value ]; else _result[given] = value;
+	if(given in _index) ++_index[given]; else _index[given] = 1; return true; };
+
+tryAssignment.checkAssignedList = (_value, _assigned_list = DEFAULT_ASSIGNED_LIST) => { if(!_assigned_list) return _value; else if(_value.length === 0) return _value;
 	const result = []; var string = ''; for(var i = 0, j = 0; i < _value.length; ++i) { if(_value[i] === '\\') { if(i < (_value.length - 1)) string += _value[++i]; }
 		else if(_value[i] === ',') { result[j++] = string; string = ''; } else string += _value[i]; }
 	if(string.length > 0) result.push(string); if(result.length === 1) return result[0]; return result; };

@@ -35,6 +35,13 @@ to my [**`v4`** repository](https://github.com/kekse1/v4/); also visible (with r
 Maybe I'll give you a tiny replacement of the used extensions some day, but until then feel free to
 modify the source or implement the necessary functions by yourself.. there are really not many.!
 
+### Comment
+Don't forget that I'm using `export` here. If you don't want a `package.json` with defined `{ "type": "module" }`
+(for ES modules), you can remove this export statement in the file (or replace it by `module.exports = getopt;`).
+
+And just for your info: the main `getopt()` function is available in the `global` namespace (so you don't really
+need the export..).
+
 ### References
 Maybe also interesting for you: the **`config.js`**? And a reference to my documentation for this **`getopt.js`**:
 
