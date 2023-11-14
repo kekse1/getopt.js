@@ -18,6 +18,12 @@ Just (nearly..) finished it (for my newest project `mudz`, etc.).
 ### Download
 * [**`getopt.js`**](js/getopt.js)
 
+### TODO
+- [x] `tryAssignment()` finally **done** (2023-11-14)**!** :-)
+- [ ] `expandShorts()` (w/ `DEFAULT_EXPAND`);
+- [ ] explain all features here.
+- [ ] extend [the library api documentation @ **`getopt.md`**](https://github.com/kekse1/v4/blob/git/docs/modules/lib/getopt.md)
+
 ### Dependencies
 I implemented it with the help of my own JavaScript Library (all my own, just from scratch).
 

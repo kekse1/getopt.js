@@ -8,11 +8,13 @@ const VECTOR = [ 'long', 'short', 'env', 'args', 'group', 'default', 'null', 'un
 
 //
 const DEFAULT_PARSE = true;
+const DEFAULT_ASSIGNED_LIST = true;
+const DEFAULT_EXPAND = true;
 
 //
-const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values = _parse, _list = process.argv, _start = 0) => {
+const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values = _parse, _assigned_list = DEFAULT_ASSIGNED_LIST, _list = process.argv, _start = 0) => {
 	if(Object.isObject(_vector)) _vector = prepareVector(_vector);
-	const result = parseCommandLine(_vector, _list.slice(_start), _parse, _parse_values);
+	const result = parseCommandLine(_vector, _list.slice(_start), _parse, _parse_values, _assigned_list);
 	return result; };
 
 //
@@ -88,10 +90,10 @@ handle.long = (_result, _vector, _state, _word, _index, _list, _item, _key) => {
 	if(typeof _result[_key] === 'number') ++_result[_key]; else if(Array._isArray(_result[_key])) _result[_key].push(true);
 	else _result[_key] = 1; } else enqueue(_vector, _state, _key, _item.args); };
 
-const parseCommandLine = (_vector, _list = process.argv, _parse = DEFAULT_PARSE, _parse_values = _parse) => { const result = [], state = [], index = Object.create(null);
+const parseCommandLine = (_vector, _list = process.argv, _parse = DEFAULT_PARSE, _parse_values = _parse, _assigned_list = DEFAULT_ASSIGNED_LIST) => { const result = [], state = [], index = Object.create(null);
 	for(const idx in _vector) if(!idx.isUpperCase) { result[idx] = []; state[idx] = []; } _list = expandShorts(_list, _vector); var dashes; for(var i = 0; i < _list.length; ++i) {
 	if(_list === '--') { result.push(... _list.slice(i)); break; } else dashes = 0; while(_list[i][dashes] === '-') ++dashes; dashes = Math.min(2, dashes);
-	const orig = _list[i]; const word = _list[i].slice(dashes); if(!word.includes('=') || !tryAssignment(orig, _vector, index)) { var type = find(_vector, word, dashes, false);
+	const orig = _list[i]; const word = _list[i].slice(dashes); if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, _assigned_list)) { var type = find(_vector, word, dashes, false);
 	if(!compare(type, dashes)) type = 'value'; const key = (type === 'value' ? null : find(_vector, word, dashes, true)); if(type !== 'value') {
 	if(key in index) ++index[key]; else index[key] = 1; } handle[type](result, _vector, state, (type === 'value' ? orig : word), i, _list, _vector[key], key);
 	}} return handleResult(result, _vector, state, index, _list, _parse, _parse_values); };
@@ -103,15 +105,20 @@ const parseValue = (_string) => { if(typeof _string !== 'string') return _string
 		!isNaN(_string.slice(0, -1))) return BigInt(_string.slice(0, -1));
 	else if(RegExp.isRegExp(_string)) return RegExp.parse(_string); return _string; };
 
-const expandShorts = (_list, _vector) => {
-
-
+const expandShorts = (_list, _vector) => { if(!DEFAULT_EXPAND) return _list;
+//
+//TODO/!!
+//
 	return _list; };
 
-const tryAssignment = (_item, _vector, _index) => {
-	//return true if worked, otherweise false!!!
-	//btw, ASSIGN is setting [0]=value and .length=1/0; and that only directly!!
-};
+const tryAssignment = (_word, _dashes, _vector, _result, _index, _assigned_list = DEFAULT_ASSIGNED_LIST) => { const idx = _word.indexOf('='); if(idx === -1) return false;
+	const key = _word.substr(0, idx); const value = checkAssignedList(_word.substr(idx + 1), _assigned_list); const given = find(_vector, key, _dashes, true);
+	if(!given) return false; else if(typeof value === 'string') _result[given] = [ value ]; else _result[given] = value; if(given in _index) ++_index[given];
+	else _index[given] = 1; return true; };
+const checkAssignedList = (_value, _assigned_list = DEFAULT_ASSIGNED_LIST) => { if(!_assigned_list) return _value; else if(_value.length === 0) return _value;
+	const result = []; var string = ''; for(var i = 0, j = 0; i < _value.length; ++i) { if(_value[i] === '\\') { if(i < (_value.length - 1)) string += _value[++i]; }
+		else if(_value[i] === ',') { result[j++] = string; string = ''; } else string += _value[i]; }
+	if(string.length > 0) result.push(string); if(result.length === 1) return result[0]; return result; };
 
 const handleResult = (_result, _vector, _state, _index, _list, _parse = DEFAULT_PARSE, _parse_values = _parse) => { const elements = _result.splice(0, _result.length);
 	if(_parse_values) for(var i = 0; i < elements.length; ++i) elements[i] = parseValue(elements[i]); const unfinished = todo(_state); const keys = Object.keys(_result);
@@ -123,7 +130,7 @@ const handleResult = (_result, _vector, _state, _index, _list, _parse = DEFAULT_
 			_result[key][j] = _vector[key].undefined[l]; else for(var j = 0, k = 0; k < _vector[key].args; ++j, ++k) _result[key][j] = _vector[key].undefined; }
 		else { if(_parse) for(var j = 0; j < _result[key].length; ++j) _result[key][j] = parseValue(_result[key][j]); var sum = 0; for(var j = 0; j < _result[key].length; ++j)
 			{ if(typeof _result[key][j] === 'boolean') sum += (_result[key][j] ? 1 : -1); else { sum = null; break; }} if(sum !== null) { if(_result[key][0] === false) ++sum;
-				_result[key] = sum; } if(_result[key].length === 1) { if(typeof (_result[key] = _result[key][0]) === 'boolean') _result[key] = (_result[key] ? 1 : 0);
+				_result[key] = sum; } if(_result[key].length === 1) { if(typeof _result[key][0] === 'boolean') _result[key] = (_result[key][0] ? 1 : 0);
 					else _result[key] = _result[key][0]; }}}
 	_result.push(... elements); return _result; };
 
