@@ -1,7 +1,11 @@
 <img src="https://kekse.biz/github.php?draw&override=github:getopt.js&text=v4&draw" />
 
 # Index
-* [**`getopt`**](#getopt-js)
+* [Start](#getoptjs)
+    * [Features](#features)
+    * [Download](#download)
+    * [Dependencies](#dependencies)
+    * [References](#references)
 * [Copyright and License](#copyright-and-license)
 
 ## `getopt.js`
@@ -36,3 +40,4 @@ The Copyright is [(c) Sebastian Kucharczyk](COPYRIGHT.txt),
 and it's licensed under the [MIT](LICENSE.txt) (also known as 'X' or 'X11' license).
 
 ![kekse.biz](favicon.png)
+
