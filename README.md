@@ -37,7 +37,7 @@ modify the source or implement the necessary functions by yourself.. there are r
 
 ### Comment
 Don't forget that I'm using `export` here. If you don't want a `package.json` with defined `{ "type": "module" }`
-(for ES modules), you can remove this export statement in the file (or replace it by `module.exports = getopt;`).
+(for ES modules), you can remove this export statement in the file, or replace it by `module.exports = getopt;`.
 
 And just for your info: the main `getopt()` function is available in the `global` namespace (so you don't really
 need the export..).
