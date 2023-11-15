@@ -40,6 +40,7 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 				else if(_vector[key].long.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'long', key, ' ');
 				else if(_vector[key].long.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'long', key, '=');
 				else if(_vector[key].long.includesBinary()) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'long', key);
+				else if(_vector[key].long.isUpperCase) return error('The getopt `%` vector key `%` may not be *upper-case* only', null, 'long', key);
 				else vectorIncludesLongShortEnv(result, _vector[key].long, true); result[key].long = _vector[key].long; appendIndex(result, 'LONG', key, _vector[key].long, false, false); break;
 			case 'short': if(Number.isInt(_vector[key].short)) _vector[key].short = _vector[key].short.toString();
 				else if(typeof _vector[key].short !== 'string') return error('The getopt `%` vector key `%` needs to be a (single character) %', null, 'short', key, 'String');
@@ -55,6 +56,7 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 				else if(_vector[key].env.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'env', key, ' ');
 				else if(_vector[key].env.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'env', key, '=');
 				else if(_vector[key].env.includesBinary()) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'env', key);
+				else if(_vector[key].env.isUpperCase) return error('The getopt `%` vector key `%` may not be *upper-case* only', null, 'env', key);
 				else vectorIncludesLongShortEnv(result, _vector[key].env, true); result[key].env = _vector[key].env; appendIndex(result, 'ENV', key, _vector[key].env, false, false); break;
 			case 'args': if(!Number.isInt(_vector[key].args) || _vector[key].args < 0) return error('The getopt `%` vector key `%` needs to be a positive %', null, 'args', key, 'Integer');
 				result[key].args = _vector[key].args; appendIndex(result, 'ARGS', key, _vector[key].args, false, true); break;
@@ -143,13 +145,12 @@ tryAssignment.checkAssignedList = (_value, _assigned_list = DEFAULT_ASSIGN_LIST)
 		else if(_value[i] === ',') { result[j++] = string; string = ''; } else string += _value[i]; }
 	if(string.length > 0) result.push(string); if(result.length === 1) return result[0]; return result; };
 
-const expandShorts = (_list, _vector) => { if(!DEFAULT_EXPAND) return _list;
-//
-//TODO/!!
-//
-//bedenke '='!! jedem anhaengen!
-//
-	return _list; };
+const expandShorts = (_list, _vector) => { if(!DEFAULT_EXPAND) return _list; var word, assign;
+	mainLoop: for(var i = 0; i < _list.length; ++i) { if(_list[i][0] !== '-' || _list[i][1] === '-') continue; const idx = _list[i].indexOf('=');
+		if(idx > -1) { word = _list[i].substr(1, idx - 1); assign = _list[i].substr(idx + 1); } else { word = _list[i].substr(1); assign = null; }
+		if(word.length === 1) continue; for(var j = 0; j < word.length; ++j) if(!_vector.SHORT.has(word[j])) continue mainLoop;
+		_list.splice(i, 1); for(var j = 0; j < word.length; ++j) _list.splice(i + j, 0, '-' + word[j] + (assign ? '=' + assign : ''));
+		i += word.length - 1; } return _list; };
 
 //
 const showHelp = (_vector) => {
