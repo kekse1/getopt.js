@@ -118,10 +118,10 @@ const parseCommandLine = (_vector, _list = process.argv, _parse = DEFAULT_PARSE,
 
 parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse = DEFAULT_PARSE, _parse_values = _parse) => { const elements = _result.splice(0, _result.length);
 	if(_parse_values) for(var i = 0; i < elements.length; ++i) elements[i] = parseValue(elements[i]); const unfinished = todo(_state); const keys = Object.keys(_result);
-	var fill; for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(unfinished.includes(key) && typeof _vector[key].null !== 'undefined' && (fill = left(key, _state)) > 0) {
+	var fill; for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(unfinished.includes(key) && ('null' in _vector[key]) && (fill = left(key, _state)) > 0) {
 	if(Array._isArray(_vector[key].null)) for(var j = _result[key].length, k = 0, l = (j % _vector[key].null.length); k < fill; j++, k++, l = ((l + 1) % _vector[key].null.length))
 			_result[key][j] = _vector[key].null[l]; else for(var j = _result[key].length, k = 0; k < fill; ++j, ++k) _result[key][j] = _vector[key].null; }
-		else if(_result[key].length === 0) { if(typeof _vector[key].undefined === 'undefined' || _vector[key].args <= 0) _result[key] = ((key in _index) ? _index[key] : 0);
+		else if(_result[key].length === 0) { if(!('undefined' in _vector[key]) || _vector[key].args <= 0) _result[key] = ((key in _index) ? _index[key] : 0);
 			else if(Array._isArray(_vector[key].undefined)) for(var j = 0, k = 0, l = 0; k < _vector[key].args; ++j, ++k, l = ((l + 1) % _vector[key].undefined.length))
 			_result[key][j] = _vector[key].undefined[l]; else for(var j = 0, k = 0; k < _vector[key].args; ++j, ++k) _result[key][j] = _vector[key].undefined; }
 		else { if(_parse) for(var j = 0; j < _result[key].length; ++j) _result[key][j] = parseValue(_result[key][j]); var sum = 0; for(var j = 0; j < _result[key].length; ++j)
