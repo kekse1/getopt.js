@@ -26,6 +26,7 @@ Just (nearly..) finished it (for my newest project `mudz`, etc.).
 - [ ] `group`s
 - [ ] `env`s
 - [ ] (vector).parse
+- [ ] (vector).index
 - [ ] clone?
 
 ### Dependencies
