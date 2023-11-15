@@ -36,17 +36,30 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 	for(var i = 0; i < keys.length; ++i) { const key = keys[i]; result[key] = Object.create(null); for(const vect of VECT) if(vect in _vector[key]) switch(vect) {
 			case 'long': if(Number.isInt(_vector[key].long)) _vector[key].long = _vector[key].long.toString();
 				else if(!String.isString(_vector[key].long, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'long', key, 'String');
+				else _vector[key].long = _vector[key].long.removeBinary();
+				if(_vector[key].long[0] === '-') return error('The getopt `%` vector key `%` may not start with a dash `%`', null, 'long', key, '-');
+				else if(_vector[key].long.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'long', key, '=');
+				else if(_vector[key].long.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'long', key, ' ');
 				else vectorIncludesLongShortEnv(result, _vector[key].long, true); result[key].long = _vector[key].long; appendIndex(result, 'LONG', key, _vector[key].long, false, false); break;
 			case 'short': if(Number.isInt(_vector[key].short)) _vector[key].short = _vector[key].short.toString();
 				else if(typeof _vector[key].short !== 'string') return error('The getopt `%` vector key `%` needs to be a (single character) %', null, 'short', key, 'String');
-				else if(_vector[key].short.length !== 1) return error('The getopt `%` vector key `%` needs to be a single character %', null, 'short', key, 'String');
+				else _vector[key].short = _vector[key].short.removeBinary();
+				if(_vector[key].short.length !== 1) return error('The getopt `%` vector key `%` needs to be a single character %', null, 'short', key, 'String');
+				else if(_vector[key].short === '-') return error('The getopt `%` vector key `%` may not be a dash `%`', null, 'short', key, '-');
+				else if(_vector[key].short === '=') return error('The getopt `%` vector key `%` may not be a `%` assignment', null, 'short', key, '=');
+				else if(_vector[key].short === ' ') return error('The getopt `%` vector key `%` may not be a space `%`', null, 'short', key, ' ');
 				else vectorIncludesLongShortEnv(result, _vector[key].short, true); result[key].short = _vector[key].short; appendIndex(result, 'SHORT', key, _vector[key].short, false, false); break;
 			case 'env': if(Number.isInt(_vector[key].env)) _vector[key].env = _vector[key].env.toString();
 				else if(!String.isString(_vector[key].env, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'env', key, 'String');
+				else _vector[key].env = _vector[key].env.removeBinary();
+				if(_vector[key].env[0] === '-') return error('The getopt `%` vector key `%` may not start with a dash `%`', null, 'env', key, '-');
+				else if(_vector[key].env.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'env', key, '=');
+				else if(_vector[key].long.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'env', key, ' ');
 				else vectorIncludesLongShortEnv(result, _vector[key].env, true); result[key].env = _vector[key].env; appendIndex(result, 'ENV', key, _vector[key].env, false, false); break;
 			case 'args': if(!Number.isInt(_vector[key].args) || _vector[key].args < 0) return error('The getopt `%` vector key `%` needs to be a positive %', null, 'args', key, 'Integer');
 				result[key].args = _vector[key].args; appendIndex(result, 'ARGS', key, _vector[key].args, false, true); break;
 			case 'group': if(!String.isString(_vector[key].group, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'group', key, 'String');
+				else _vector[key].group = _vector[key].group.removeBinary();
 				result[key].group = _vector[key].group; appendIndex(result, 'GROUP', key, _vector[key].group, false, true); break;
 			case 'default': result[key].null = result[key].undefined = _vector[key].default;
 				appendIndex(result, 'NULL', key, _vector[key].default, false, true); appendIndex(result, 'UNDEFINED', key, _vector[key].default, false, true); break;
@@ -120,12 +133,6 @@ const parseValue = (_string) => { if(typeof _string !== 'string') return _string
 		!isNaN(_string.slice(0, -1))) return BigInt(_string.slice(0, -1));
 	else if(RegExp.isRegExp(_string)) return RegExp.parse(_string); return _string; };
 
-const expandShorts = (_list, _vector) => { if(!DEFAULT_EXPAND) return _list;
-//
-//TODO/!!
-//
-	return _list; };
-
 const tryAssignment = (_word, _dashes, _vector, _result, _index, _state, _assigned_list = DEFAULT_ASSIGN_LIST) => { if(!DEFAULT_ASSIGN) return null;
 	const idx = _word.indexOf('='); if(idx === -1) return false; const key = _word.substr(0, idx); const value = tryAssignment.checkAssignedList(_word.substr(idx + 1), _assigned_list);
 	const given = find(_vector, key, _dashes, true); if(!given) return false; else if(typeof value === 'string') _result[given] = [ value ]; else _result[given] = value;
@@ -135,6 +142,14 @@ tryAssignment.checkAssignedList = (_value, _assigned_list = DEFAULT_ASSIGN_LIST)
 	const result = []; var string = ''; for(var i = 0, j = 0; i < _value.length; ++i) { if(_value[i] === '\\') { if(i < (_value.length - 1)) string += _value[++i]; }
 		else if(_value[i] === ',') { result[j++] = string; string = ''; } else string += _value[i]; }
 	if(string.length > 0) result.push(string); if(result.length === 1) return result[0]; return result; };
+
+const expandShorts = (_list, _vector) => { if(!DEFAULT_EXPAND) return _list;
+//
+//TODO/!!
+//
+//bedenke '='!! jedem anhaengen!
+//
+	return _list; };
 
 //
 const showHelp = (_vector) => {
