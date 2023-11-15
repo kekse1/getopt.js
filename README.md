@@ -23,6 +23,7 @@ Just (nearly..) finished it (for my newest project `mudz`, etc.).
 - [ ] `expandShorts()` (w/ `DEFAULT_EXPAND`);
 - [ ] explain all features here.
 - [ ] extend [the library api documentation @ **`getopt.md`**](https://github.com/kekse1/v4/blob/git/docs/modules/lib/getopt.md)
+- [ ] special `--help / -?` view (automatically generated)
 
 ### Dependencies
 I implemented it with the help of my own JavaScript Library (all my own, just from scratch).
