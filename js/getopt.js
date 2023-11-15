@@ -7,10 +7,11 @@
 const VECTOR = [ 'long', 'short', 'env', 'args', 'group', 'default', 'null', 'undefined', 'help' ]; // 'call', again??
 
 //
-const DEFAULT_PARSE = true;
-const DEFAULT_ASSIGN = true;
-const DEFAULT_ASSIGN_LIST = true;
-const DEFAULT_EXPAND = true;
+const DEFAULT_PARSE = true;//recognizing numbers, regexp, ..
+const DEFAULT_ASSIGN = true;//enable the '=' assignment in args.. will *set* (not add) and flush all openend ones
+const DEFAULT_ASSIGN_LIST = true;//can args with '=' assignment encode lists by ','?
+const DEFAULT_EXPAND = true;//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=def -b=def -c=def)
+const DEFAULT_ZERO_NULL = false;//parsing empty strings as (null) instead of ''!? disabled by default..
 
 //
 const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values = _parse, _assigned_list = DEFAULT_ASSIGN_LIST, _list = process.argv, _start = 0) => {
@@ -129,7 +130,7 @@ parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse
 	_result.push(... elements); return _result; };
 
 const parseValue = (_string) => { if(typeof _string !== 'string') return _string;
-	else if(_string.length === 0) return null; else switch(_string.toLowerCase()) {
+	else if(_string.length === 0) return (DEFAULT_ZERO_NULL ? null : ''); else switch(_string.toLowerCase()) {
 		case 'yes': return true; case 'no': return false; }
 	if(!isNaN(_string)) return Number(_string); else if(_string[_string.length - 1] === 'n' &&
 		!isNaN(_string.slice(0, -1))) return BigInt(_string.slice(0, -1));
@@ -143,14 +144,14 @@ const tryAssignment = (_word, _dashes, _vector, _result, _index, _state, _assign
 tryAssignment.checkAssignedList = (_value, _assigned_list = DEFAULT_ASSIGN_LIST) => { if(!_assigned_list) return _value; else if(_value.length === 0) return _value;
 	const result = []; var string = ''; for(var i = 0, j = 0; i < _value.length; ++i) { if(_value[i] === '\\') { if(i < (_value.length - 1)) string += _value[++i]; }
 		else if(_value[i] === ',') { result[j++] = string; string = ''; } else string += _value[i]; }
-	if(string.length > 0) result.push(string); if(result.length === 1) return result[0]; return result; };
+	if(string.length > 0 || _value[_value.length - 1] === ',') result.push(string); if(result.length === 1) return result[0]; return result; };
 
 const expandShorts = (_list, _vector) => { if(!DEFAULT_EXPAND) return _list; var word, assign;
 	mainLoop: for(var i = 0; i < _list.length; ++i) { if(_list[i][0] !== '-' || _list[i][1] === '-') continue; const idx = _list[i].indexOf('=');
-		if(idx > -1) { word = _list[i].substr(1, idx - 1); assign = _list[i].substr(idx + 1); } else { word = _list[i].substr(1); assign = null; }
+		if(idx > -1) { word = _list[i].substr(1, idx - 1); assign = _list[i].substr(idx); } else { word = _list[i].substr(1); assign = ''; }
 		if(word.length === 1) continue; for(var j = 0; j < word.length; ++j) if(!_vector.SHORT.has(word[j])) continue mainLoop;
-		_list.splice(i, 1); for(var j = 0; j < word.length; ++j) _list.splice(i + j, 0, '-' + word[j] + (assign ? '=' + assign : ''));
-		i += word.length - 1; } return _list; };
+		_list.splice(i, 1); for(var j = 0; j < word.length; ++j) _list.splice(i + j, 0, '-' + word[j] + assign); i += word.length - 1; }
+	return _list; };
 
 //
 const showHelp = (_vector) => {
