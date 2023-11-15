@@ -71,6 +71,7 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 			case 'help': if(Number.isNumber(_vector[key].help)) _vector[key].help = _vector[key].help.toString();
 				else if(!String.isString(_vector[key].help, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'help', key, 'String');
 				result[key].help = _vector[key].help; appendIndex(result, 'HELP', key, _vector[key].help, true, false); break; }
+		if(result[key].args === 0) { delete result[key].undefined; delete result[key].null; }
 		if(!(result[key].long || result[key].short || result[key].env)) { result[key].long = key; appendIndex(result, 'LONG', key, key, false, false); }
 		if(!result[key].long) result[key].long = ''; if(!result[key].short) result[key].short = ''; if(!result[key].env) result[key].env = '';
 		if(!Number.isInt(result[key].args)) result[key].args = 0; if(!result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; } return result; };
