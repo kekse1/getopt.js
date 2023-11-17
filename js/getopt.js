@@ -7,11 +7,13 @@
 const VECTOR = [ 'long', 'short', 'env', 'args', 'index', 'parse', 'assign', 'list', 'group', 'clone', 'default', 'null', 'undefined', 'help' ];
 
 //
-const DEFAULT_PARSE = true;//recognizing numbers, regexp, ..
-const DEFAULT_ASSIGN = true;//enable the '=' assignment in args.. will *set* (not add) and flush all openend ones
-const DEFAULT_ASSIGN_LIST = true;//can args with '=' assignment encode lists by ','?
-const DEFAULT_EXPAND = true;//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=def -b=def -c=def); BUT then multiple chars are not allowed for all `short`!!
-const DEFAULT_ZERO_NULL = false;//parsing empty strings as (null) instead of ''!? disabled by default..
+const DEFAULT_EXPAND = true;		//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=def -b=def -c=def); BUT then multiple chars are not allowed for all `short`!!
+
+//
+const DEFAULT_PARSE = true;		//recognizing numbers, regexp, booleans, ..
+const DEFAULT_ASSIGN = true;		//'=' assignment (which will reset previously enqueued items for the same key)
+const DEFAULT_ASSIGN_LIST = true;	//can args with '=' assignment encode lists by ','?
+const DEFAULT_CLONE = false;		//boolean or integer (integer is still TODO! see 'Reflect.clone()' (or https://github.com/kekse1/scripts/))
 
 //
 const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values = _parse, _assign = DEFAULT_ASSIGN, _assigned_list = DEFAULT_ASSIGN_LIST, _list = process.argv, _start = 0) => {
@@ -82,7 +84,7 @@ const prepareVector = (_vector, _parse, _assign, _assigned_list) => { const resu
 		if(!Number.isInt(result[key].args)) result[key].args = 0; if(result[key].args <= 0) { result[key].args = 0; delete result[key].undefined; delete result[key].null; }
 		if(!(Number.isInt(result[key].index) || result[key].index === null)) result[key].index = null;
 		if(typeof result[key].parse !== 'boolean') result[key].parse = _parse; if(typeof result[key].list !== 'boolean') result[key].list = _assigned_list;
-		if(typeof result[key].assign !== 'boolean') result[key].assign = _assign;
+		if(typeof result[key].assign !== 'boolean') result[key].assign = _assign; if(typeof result[key].clone !== 'boolean' && !(Number.isInt(result[key].clone) && result[key].clone >= 0)) result[key].clone = DEFAULT_CLONE;
 		if(!(result[key].long || result[key].short || result[key].env)) { result[key].long = key; prepareVector.appendIndex(result, 'LONG', key, key, false, false); }
 		if(!result[key].long) result[key].long = ''; if(!result[key].short) result[key].short = ''; if(!result[key].env) result[key].env = '';
 		if(!result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; }
@@ -164,7 +166,7 @@ parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse
 	_result[key] = (_result[key][0] ? 1 : 0); else _result[key] = _result[key][0]; }}} _result.push(... elements); return _result; };
 
 const parseValue = (_string) => { if(typeof _string !== 'string') return _string;
-	else if(_string.length === 0) return (DEFAULT_ZERO_NULL ? null : ''); else switch(_string.toLowerCase()) {
+	else if(_string.length === 0) return ''; else if(_string.length <= 3) switch(_string.toLowerCase()) {
 		case 'yes': return true; case 'no': return false; }
 	if(!isNaN(_string)) return Number(_string); else if(_string[_string.length - 1] === 'n' &&
 		!isNaN(_string.slice(0, -1))) return BigInt(_string.slice(0, -1));
