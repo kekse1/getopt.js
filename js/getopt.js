@@ -21,8 +21,8 @@ const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values =
 	return result; };
 	
 //
-export default getopt;
-if(typeof this !== 'undefined') module.exports = getopt;
+//export default getopt;
+//if(typeof this !== 'undefined') module.exports = getopt;
 
 //
 Reflect.defineProperty(getopt, 'vector', { get: () => [ ... VECTOR ] });

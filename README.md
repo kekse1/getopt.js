@@ -14,12 +14,13 @@ This is my own interpretation of the well known `getopt` functionality.
         * [Configuration](#configuration)
         * [`DEFAULT_EXPAND`](#default_expand)
     	* [Dependencies](#dependencies)
-	* [Module and Namespace](#module-and-namespace)
+	* [Namespace](#namespace)
     * [References](#references)
 * [Copyright and License](#copyright-and-license)
 
 ## Download
-* [**`getopt.js`**](js/getopt.js) (**180** lines atm)
+* [**`getopt.js`**](js/getopt.js) (**201** lines atm)
+* [`polyfill.js`](js/polyfill.js) (if you don't use [my library](https://github.com/kekse1/v4/))
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
@@ -97,21 +98,12 @@ _more compact_ version which I'm using at [**kekse.biz**](https://kekse.biz/): t
 to my [**`v4`** repository](https://github.com/kekse1/v4/); also visible (with rendered `.md`) on my
 [**kekse.biz**/projects page](https://kekse.biz/#github://kekse1/).
 
-Maybe I'll give you a tiny replacement of the used extensions some day, but until then feel free to
-modify the source or implement the necessary functions by yourself.. there are really not many.!
-
 > **Warning**
-> SO, if using stand-alone, you'll have to manually extend some elements.. **but** these are not so much, so _don't give up_! ^\_^
+> If using this script stand-alone, without my library being loaded/used, you should also import the [**`polyfill.js`**](js/polyfill.js).
+> I **hope** this file is complete, I neither tested any case, nor did I scrolled through the [**`getopt.js`**](js/getopt.js).. xD~
 
-### Module and Namespace
-By default I'm using `export default getopt`.
-
-If you are not running in ES module mode (so no `{ type: 'module' }` in `package.json`), you should
-remove this statement. A regular `module.exports = getopt` is automatically done if not in EC module
-mode (using `typeof this !== 'undefined'`).
-
-At all, you don't need to use any export, since the `getopt` base function is also exported under the
-global namespace (so `global.getopt()` is **always** available).
+### Namespace
+The whole base **`getopt()`** function is being exported under the **`global`** namespace! So you just have to **`getopt(vector, ...)`**.
 
 ## References
 Maybe also interesting for you: the **`config.js`**? And a reference to my documentation for this **`getopt.js`**:
