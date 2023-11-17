@@ -20,7 +20,7 @@ This is my own interpretation of the well known `getopt` functionality.
 Just (nearly..) finished it (for my newest project `mudz`, etc.).
 
 ### Download
-* [**`getopt.js`**](js/getopt.js)
+* [**`getopt.js`**](js/getopt.js) (**180** lines atm)
 
 ### Description
 //TODO/(describe it)//
