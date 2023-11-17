@@ -27,19 +27,6 @@ if(typeof this !== 'undefined') module.exports = getopt;
 Reflect.defineProperty(getopt, 'vector', { get: () => [ ... VECTOR ] });
 
 //
-const findBestShort = (_index, _vector) => {
-return Math.random.string.lower(1);//TODO/FIXME/!!
-};
-
-//
-const vectorIncludesLongShortEnv = (_result, _key, _throw = false) => {
-	if(_result.LONG.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'long') : true);
-	else if(_result.SHORT.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'short') : true);
-	else if(_result.ENV.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'env') : true);
-	return false; };
-const appendIndex = (_result, _type, _key, _value, _inverse, _array = true) => { if(!_result[_type].has(_inverse ? _key : _value)) _result[_type].set(_inverse ? _key : _value,
-	(_array ? [ _inverse ? _value : _key ] : (_inverse ? _value : _key))); else if(_array) _result[_type].get(_inverse ? _key : _value).push(_inverse ? _value : _key);
-	else _result[_type].set(_inverse ? _key : _value, (_inverse ? _value : _key)); };
 const prepareVector = (_vector) => { const result = Object.create(null); const keys = Object.keys(_vector); const VECT = [ ... VECTOR ]; const bestShortIndex = [];
 	for(const v of VECT) { result[v.toUpperCase()] = new Map(); if(keys.includes(v.toUpperCase())) return error('The key `%` is a *reserved* getopt vector key', null, v.toUpperCase()); }
 	for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(key.isUpperCase) return error('No getopt vector key may be *upper-case* only'); result[key] = Object.create(null);
@@ -50,7 +37,7 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 				else if(_vector[key].long.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'long', key, ' ');
 				else if(_vector[key].long.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'long', key, '=');
 				else if(_vector[key].long.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'long', key);
-				else vectorIncludesLongShortEnv(result, _vector[key].long, true); result[key].long = _vector[key].long; appendIndex(result, 'LONG', key, _vector[key].long, false, false); break;
+				else prepareVector.vectorIncludesLongShortEnv(result, _vector[key].long, true); result[key].long = _vector[key].long; prepareVector.appendIndex(result, 'LONG', key, _vector[key].long, false, false); break;
 			case 'short': if(typeof _vector[key].short === 'boolean') { if(_vector[key].short) bestShortIndex.push(key); break; }
 				else if(typeof _vector[key].short !== 'string') return error('The getopt `%` vector key `%` needs to be a (single character) %', null, 'short', key, 'String');
 				else if(DEFAULT_EXPAND && _vector[key].short.length !== 1) return error('The getopt `%` vector key `%` needs to be a single character %', null, 'short', key, 'String');
@@ -58,41 +45,63 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 				else if(_vector[key].short === ' ') return error('The getopt `%` vector key `%` may not be a space `%`', null, 'short', key, ' ');
 				else if(_vector[key].short === '=') return error('The getopt `%` vector key `%` may not be a `%` assignment', null, 'short', key, '=');
 				else if(_vector[key].short.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'short', key);
-				else vectorIncludesLongShortEnv(result, _vector[key].short, true); result[key].short = _vector[key].short; appendIndex(result, 'SHORT', key, _vector[key].short, false, false); break;
+				else prepareVector.vectorIncludesLongShortEnv(result, _vector[key].short, true); result[key].short = _vector[key].short; prepareVector.appendIndex(result, 'SHORT', key, _vector[key].short, false, false); break;
 			case 'env': if(typeof _vector[key].env === 'boolean') { if(_vector[key].env) _vector[key].env = key; else break; }
 				else if(!String.isString(_vector[key].env, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'env', key, 'String');
 				else if(_vector[key].env[0] === '-') return error('The getopt `%` vector key `%` may not start with a dash `%`', null, 'env', key, '-');
 				else if(_vector[key].env.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'env', key, ' ');
 				else if(_vector[key].env.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'env', key, '=');
 				else if(_vector[key].env.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'env', key);
-				else vectorIncludesLongShortEnv(result, _vector[key].env, true); result[key].env = _vector[key].env; appendIndex(result, 'ENV', key, _vector[key].env, false, false); break;
+				else prepareVector.vectorIncludesLongShortEnv(result, _vector[key].env, true); result[key].env = _vector[key].env; prepareVector.appendIndex(result, 'ENV', key, _vector[key].env, false, false); break;
 			case 'args': if(typeof _vector[key].args === 'boolean') _vector[key].args = (_vector[key].args ? 1 : 0);
 				else if(!Number.isInt(_vector[key].args) || _vector[key].args < 0) return error('The getopt `%` vector key `%` needs to be a positive % (or %)', null, 'args', key, 'Integer', 'zero');
-				result[key].args = _vector[key].args; appendIndex(result, 'ARGS', key, _vector[key].args, false, true); break;
+				result[key].args = _vector[key].args; prepareVector.appendIndex(result, 'ARGS', key, _vector[key].args, false, true); break;
 			case 'index'://boolean,integer(+/-) @ Math.getIndex();
 			case 'parse'://boolean
 			case 'list'://boolean
-throw new Error('TODO');
+throw new Error('TODO (don\'t forget ..appendIndex())');
 				break;
 			case 'group': if(!String.isString(_vector[key].group, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'group', key, 'String');
 				else _vector[key].group = _vector[key].group.removeBinary();
-				result[key].group = _vector[key].group; appendIndex(result, 'GROUP', key, _vector[key].group, false, true); break;
+				result[key].group = _vector[key].group; prepareVector.appendIndex(result, 'GROUP', key, _vector[key].group, false, true); break;
 			case 'default': result[key].null = result[key].undefined = _vector[key].default;
-				appendIndex(result, 'NULL', key, _vector[key].default, false, true); appendIndex(result, 'UNDEFINED', key, _vector[key].default, false, true); break;
-			case 'null': result[key].null = _vector[key].null; appendIndex(result, 'NULL', key, _vector[key].null, false, true); break;
-			case 'undefined': result[key].undefined = _vector[key].undefined; appendIndex(result, 'UNDEFINED', key, _vector[key].undefined, false, true); break;
+				prepareVector.appendIndex(result, 'NULL', key, _vector[key].default, false, true); prepareVector.appendIndex(result, 'UNDEFINED', key, _vector[key].default, false, true); break;
+			case 'null': result[key].null = _vector[key].null; prepareVector.appendIndex(result, 'NULL', key, _vector[key].null, false, true); break;
+			case 'undefined': result[key].undefined = _vector[key].undefined; prepareVector.appendIndex(result, 'UNDEFINED', key, _vector[key].undefined, false, true); break;
 			case 'clone':
-throw new Error('TODO');
+throw new Error('TODO (don\'t forget ..appendIndex())');
 				break;
 			case 'help': if(Number.isNumber(_vector[key].help)) _vector[key].help = _vector[key].help.toString();
 				else if(!String.isString(_vector[key].help, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'help', key, 'String');
-				result[key].help = _vector[key].help; appendIndex(result, 'HELP', key, _vector[key].help, true, false); break; }
+				result[key].help = _vector[key].help; prepareVector.appendIndex(result, 'HELP', key, _vector[key].help, true, false); break; }
 		if(!Number.isInt(result[key].args)) result[key].args = 0; if(result[key].args <= 0) { result[key].args = 0; delete result[key].undefined; delete result[key].null; }
-		if(!(result[key].long || result[key].short || result[key].env)) { result[key].long = key; appendIndex(result, 'LONG', key, key, false, false); }
+		if(!(result[key].long || result[key].short || result[key].env)) { result[key].long = key; prepareVector.appendIndex(result, 'LONG', key, key, false, false); }
 		if(!result[key].long) result[key].long = ''; if(!result[key].short) result[key].short = ''; if(!result[key].env) result[key].env = '';
 		if(!result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; }
-	var bestIndex; for(const key of bestShortIndex) { if(!(bestIndex = findBestShort(key, result))) return error('Couldn\'t find best short index for item `%` in getopt vector', null, key);
-		result[key].short = bestIndex; appendIndex(result, 'SHORT', key, bestIndex, false, false); } return result; };
+	var bestIndex; for(const key of bestShortIndex) { if(!(bestIndex = prepareVector.findBestShort(key, result[key], result))) return error('Couldn\'t find best short index for item `%` in getopt vector', null, key);
+		result[key].short = bestIndex; prepareVector.appendIndex(result, 'SHORT', key, bestIndex, false, false); } return result; };
+
+prepareVector.vectorIncludesLongShortEnv = (_result, _key, _throw = false) => {
+	if(_result.LONG.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'long') : true);
+	else if(_result.SHORT.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'short') : true);
+	else if(_result.ENV.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'env') : true);
+	return false; };
+
+prepareVector.appendIndex = (_result, _type, _key, _value, _inverse, _array = true) => { if(!_result[_type].has(_inverse ? _key : _value)) _result[_type].set(_inverse ? _key : _value,
+	(_array ? [ _inverse ? _value : _key ] : (_inverse ? _value : _key))); else if(_array) _result[_type].get(_inverse ? _key : _value).push(_inverse ? _value : _key);
+	else _result[_type].set(_inverse ? _key : _value, (_inverse ? _value : _key)); };
+
+prepareVector.findBestShort = (_index, _vector_item, _vector) => {
+	if(!_vector_item.long || _vector_item.long === _index) return prepareVector.findBestShort.find(_index, _vector_item, _vector);
+	var result = prepareVector.findBestShort.find(_vector_item.long, _vector_item, _vector);
+	if(!result) result = prepareVector.findBestShort.find(_index, _vector_item, _vector);
+	if(!result) return error('Failed to find the best short index for getopt vector item `%`', null, _index);
+	return result; };
+prepareVector.findBestShort.find = (_index, _vector_item, _vector) => { const me = (_vector_item.long || _index); const em = [];
+	for(const idx in _vector) if(!idx.isUpperCase && idx !== _index) em.push(_vector[idx].long || idx);
+	var set = new Set(); for(const char of me) set.add(char); for(const item of em) for(const char of item) set.add(char);
+	const already = [ ... _vector.SHORT.keys() ]; for(const a of already) set.delete(a);
+	set = Array.from(set); if(set.length === 0) return ''; return set[0]; };
 
 //
 const find = (_vector, _word, _dashes, _index = false) => {
