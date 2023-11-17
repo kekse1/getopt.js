@@ -46,8 +46,6 @@ I'm not sure if the following list is really complete. But most things are encou
 * It's possible to let short keys be found automatically (finding nearest possible character)
 * Automatically created help pages/views (if no manuall `--help / -?` override defined in the vector); using `.help` vector items to show each ones descriptions
 
-Some (not really many) items are still /TODO/, btw.. I'm currently working on it!
-
 ### Function call
 This is the exported function `getopt(_vector, _parse, _parse_values, _assign, _assigned_list, _list = process.argv, _start = 0);`
 
@@ -66,7 +64,7 @@ These are the items your getopt vector (first argument to `getopt()`, is an obje
 | `parse`     | Boolean          | Recongnizing RegExp, Numbers, etc..                                                                       |
 | `assign`    | Boolean          | If '--key=value' are allowed (otherwise these ones will be only regular cmdline elements)                 |
 | `list`      | Boolean          | If comma `,` in the values of `=` assignments (only there!) should create array elements (if not escaped) |
-| `group`     | String           | **TODO**                                                                                                  |
+| `group`     | String           | All results will be referenced in a `(result)[GROUP]` array, too.. out of possibly more than one key/index|
 | `default`   | Array, \*        | Default value(s) for unspecified parameters (if `.args > 0`!): will set BOTH `null` and `undefined`       |
 | `null`      | Array, \*        | If a parameter is given by it's index keys, but no value for it defined                                   |
 | `undefined` | Array, \*        | If a parameter is not given by index keys at all; so no `--key`, not only a missing value                 |
