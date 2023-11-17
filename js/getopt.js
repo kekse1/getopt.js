@@ -4,7 +4,7 @@
 // 
 
 //
-const VECTOR = [ 'long', 'short', 'env', 'args', 'group', 'default', 'null', 'undefined', 'help' ]; // 'call', again??
+const VECTOR = [ 'long', 'short', 'env', 'args', 'index', 'parse', 'list', 'group', 'default', 'null', 'undefined', 'clone', 'help' ];
 
 //
 const DEFAULT_PARSE = true;//recognizing numbers, regexp, ..
@@ -18,10 +18,13 @@ const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values =
 	if(Object.isObject(_vector)) _vector = prepareVector(_vector);
 	const result = parseCommandLine(_vector, _list.slice(_start), _parse, _parse_values, _assigned_list);
 	return result; };
+	
+//
+export default getopt;
+if(typeof this !== 'undefined') module.exports = getopt;
 
 //
 Reflect.defineProperty(getopt, 'vector', { get: () => [ ... VECTOR ] });
-export default getopt;
 
 //
 const findBestShort = (_index, _vector) => {
@@ -66,6 +69,11 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 			case 'args': if(typeof _vector[key].args === 'boolean') _vector[key].args = (_vector[key].args ? 1 : 0);
 				else if(!Number.isInt(_vector[key].args) || _vector[key].args < 0) return error('The getopt `%` vector key `%` needs to be a positive % (or %)', null, 'args', key, 'Integer', 'zero');
 				result[key].args = _vector[key].args; appendIndex(result, 'ARGS', key, _vector[key].args, false, true); break;
+			case 'index'://boolean,integer(+/-) @ Math.getIndex();
+			case 'parse'://boolean
+			case 'list'://boolean
+throw new Error('TODO');
+				break;
 			case 'group': if(!String.isString(_vector[key].group, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'group', key, 'String');
 				else _vector[key].group = _vector[key].group.removeBinary();
 				result[key].group = _vector[key].group; appendIndex(result, 'GROUP', key, _vector[key].group, false, true); break;
@@ -73,13 +81,16 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 				appendIndex(result, 'NULL', key, _vector[key].default, false, true); appendIndex(result, 'UNDEFINED', key, _vector[key].default, false, true); break;
 			case 'null': result[key].null = _vector[key].null; appendIndex(result, 'NULL', key, _vector[key].null, false, true); break;
 			case 'undefined': result[key].undefined = _vector[key].undefined; appendIndex(result, 'UNDEFINED', key, _vector[key].undefined, false, true); break;
+			case 'clone':
+throw new Error('TODO');
+				break;
 			case 'help': if(Number.isNumber(_vector[key].help)) _vector[key].help = _vector[key].help.toString();
 				else if(!String.isString(_vector[key].help, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'help', key, 'String');
 				result[key].help = _vector[key].help; appendIndex(result, 'HELP', key, _vector[key].help, true, false); break; }
 		if(!Number.isInt(result[key].args)) result[key].args = 0; if(result[key].args <= 0) { result[key].args = 0; delete result[key].undefined; delete result[key].null; }
 		if(!(result[key].long || result[key].short || result[key].env)) { result[key].long = key; appendIndex(result, 'LONG', key, key, false, false); }
 		if(!result[key].long) result[key].long = ''; if(!result[key].short) result[key].short = ''; if(!result[key].env) result[key].env = '';
-		if(!Number.isInt(result[key].args)) result[key].args = 0; if(!result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; }
+		if(!result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; }
 	var bestIndex; for(const key of bestShortIndex) { if(!(bestIndex = findBestShort(key, result))) return error('Couldn\'t find best short index for item `%` in getopt vector', null, key);
 		result[key].short = bestIndex; appendIndex(result, 'SHORT', key, bestIndex, false, false); } return result; };
 
