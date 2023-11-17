@@ -34,7 +34,7 @@ Since I really love to implement any feature I need for myself, I also created t
 * Multiple short parameters with only one `-` prefix are possible (e.g. `-abc` will be enforced (then) to `-a -b -c`, or `-abc=def` to `-a=def -b=def -c=def`)
 * Values after equal sign assignment can sometimes be an advantage (`--key=value`); they also can encode lists, separated by `,` (escapable!)
 * All values can be parsed (so checking for Numbers, RegExp, Booleans, ..); also the regularily pushed parameters (without key match), if wished
-* If a single `--` occures in the command line, the regular behavior is (usually) to abort the process and add the rest as regular array items
+* If a single `--` occures in the command line, the regular behavior is (usually) to abort the process and add the rest as regular list items
 * Undefined parameters or those without any value will result in an Integer which counts the amount of occurences in the command line
 * BUT if defaults are defined in the vector, these will be used (can be either for all, or separately one for undefined keys and one for empty keys, without values)
 * Defaults can be optionally cloned.. and if `.args>1` in a vector item plus an array as default value, the array items will be used adequately
