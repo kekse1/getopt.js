@@ -157,12 +157,14 @@ parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse
 	if(_parse_values) for(var i = 0; i < elements.length; ++i) elements[i] = parseValue(elements[i]); const unfinished = todo(_state); const keys = Object.keys(_result);
 	var fill; for(var i = 0; i < keys.length; ++i) { const key = keys[i]; const vect = _vector[key]; if(unfinished.includes(key) && ('null' in vect) &&
 	(fill = left(key, _state)) > 0) { if(Array._isArray(vect.null)) for(var j = _result[key].length, k = 0, l = (j % vect.null.length); k < fill; j++, k++, l = ((l + 1) % vect.null.length))
-	_result[key][j] = vect.null[l]; else for(var j = _result[key].length, k = 0; k < fill; ++j, ++k) _result[key][j] = vect.null; } else if(_result[key].length === 0) { if(!('undefined' in vect) ||
-	vect.args <= 0) _result[key] = _index[key]; else if(Array._isArray(vect.undefined)) for(var j = 0, k = 0, l = 0; k < vect.args; ++j, ++k, l = ((l + 1) % vect.undefined.length))
-	_result[key][j] = vect.undefined[l]; else for(var j = 0, k = 0; k < vect.args; ++j, ++k) _result[key][j] = vect.undefined; } else { if(vect.parse) for(var j = 0; j < _result[key].length; ++j)
-	_result[key][j] = parseValue(_result[key][j]); var sum = 0; for(var j = 0; j < _result[key].length; ++j) { if(typeof _result[key][j] === 'boolean') sum += (_result[key][j] ? 1 : -1);
-	else { sum = null; break; }} if(sum !== null) { if(_result[key][0] === false) ++sum; _result[key] = sum; } if(_result[key].length === 1) { if(typeof _result[key][0] === 'boolean')
-	_result[key] = (_result[key][0] ? 1 : 0); else _result[key] = _result[key][0]; }}} _result.push(... elements); return _result; };
+	_result[key][j] = (vect.clone ? Reflect.clone(vect.null[l]) : vect.null[l]); else for(var j = _result[key].length, k = 0; k < fill; ++j, ++k) _result[key][j] = (vect.clone ? Reflect.clone(vect.null) : vect.null); }
+	else if(_result[key].length === 0) { if(!('undefined' in vect)) _result[key] = _index[key]; else if(Array._isArray(vect.undefined) && vect.args > 1)
+	for(var j = 0, k = 0, l = 0; k < vect.args; ++j, ++k, l = ((l + 1) % vect.undefined.length)) _result[key][j] = (vect.clone ? Reflect.clone(vect.undefined[l]) : vect.undefined[l]);
+	else for(var j = 0, k = 0; k < vect.args; ++j, ++k) _result[key][j] = (vect.clone ? Reflect.clone(vect.undefined) : vect.undefined); } else { if(vect.parse)
+	for(var j = 0; j < _result[key].length; ++j) _result[key][j] = parseValue(_result[key][j]); var sum = 0; for(var j = 0; j < _result[key].length; ++j) {
+	if(typeof _result[key][j] === 'boolean') sum += (_result[key][j] ? 1 : -1); else { sum = null; break; }} if(sum !== null) { if(_result[key][0] === false) ++sum; _result[key] = sum; }}
+	if(Array._isArray(_result[key])) { if(_result[key].length === 1) { if(typeof _result[key][0] === 'boolean') _result[key] = (_result[key][0] ? 1 : 0); else _result[key] = _result[key][0]; }
+	else if(vect.index !== null) _result[key] = _result[key][Math.getIndex(vect.index, _result[key].length)]; }} _result.push(... elements); return _result; };
 
 const parseValue = (_string) => { if(typeof _string !== 'string') return _string;
 	else if(_string.length === 0) return ''; else if(_string.length <= 3) switch(_string.toLowerCase()) {
