@@ -33,7 +33,7 @@ Since I really love to implement any feature I need for myself, I also created t
 * It's possible to define multiple parameters consecutive, after which the values are collectable in order (so `-ab eins zwei` or `--one --two eins zwei`)
 * Multiple short parameters with only one `-` prefix are possible (e.g. `-abc` will be enforced (then) to `-a -b -c`, or `-abc=def` to `-a=def -b=def -c=def`)
 * Values after equal sign assignment can sometimes be an advantage (`--key=value`); they also can encode lists, separated by `,` (escapable!)
-* All values can be parsed (so checking for Numbers, RegExp, Booleans, ..); also the regularily counted parameters (without key match), if wished
+* All values can be parsed (so checking for Numbers, RegExp, Booleans, ..); also the regularily pushed parameters (without key match), if wished
 * If a single `--` occures in the command line, the regular behavior is (usually) to abort the process and add the rest as regular array items
 * Undefined parameters or those without any value will result in an Integer which counts the amount of occurences in the command line
 * BUT if defaults are defined in the vector, these will be used (can be either for all, or separately one for undefined keys and one for empty keys, without values)
