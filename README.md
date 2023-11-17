@@ -7,7 +7,7 @@
         * [Features](#features)
         * [Function call](#function-call)
         * [Vector items](#vector-items)
-        * [Finding best `short`s](#finding-best-shorts)
+        * [Finding best `short` keys](#finding-best-short-keys)
         * [Configuration](#configuration)
         * [`DEFAULT_EXPAND`](#default_expand)
     	* [Dependencies](#dependencies)
@@ -56,7 +56,7 @@ These are the items your getopt vector (first argument to `getopt()`, is an obje
 
 //TODO/descriptions, pls..
 
-#### Finding best **`short`s**
+#### Finding best **`short`** keys
 If a `short` is set to `true`, we're going to automatically find the best index key;
 see the `findBestShort()` function.
 
