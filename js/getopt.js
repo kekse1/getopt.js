@@ -8,7 +8,6 @@ const VECTOR = [ 'long', 'short', 'env', 'args', 'index', 'parse', 'assign', 'li
 
 //
 const DEFAULT_EXPAND = true;		//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=def -b=def -c=def); BUT then multiple chars are not allowed for all `short`!!
-
 //
 const DEFAULT_PARSE = true;		//recognizing numbers, regexp, booleans, ..
 const DEFAULT_ASSIGN = true;		//'=' assignment (which will reset previously enqueued items for the same key)
@@ -146,21 +145,21 @@ handle.long = (_result, _vector, _state, _word, _index, _list, _item, _key) => {
 	if(typeof _result[_key] === 'number') ++_result[_key]; else if(Array._isArray(_result[_key])) _result[_key].push(true);
 	else _result[_key] = 1; } else enqueue(_vector, _state, _key, _item.args); };
 
-const parseCommandLine = (_vector, _list = process.argv, _parse = DEFAULT_PARSE, _parse_values = _parse) => { const result = [], state = [], index = Object.create(null);
+const parseCommandLine = (_vector, _list = process.argv, _parse_values = _parse) => { const result = [], state = [], index = Object.create(null);
 	for(const idx in _vector) if(!idx.isUpperCase) { result[idx] = []; state[idx] = []; index[idx] = 0; } _list = expandShorts(_list, _vector); var dashes; for(var i = 0; i < _list.length; ++i) {
 	if(_list === '--') { result.push(... _list.slice(i)); break; } else dashes = 0; while(_list[i][dashes] === '-') ++dashes; dashes = Math.min(2, dashes);
 	const orig = _list[i]; const word = _list[i].slice(dashes); if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state)) { var type = find(_vector, word, dashes, false);
 	if(!compare(type, dashes)) type = 'value'; const key = (type === 'value' ? null : find(_vector, word, dashes, true)); if(type !== 'value') {
 	++index[key]; } handle[type](result, _vector, state, (type === 'value' ? orig : word), i, _list, _vector[key], key);
-	}} return parseCommandLine.handleResult(result, _vector, state, index, _list, _parse, _parse_values); };
+	}} return parseCommandLine.handleResult(result, _vector, state, index, _list, _parse_values); };
 
-parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse = DEFAULT_PARSE, _parse_values = _parse) => { const elements = _result.splice(0, _result.length);
+parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse_values = _parse) => { const elements = _result.splice(0, _result.length);
 	if(_parse_values) for(var i = 0; i < elements.length; ++i) elements[i] = parseValue(elements[i]); const unfinished = todo(_state); const keys = Object.keys(_result);
 	var fill; for(var i = 0; i < keys.length; ++i) { const key = keys[i]; const vect = _vector[key]; if(unfinished.includes(key) && ('null' in vect) &&
 	(fill = left(key, _state)) > 0) { if(Array._isArray(vect.null)) for(var j = _result[key].length, k = 0, l = (j % vect.null.length); k < fill; j++, k++, l = ((l + 1) % vect.null.length))
 	_result[key][j] = vect.null[l]; else for(var j = _result[key].length, k = 0; k < fill; ++j, ++k) _result[key][j] = vect.null; } else if(_result[key].length === 0) { if(!('undefined' in vect) ||
 	vect.args <= 0) _result[key] = _index[key]; else if(Array._isArray(vect.undefined)) for(var j = 0, k = 0, l = 0; k < vect.args; ++j, ++k, l = ((l + 1) % vect.undefined.length))
-	_result[key][j] = vect.undefined[l]; else for(var j = 0, k = 0; k < vect.args; ++j, ++k) _result[key][j] = vect.undefined; } else { if(_parse) for(var j = 0; j < _result[key].length; ++j)
+	_result[key][j] = vect.undefined[l]; else for(var j = 0, k = 0; k < vect.args; ++j, ++k) _result[key][j] = vect.undefined; } else { if(vect.parse) for(var j = 0; j < _result[key].length; ++j)
 	_result[key][j] = parseValue(_result[key][j]); var sum = 0; for(var j = 0; j < _result[key].length; ++j) { if(typeof _result[key][j] === 'boolean') sum += (_result[key][j] ? 1 : -1);
 	else { sum = null; break; }} if(sum !== null) { if(_result[key][0] === false) ++sum; _result[key] = sum; } if(_result[key].length === 1) { if(typeof _result[key][0] === 'boolean')
 	_result[key] = (_result[key][0] ? 1 : 0); else _result[key] = _result[key][0]; }}} _result.push(... elements); return _result; };
