@@ -19,7 +19,7 @@ This is my own interpretation of the well known `getopt` functionality.
 * [Copyright and License](#copyright-and-license)
 
 ## Download
-* [**`getopt.js`**](js/getopt.js) (**201** lines atm)
+* [**`getopt.js`**](js/getopt.js) (**206** lines atm)
 * [`polyfill.js`](js/polyfill.js) (if you don't use [my library](https://github.com/kekse1/v4/))
 
 ## Description
