@@ -28,7 +28,8 @@ This is my own interpretation of the well known `getopt` functionality.
 Some things are still TODO here - I'm **currently** working on it! Maybe tomorrow I'm ready..
 
 ### Features
-//TODO/(describe 'em);
+* If a single `--` occures in the command line, the regular behavior is (usually) to abort the process and add the rest as regular array items
+* //**TODO**/(describe 'em!);
 
 ### Function call
 This is the exported function
@@ -37,30 +38,28 @@ This is the exported function
 ### Vector items
 These are the items your getopt vector (first argument to `getopt()`, is an object) supports.
 
-| Key         | Type(s)          | Description |
-| ----------: | :--------------- | :---------: |
-| `long`      | Boolean, String  | ...         |
-| `short`     | Boolean, String  | ...         |
-| `env`       | Boolean, String  | ...         |
-| `args`      | Boolean, Integer | ...         |
-| `index`     | Boolean, Integer | ...         |
-| `parse`     | Boolean          | ...         |
-| `list`      | Boolean          | ...         |
-| `group`     | String           | ...         |
-| `default`   | **\***           | ...         |
-| `null`      | **\***           | ...         |
-| `undefined` | **\**            | ...         |
-| `clone`     | Boolean, Integer | ...         |
-| `help`      | String           | ...         |
-
-//TODO/descriptions, pls..
+| Key         | Type(s)          | Description                                                                                               |
+| ----------: | :--------------- | :-------------------------------------------------------------------------------------------------------: |
+| `long`      | Boolean, String  | The long key index, with `--` double dash prefix in the command line                                      |
+| `short`     | Boolean, String  | Short key index, with `-` single dash prefix                                                              |
+| `env`       | Boolean, String  | (**TODO**!) Environment variable key index, without any dash                                              |
+| `args`      | Boolean, Integer | How many arguments per key index, or if at all any                                                        |
+| `index`     | Boolean, Integer | If multiple values are defined, in the end this setting will select one of the elements                   |
+| `parse`     | Boolean          | Recongnizing RegExp, Numbers, etc..                                                                       |
+| `assign`    | Boolean          | If '--key=value' are allowed (otherwise these ones will be only regular cmdline elements)                 |
+| `list`      | Boolean          | If comma `,` in the values of `=` assignments (only there!) should create array elements (if not escaped) |
+| `group`     | String           | **TODO**                                                                                                  |
+| `default`   | Array, \*        | Default value(s) for unspecified parameters (if `.args > 0`!): will set BOTH `null` and `undefined`       |
+| `null`      | Array, \*        | If a parameter is given by it's index keys, but no value for it defined                                   |
+| `undefined` | Array, \*        | If a parameter is not given by index keys at all; so no `--key`, not only a missing value                 |
+| `clone`     | Boolean, Integer | The both default values can optionally be cloned every time (**Integer**s are still TODO)                 |
+| `help`      | String           | Automatically created help pages/views use this for the switches' descriptions                            |
 
 ### Finding best **`short`** keys
-If a `short` is set to `true`, we're going to automatically find the best index key;
-see the `findBestShort()` function.
+If a `short` is set to `true`, we're going to automatically find the best index key; see the `findBestShort()` function.
 
 ### Configuration
-Just some `const DEFAULT_*` on top of the file:
+Just some `const DEFAULT_*` on top of the file (_more are eventually coming, others will be removed **soon**!_):
 
 | Name                  | Description |
 | --------------------: | :---------- |
@@ -69,8 +68,6 @@ Just some `const DEFAULT_*` on top of the file:
 | `DEFAULT_ASSIGN_LIST` | ...         |
 | `DEFAULT_EXPAND`      | ...         |
 | `DEFAULT_ZERO_NULL`   | ...         |
-
-MORE ARE COMING these days..! ;-)
 
 ### **`DEFAULT_EXPAND`**
 If enabled, arguments like `-abc` (so **short**s!) are expanded to `-a -b -c`, or with assignment

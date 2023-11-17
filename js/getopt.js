@@ -4,7 +4,7 @@
 // 
 
 //
-const VECTOR = [ 'long', 'short', 'env', 'args', 'index', 'parse', 'list', 'group', 'default', 'null', 'undefined', 'clone', 'help' ];
+const VECTOR = [ 'long', 'short', 'env', 'args', 'index', 'parse', 'assign', 'list', 'group', 'clone', 'default', 'null', 'undefined', 'help' ];
 
 //
 const DEFAULT_PARSE = true;//recognizing numbers, regexp, ..
@@ -14,9 +14,9 @@ const DEFAULT_EXPAND = true;//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=
 const DEFAULT_ZERO_NULL = false;//parsing empty strings as (null) instead of ''!? disabled by default..
 
 //
-const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values = _parse, _assigned_list = DEFAULT_ASSIGN_LIST, _list = process.argv, _start = 0) => {
-	if(Object.isObject(_vector)) _vector = prepareVector(_vector);
-	const result = parseCommandLine(_vector, _list.slice(_start), _parse, _parse_values, _assigned_list);
+const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values = _parse, _assign = DEFAULT_ASSIGN, _assigned_list = DEFAULT_ASSIGN_LIST, _list = process.argv, _start = 0) => {
+	if(Object.isObject(_vector)) _vector = prepareVector(_vector, _parse, _assign, _assigned_list);
+	const result = parseCommandLine(_vector, _list.slice(_start), _parse_values);
 	return result; };
 	
 //
@@ -27,7 +27,7 @@ if(typeof this !== 'undefined') module.exports = getopt;
 Reflect.defineProperty(getopt, 'vector', { get: () => [ ... VECTOR ] });
 
 //
-const prepareVector = (_vector) => { const result = Object.create(null); const keys = Object.keys(_vector); const VECT = [ ... VECTOR ]; const bestShortIndex = [];
+const prepareVector = (_vector, _parse, _assign, _assigned_list) => { const result = Object.create(null); const keys = Object.keys(_vector); const VECT = [ ... VECTOR ]; const bestShortIndex = [];
 	for(const v of VECT) { result[v.toUpperCase()] = new Map(); if(keys.includes(v.toUpperCase())) return error('The key `%` is a *reserved* getopt vector key', null, v.toUpperCase()); }
 	for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(key.isUpperCase) return error('No getopt vector key may be *upper-case* only'); result[key] = Object.create(null);
 		for(const vect of VECT) if(vect in _vector[key]) switch(vect) {
@@ -56,25 +56,33 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 			case 'args': if(typeof _vector[key].args === 'boolean') _vector[key].args = (_vector[key].args ? 1 : 0);
 				else if(!Number.isInt(_vector[key].args) || _vector[key].args < 0) return error('The getopt `%` vector key `%` needs to be a positive % (or %)', null, 'args', key, 'Integer', 'zero');
 				result[key].args = _vector[key].args; prepareVector.appendIndex(result, 'ARGS', key, _vector[key].args, false, true); break;
-			case 'index'://boolean,integer(+/-) @ Math.getIndex();
-			case 'parse'://boolean
-			case 'list'://boolean
-throw new Error('TODO (don\'t forget ..appendIndex())');
-				break;
+			case 'index': if(typeof _vector[key].index === 'boolean') { if(_vector[key].index === true) result[key].index = -1; else result[key].index = null; break; }
+				if(!Number.isInt(_vector[key].index)) return error('The getopt `%` vector key `%` needs to be a % type or a -/+ %', null, 'index', key, 'Boolean', 'Integer');
+				result[key].index = _vector[key].index; break;
+			case 'parse': if(typeof _vector[key].parse !== 'boolean') return error('The getopt `%` vector key `%` needs to be a % type', null, 'parse', key, 'Boolean');
+				result[key].parse = _vector[key].parse; break;
+			case 'assign': if(typeof _vector[key].assign !== 'boolean') return error('The getopt `%` vector key `%` needs to be a % type', null, 'assign', key, 'Boolean');
+				result[key].assign = _vector[key].assign; break;
+			case 'list': if(typeof _vector[key].list !== 'boolean') return error('The getopt `%` vector key `%` needs to be a % type', null, 'list', key, 'Boolean');
+				result[key].list = _vector[key].list; break;
 			case 'group': if(!String.isString(_vector[key].group, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'group', key, 'String');
 				else _vector[key].group = _vector[key].group.removeBinary();
 				result[key].group = _vector[key].group; prepareVector.appendIndex(result, 'GROUP', key, _vector[key].group, false, true); break;
+			case 'clone': if(typeof _vector[key].clone === 'boolean') result[key].clone = _vector[key].clone;
+				else if(Number.isInt(_vector[key].clone) && _vector[key].clone >= 0) return error('Cloning depth is still a TODO item');
+				else return error('The getopt `%` vector key `%` needs to be a % type (or an %, in the future..)', null, 'clone', key, 'Boolean', 'Integer');
+				break;
 			case 'default': result[key].null = result[key].undefined = _vector[key].default;
 				prepareVector.appendIndex(result, 'NULL', key, _vector[key].default, false, true); prepareVector.appendIndex(result, 'UNDEFINED', key, _vector[key].default, false, true); break;
 			case 'null': result[key].null = _vector[key].null; prepareVector.appendIndex(result, 'NULL', key, _vector[key].null, false, true); break;
 			case 'undefined': result[key].undefined = _vector[key].undefined; prepareVector.appendIndex(result, 'UNDEFINED', key, _vector[key].undefined, false, true); break;
-			case 'clone':
-throw new Error('TODO (don\'t forget ..appendIndex())');
-				break;
 			case 'help': if(Number.isNumber(_vector[key].help)) _vector[key].help = _vector[key].help.toString();
 				else if(!String.isString(_vector[key].help, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'help', key, 'String');
 				result[key].help = _vector[key].help; prepareVector.appendIndex(result, 'HELP', key, _vector[key].help, true, false); break; }
 		if(!Number.isInt(result[key].args)) result[key].args = 0; if(result[key].args <= 0) { result[key].args = 0; delete result[key].undefined; delete result[key].null; }
+		if(!(Number.isInt(result[key].index) || result[key].index === null)) result[key].index = null;
+		if(typeof result[key].parse !== 'boolean') result[key].parse = _parse; if(typeof result[key].list !== 'boolean') result[key].list = _assigned_list;
+		if(typeof result[key].assign !== 'boolean') result[key].assign = _assign;
 		if(!(result[key].long || result[key].short || result[key].env)) { result[key].long = key; prepareVector.appendIndex(result, 'LONG', key, key, false, false); }
 		if(!result[key].long) result[key].long = ''; if(!result[key].short) result[key].short = ''; if(!result[key].env) result[key].env = '';
 		if(!result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; }
@@ -136,10 +144,10 @@ handle.long = (_result, _vector, _state, _word, _index, _list, _item, _key) => {
 	if(typeof _result[_key] === 'number') ++_result[_key]; else if(Array._isArray(_result[_key])) _result[_key].push(true);
 	else _result[_key] = 1; } else enqueue(_vector, _state, _key, _item.args); };
 
-const parseCommandLine = (_vector, _list = process.argv, _parse = DEFAULT_PARSE, _parse_values = _parse, _assigned_list = DEFAULT_ASSIGN_LIST) => { const result = [], state = [], index = Object.create(null);
+const parseCommandLine = (_vector, _list = process.argv, _parse = DEFAULT_PARSE, _parse_values = _parse) => { const result = [], state = [], index = Object.create(null);
 	for(const idx in _vector) if(!idx.isUpperCase) { result[idx] = []; state[idx] = []; index[idx] = 0; } _list = expandShorts(_list, _vector); var dashes; for(var i = 0; i < _list.length; ++i) {
 	if(_list === '--') { result.push(... _list.slice(i)); break; } else dashes = 0; while(_list[i][dashes] === '-') ++dashes; dashes = Math.min(2, dashes);
-	const orig = _list[i]; const word = _list[i].slice(dashes); if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state, _assigned_list)) { var type = find(_vector, word, dashes, false);
+	const orig = _list[i]; const word = _list[i].slice(dashes); if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state)) { var type = find(_vector, word, dashes, false);
 	if(!compare(type, dashes)) type = 'value'; const key = (type === 'value' ? null : find(_vector, word, dashes, true)); if(type !== 'value') {
 	++index[key]; } handle[type](result, _vector, state, (type === 'value' ? orig : word), i, _list, _vector[key], key);
 	}} return parseCommandLine.handleResult(result, _vector, state, index, _list, _parse, _parse_values); };
@@ -162,10 +170,11 @@ const parseValue = (_string) => { if(typeof _string !== 'string') return _string
 		!isNaN(_string.slice(0, -1))) return BigInt(_string.slice(0, -1));
 	else if(RegExp.isRegExp(_string)) return RegExp.parse(_string); return _string; };
 
-const tryAssignment = (_word, _dashes, _vector, _result, _index, _state, _assigned_list = DEFAULT_ASSIGN_LIST) => { if(!DEFAULT_ASSIGN) return null;
-	const idx = _word.indexOf('='); if(idx === -1) return false; const key = _word.substr(0, idx); const value = tryAssignment.checkAssignedList(_word.substr(idx + 1), _assigned_list);
-	const given = find(_vector, key, _dashes, true); if(!given) return false; else if(typeof value === 'string') _result[given] = [ value ]; else _result[given] = value;
-	++_index[given]; for(var i = 0; i < _state.length; ++i) if(_state[i][0] === given) _state.splice(i--, 1); return true; };
+const tryAssignment = (_word, _dashes, _vector, _result, _index, _state) => {
+	const idx = _word.indexOf('='); if(idx === -1) return false; const key = _word.substr(0, idx); const given = find(_vector, key, _dashes, true); if(!given) return false;
+	if(!_vector[given].assign) return null; const value = tryAssignment.checkAssignedList(_word.substr(idx + 1), _vector[given].list);
+	if(typeof value === 'string') _result[given] = [ value ]; else _result[given] = value; ++_index[given];
+	for(var i = 0; i < _state.length; ++i) if(_state[i][0] === given) _state.splice(i--, 1); return true; };
 
 tryAssignment.checkAssignedList = (_value, _assigned_list = DEFAULT_ASSIGN_LIST) => { if(!_assigned_list) return _value; else if(_value.length === 0) return _value;
 	const result = []; var string = '', lastWasComma = false; for(var i = 0, j = 0; i < _value.length; ++i) { if(_value[i] === '\\') { if(i < (_value.length - 1))
