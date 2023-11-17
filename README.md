@@ -27,7 +27,7 @@ Since I really love to implement any feature I need for myself, I also created t
 
 ### Features
 * Efficient design using also `Map` and `Set`, resulting in better performance (even if not really much more here, since we're using relatively small amounts)
-* Keys etc. are defined in a special 'vector', which is an `Object` to be given to the main `getopt()` function
+* Keys etc. are defined in a special 'vector', which is an `Object` for the main `getopt()` function
 * The resulting object after parsing the/a command line (or list) is an array with: .. (a) regular elements pushed to it; .. (b) known keys by their indices
 * The vector keys are those to be addressed when using the parse result, but they may(!) contain different { short }, etc.
 * It's possible to define multiple parameters consecutive, after which the values are collectable in order
