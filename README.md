@@ -5,12 +5,13 @@
     * [Download](#download)
     * [Description](#description)
         * [Features](#features)
+        * [Function call](#function-call)
         * [Vector items](#vector-items)
-        * Finding best `short`s
+        * [Finding best `short`s](#finding-best-shorts)
         * [Configuration](#configuration)
-        * `DEFAULT_EXPAND`
+        * [`DEFAULT_EXPAND`](#default_expand)
     	* [Dependencies](#dependencies)
-	    * [Module and Namespace](#module-and-namespace)
+	* [Module and Namespace](#module-and-namespace)
     * [References](#references)
 * [Copyright and License](#copyright-and-license)
 
