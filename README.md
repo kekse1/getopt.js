@@ -26,7 +26,7 @@ You all know the `getopt` feature, either in shells or in C and much more. Nearl
 Since I really love to implement any feature I need for myself, I also created this implementation. Maybe you like it, or my way of handling it? :-)
 
 ### Features
-* Efficient design using also `Map` and `Set` (which are better in performance)
+* Efficient design using also `Map` and `Set`, resulting in better performance (even if not really much more here, since we're using relatively small amounts)
 * Keys etc. are defined in a special 'vector', which is an `Object` to be given to the main `getopt()` function
 * The resulting object after parsing the/a command line (or list) is an array with: .. (a) regular elements pushed to it; .. (b) known keys by their indices
 * The vector keys are those to be addressed when using the parse result, but they may(!) contain different { short }, etc.
