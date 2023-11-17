@@ -22,18 +22,29 @@ This is my own interpretation of the well known `getopt` functionality.
 * [**`getopt.js`**](js/getopt.js) (**180** lines atm)
 
 ## Description
-//TODO/(describe it)//
-
-### TODO
-Some things are still TODO here - I'm **currently** working on it! Maybe tomorrow I'm ready..
+You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
+Since I really love to implement any feature I need for myself, I also created this implementation. Maybe you like it, or my way of handling it? :-)
 
 ### Features
+* Efficient design using also `Map` and `Set` (which are better in performance)
+* Keys etc. are defined in a special 'vector', which is an `Object` to be given to the main `getopt()` function
+* The resulting object after parsing the/a command line (or list) is an array with: .. (a) regular elements pushed to it; .. (b) known keys by their indices
+* The vector keys are those to be addressed when using the parse result, but they may(!) contain different { short }, etc.
+* It's possible to define multiple parameters consecutive, after which the values are collectable in order
+* Multiple short parameters with only one `-` prefix are possible (e.g. `-abc` will be enforced (then) to `-a -b -c`, or `-abc=def` to `-a=def -b=def -c=def`)
+* Values after equal sign assignment can sometimes be an advantage (`--key=value`); they also can encode lists, separated by `,` (escapable!)
+* All values can be parsed (so checking for Numbers, RegExp, Booleans, ..); also the regularily counted parameters (without key match), if wished
 * If a single `--` occures in the command line, the regular behavior is (usually) to abort the process and add the rest as regular array items
-* //**TODO**/(describe 'em!);
+* Undefined parameters or those without any value will result in an Integer which counts the amount of occurences in the command line
+* BUT if defaults are defined in the vector, these will be used (can be either for all, or separately one for undefined keys and one for empty keys, without values)
+* Defaults can be optionally cloned.. and if `.args>1` in a vector item plus an array as default value, the array items will be used adequately
+* By default multiple values are possible. If only one in the end or if using the vector item `index`, the result will be only one element
+* It's possible to let short keys be found automatically (finding nearest possible character)
+* Automatically created help pages/views (if no manuall `--help / -?` override defined in the vector); using `.help` vector items to show each ones descriptions
+* **TODO?!?** or was it that??
 
 ### Function call
-This is the exported function
-`getopt(_vector, _parse, _parse_values, _list = process.argv, _start = 0)`
+This is the exported function `getopt(_vector, _parse, _parse_values, _assign, _assigned_list, _list = process.argv, _start = 0);`
 
 ### Vector items
 These are the items your getopt vector (first argument to `getopt()`, is an object) supports.
@@ -55,9 +66,6 @@ These are the items your getopt vector (first argument to `getopt()`, is an obje
 | `clone`     | Boolean, Integer | The both default values can optionally be cloned every time (**Integer**s are still TODO)                 |
 | `help`      | String           | Automatically created help pages/views use this for the switches' descriptions                            |
 
-### Finding best **`short`** keys
-If a `short` is set to `true`, we're going to automatically find the best index key; see the `findBestShort()` function.
-
 ### Configuration
 Just some `const DEFAULT_*` on top of the file (_more are eventually coming, others will be removed **soon**!_):
 
@@ -68,6 +76,8 @@ Just some `const DEFAULT_*` on top of the file (_more are eventually coming, oth
 | `DEFAULT_ASSIGN_LIST` | ...         |
 | `DEFAULT_EXPAND`      | ...         |
 | `DEFAULT_ZERO_NULL`   | ...         |
+
+//**TODO**/
 
 ### **`DEFAULT_EXPAND`**
 If enabled, arguments like `-abc` (so **short**s!) are expanded to `-a -b -c`, or with assignment
