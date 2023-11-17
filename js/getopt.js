@@ -69,7 +69,7 @@ const prepareVector = (_vector, _parse, _assign, _assigned_list) => { const resu
 				result[key].list = _vector[key].list; break;
 			case 'group': if(!DEFAULT_GROUPS) break; if(!String.isString(_vector[key].group, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'group', key, 'String');
 				else if(_vector[key].group.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'group', key);
-				else result[key].group = _vector[key].group.removeBinary(false); prepareVector.appendIndex(result, 'GROUP', key, result[key].group, true, false); break;
+				prepareVector.appendIndex(result, 'GROUP', key, result[key].group = _vector[key].group, true, false); break;
 			case 'clone': if(typeof _vector[key].clone === 'boolean') result[key].clone = _vector[key].clone;
 				else if(Number.isInt(_vector[key].clone) && _vector[key].clone >= 0) return error('Cloning depth is still a TODO item');
 				else return error('The getopt `%` vector key `%` needs to be a % type (or an %, in the future..)', null, 'clone', key, 'Boolean', 'Integer');
