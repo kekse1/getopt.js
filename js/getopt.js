@@ -49,7 +49,7 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 				else if(_vector[key].long[0] === '-') return error('The getopt `%` vector key `%` may not start with a dash `%`', null, 'long', key, '-');
 				else if(_vector[key].long.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'long', key, ' ');
 				else if(_vector[key].long.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'long', key, '=');
-				else if(_vector[key].long.includesBinary()) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'long', key);
+				else if(_vector[key].long.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'long', key);
 				else vectorIncludesLongShortEnv(result, _vector[key].long, true); result[key].long = _vector[key].long; appendIndex(result, 'LONG', key, _vector[key].long, false, false); break;
 			case 'short': if(typeof _vector[key].short === 'boolean') { if(_vector[key].short) bestShortIndex.push(key); break; }
 				else if(typeof _vector[key].short !== 'string') return error('The getopt `%` vector key `%` needs to be a (single character) %', null, 'short', key, 'String');
@@ -57,14 +57,14 @@ const prepareVector = (_vector) => { const result = Object.create(null); const k
 				else if(_vector[key].short === '-') return error('The getopt `%` vector key `%` may not be a dash `%`', null, 'short', key, '-');
 				else if(_vector[key].short === ' ') return error('The getopt `%` vector key `%` may not be a space `%`', null, 'short', key, ' ');
 				else if(_vector[key].short === '=') return error('The getopt `%` vector key `%` may not be a `%` assignment', null, 'short', key, '=');
-				else if(_vector[key].short.includesBinary()) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'short', key);
+				else if(_vector[key].short.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'short', key);
 				else vectorIncludesLongShortEnv(result, _vector[key].short, true); result[key].short = _vector[key].short; appendIndex(result, 'SHORT', key, _vector[key].short, false, false); break;
 			case 'env': if(typeof _vector[key].env === 'boolean') { if(_vector[key].env) _vector[key].env = key; else break; }
 				else if(!String.isString(_vector[key].env, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'env', key, 'String');
 				else if(_vector[key].env[0] === '-') return error('The getopt `%` vector key `%` may not start with a dash `%`', null, 'env', key, '-');
 				else if(_vector[key].env.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'env', key, ' ');
 				else if(_vector[key].env.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'env', key, '=');
-				else if(_vector[key].env.includesBinary()) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'env', key);
+				else if(_vector[key].env.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'env', key);
 				else vectorIncludesLongShortEnv(result, _vector[key].env, true); result[key].env = _vector[key].env; appendIndex(result, 'ENV', key, _vector[key].env, false, false); break;
 			case 'args': if(typeof _vector[key].args === 'boolean') _vector[key].args = (_vector[key].args ? 1 : 0);
 				else if(!Number.isInt(_vector[key].args) || _vector[key].args < 0) return error('The getopt `%` vector key `%` needs to be a positive % (or %)', null, 'args', key, 'Integer', 'zero');
