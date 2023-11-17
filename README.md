@@ -42,6 +42,7 @@ I'm not sure if the following list is really complete. But most things are encou
 * BUT if defaults are defined in the vector, these will be used (can be either for all, or separately one for undefined keys and one for empty keys, without values)
 * Defaults can be optionally cloned.. and if `.args>1` in a vector item plus an array as default value, the array items will be used adequately
 * By default multiple values are possible (use `.args` vector item).
+* Use the `group` vector item to group all defined values together in the `(result).group[]` array (beneath their original `(result).index`s)
 * It's possible to let short keys be found automatically (finding nearest possible character)
 * Automatically created help pages/views (if no manuall `--help / -?` override defined in the vector); using `.help` vector items to show each ones descriptions
 
@@ -79,6 +80,7 @@ no default value for the getopt vector.. the rest is just being used if it's vec
 | Name                  | Description                                                                                          |
 | --------------------: | :--------------------------------------------------------------------------------------------------- |
 | `DEFAULT_EXPAND`      | Multiple shorts in one dash `-` item (`-abc` to `-a -b -c` or `-abc=def` to `-a=def -b=def -c=def`)  |
+| `DEFAULT_GROUPS`      | Possibility to globally disable any group feature (but why should you?)                              |
 | `DEFAULT_PARSE`       | If no `.parse` vector item defined, this will be the default (list parsing will have the same value) |
 | `DEFAULT_ASSIGN`      | Default behavior for `=` assignments                                                                 |
 | `DEFAULT_ASSIGN_LIST` | Default setting whether to enable assigned (only!) lists, separated by `,` (escpable)                |

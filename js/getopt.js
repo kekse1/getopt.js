@@ -8,6 +8,7 @@ const VECTOR = [ 'long', 'short', 'env', 'args', 'index', 'parse', 'assign', 'li
 
 //
 const DEFAULT_EXPAND = true;		//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=def -b=def -c=def); BUT then multiple chars are not allowed for all `short`!!
+const DEFAULT_GROUPS = true;		//it's possible to globally disable GROUPs here.. but why should you? ^_^
 //
 const DEFAULT_PARSE = true;		//recognizing numbers, regexp, booleans, ..
 const DEFAULT_ASSIGN = true;		//'=' assignment (which will reset previously enqueued items for the same key)
@@ -66,9 +67,9 @@ const prepareVector = (_vector, _parse, _assign, _assigned_list) => { const resu
 				result[key].assign = _vector[key].assign; break;
 			case 'list': if(typeof _vector[key].list !== 'boolean') return error('The getopt `%` vector key `%` needs to be a % type', null, 'list', key, 'Boolean');
 				result[key].list = _vector[key].list; break;
-			case 'group': if(!String.isString(_vector[key].group, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'group', key, 'String');
-				else _vector[key].group = _vector[key].group.removeBinary();
-				result[key].group = _vector[key].group; prepareVector.appendIndex(result, 'GROUP', key, _vector[key].group, false, true); break;
+			case 'group': if(!DEFAULT_GROUPS) break; if(!String.isString(_vector[key].group, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'group', key, 'String');
+				else if(_vector[key].group.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'group', key);
+				else result[key].group = _vector[key].group.removeBinary(false); prepareVector.appendIndex(result, 'GROUP', key, result[key].group, true, false); break;
 			case 'clone': if(typeof _vector[key].clone === 'boolean') result[key].clone = _vector[key].clone;
 				else if(Number.isInt(_vector[key].clone) && _vector[key].clone >= 0) return error('Cloning depth is still a TODO item');
 				else return error('The getopt `%` vector key `%` needs to be a % type (or an %, in the future..)', null, 'clone', key, 'Boolean', 'Integer');
@@ -86,9 +87,10 @@ const prepareVector = (_vector, _parse, _assign, _assigned_list) => { const resu
 		if(typeof result[key].assign !== 'boolean') result[key].assign = _assign; if(typeof result[key].clone !== 'boolean' && !(Number.isInt(result[key].clone) && result[key].clone >= 0)) result[key].clone = DEFAULT_CLONE;
 		if(!(result[key].long || result[key].short || result[key].env)) { result[key].long = key; prepareVector.appendIndex(result, 'LONG', key, key, false, false); }
 		if(!result[key].long) result[key].long = ''; if(!result[key].short) result[key].short = ''; if(!result[key].env) result[key].env = '';
-		if(!result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; }
+		if(DEFAULT_GROUPS && !result[key].group) result[key].group = ''; if(!result[key].help) result[key].help = ''; }
+	if(DEFAULT_GROUPS) result.GROUP.forEach((_value, _key) => { if(keys.includes(_value)) return error('You can\'t define a getopt GROUP with a key index which exists in your getopt vector, too'); });
 	var bestIndex; for(const key of bestShortIndex) { if(!(bestIndex = prepareVector.findBestShort(key, result[key], result))) return error('Couldn\'t find best short index for item `%` in getopt vector', null, key);
-		result[key].short = bestIndex; prepareVector.appendIndex(result, 'SHORT', key, bestIndex, false, false); } return result; };
+	result[key].short = bestIndex; prepareVector.appendIndex(result, 'SHORT', key, bestIndex, false, false); } return result; };
 
 prepareVector.vectorIncludesLongShortEnv = (_result, _key, _throw = false) => {
 	if(_result.LONG.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'long') : true);
@@ -146,9 +148,10 @@ handle.long = (_result, _vector, _state, _word, _index, _list, _item, _key) => {
 	else _result[_key] = 1; } else enqueue(_vector, _state, _key, _item.args); };
 
 const parseCommandLine = (_vector, _list = process.argv, _parse_values = _parse) => { const result = [], state = [], index = Object.create(null);
-	for(const idx in _vector) if(!idx.isUpperCase) { result[idx] = []; state[idx] = []; index[idx] = 0; } _list = expandShorts(_list, _vector); var dashes; for(var i = 0; i < _list.length; ++i) {
-	if(_list === '--') { result.push(... _list.slice(i)); break; } else dashes = 0; while(_list[i][dashes] === '-') ++dashes; dashes = Math.min(2, dashes);
-	const orig = _list[i]; const word = _list[i].slice(dashes); if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state)) { var type = find(_vector, word, dashes, false);
+	for(const idx in _vector) if(!idx.isUpperCase) { result[idx] = []; state[idx] = []; index[idx] = 0; } _list = expandShorts(_list, _vector);
+	var dashes; for(var i = 0; i < _list.length; ++i) { if(_list === '--') { result.push(... _list.slice(i)); break; } else dashes = 0;
+	while(_list[i][dashes] === '-') ++dashes; dashes = Math.min(2, dashes); const orig = _list[i]; const word = _list[i].slice(dashes);
+	if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state)) { var type = find(_vector, word, dashes, false);
 	if(!compare(type, dashes)) type = 'value'; const key = (type === 'value' ? null : find(_vector, word, dashes, true)); if(type !== 'value') {
 	++index[key]; } handle[type](result, _vector, state, (type === 'value' ? orig : word), i, _list, _vector[key], key);
 	}} return parseCommandLine.handleResult(result, _vector, state, index, _list, _parse_values); };
@@ -164,7 +167,9 @@ parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse
 	for(var j = 0; j < _result[key].length; ++j) _result[key][j] = parseValue(_result[key][j]); var sum = 0; for(var j = 0; j < _result[key].length; ++j) {
 	if(typeof _result[key][j] === 'boolean') sum += (_result[key][j] ? 1 : -1); else { sum = null; break; }} if(sum !== null) { if(_result[key][0] === false) ++sum; _result[key] = sum; }}
 	if(Array._isArray(_result[key])) { if(_result[key].length === 1) { if(typeof _result[key][0] === 'boolean') _result[key] = (_result[key][0] ? 1 : 0); else _result[key] = _result[key][0]; }
-	else if(vect.index !== null) _result[key] = _result[key][Math.getIndex(vect.index, _result[key].length)]; }} _result.push(... elements); return _result; };
+	else if(vect.index !== null) _result[key] = _result[key][Math.getIndex(vect.index, _result[key].length)]; }}  if(DEFAULT_GROUPS) { _vector.GROUP.forEach((_value, _key) => (_result[_value] = []));
+	for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(!_vector.GROUP.has(key)) continue; const target = _vector.GROUP.get(key); if(Array._isArray(_result[key]))
+		_result[target].push(... _result[key]); else _result[target].push(_result[key]); }} _result.push(... elements); return _result; };
 
 const parseValue = (_string) => { if(typeof _string !== 'string') return _string;
 	else if(_string.length === 0) return ''; else if(_string.length <= 3) switch(_string.toLowerCase()) {
