@@ -30,8 +30,9 @@ Just (nearly..) finished it (for my newest project `mudz`, etc.).
 - [ ] `group`s
 - [ ] `env`s
 - [ ] (vector).parse
-- [ ] optional (vector).index
-- [ ] (optionally) clone defaults?
+- [ ] (vector).index
+- [ ] (vector).clone
+- [ ] (vector).list
 
 ### Dependencies
 I implemented it with the help of my own JavaScript Library (all my own, just from scratch).
