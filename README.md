@@ -38,7 +38,7 @@ Since I really love to implement any feature I need for myself, I also created t
 * Undefined parameters or those without any value will result in an Integer which counts the amount of their occurences
 * BUT if defaults are defined in the vector, these will be used (can be either for all, or separately one for undefined keys and one for empty keys, without values)
 * Defaults can be optionally cloned.. and if `.args>1` in a vector item plus an array as default value, the array items will be used adequately
-* By default multiple values are possible. If only one in the end or if using the vector item `index`, the result will be only one element
+* By default multiple values are possible (use `.args` vector item).
 * It's possible to let short keys be found automatically (finding nearest possible character)
 * Automatically created help pages/views (if no manuall `--help / -?` override defined in the vector); using `.help` vector items to show each ones descriptions
 * **TODO?!?** or was it that??
