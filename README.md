@@ -30,7 +30,7 @@ Since I really love to implement any feature I need for myself, I also created t
 * Keys etc. are defined in a special 'vector', which is an `Object` for the main `getopt()` function
 * The resulting object after parsing the/a command line (or list) is an array with: .. (a) regular elements pushed to it; .. (b) known keys by their vector indices
 * The vector keys are those to be addressed when using the parse result, but they may(!) contain different { long, short }, etc.
-* It's possible to define multiple parameters consecutive, after which the values are collectable in order
+* It's possible to define multiple parameters consecutive, after which the values are collectable in order (so `-ab eins zwei` or `--one --two eins zwei`)
 * Multiple short parameters with only one `-` prefix are possible (e.g. `-abc` will be enforced (then) to `-a -b -c`, or `-abc=def` to `-a=def -b=def -c=def`)
 * Values after equal sign assignment can sometimes be an advantage (`--key=value`); they also can encode lists, separated by `,` (escapable!)
 * All values can be parsed (so checking for Numbers, RegExp, Booleans, ..); also the regularily counted parameters (without key match), if wished
