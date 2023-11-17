@@ -1,6 +1,9 @@
 <img src="https://kekse.biz/github.php?draw&override=github:getopt.js&text=v4&draw" />
 
-# Index
+# `getopt.js`
+This is my own interpretation of the well known `getopt` functionality.
+
+## Index
 * [Start](#getoptjs)
     * [Download](#download)
     * [Description](#description)
@@ -15,27 +18,23 @@
     * [References](#references)
 * [Copyright and License](#copyright-and-license)
 
-## `getopt.js`
-This is my own interpretation of the well known `getopt` functionality.
-Just (nearly..) finished it (for my newest project `mudz`, etc.).
-
-### Download
+## Download
 * [**`getopt.js`**](js/getopt.js) (**180** lines atm)
 
-### Description
+## Description
 //TODO/(describe it)//
 
-#### TODO
+### TODO
 Some things are still TODO here - I'm **currently** working on it! Maybe tomorrow I'm ready..
 
-#### Features
+### Features
 //TODO/(describe 'em);
 
-#### Function call
+### Function call
 This is the exported function
 `getopt(_vector, _parse, _parse_values, _list = process.argv, _start = 0)`
 
-#### Vector items
+### Vector items
 These are the items your getopt vector (first argument to `getopt()`, is an object) supports.
 
 | Key         | Type(s)          | Description |
@@ -56,11 +55,11 @@ These are the items your getopt vector (first argument to `getopt()`, is an obje
 
 //TODO/descriptions, pls..
 
-#### Finding best **`short`** keys
+### Finding best **`short`** keys
 If a `short` is set to `true`, we're going to automatically find the best index key;
 see the `findBestShort()` function.
 
-#### Configuration
+### Configuration
 Just some `const DEFAULT_*` on top of the file:
 
 | Name                  | Description |
@@ -73,14 +72,14 @@ Just some `const DEFAULT_*` on top of the file:
 
 MORE ARE COMING these days..! ;-)
 
-#### **`DEFAULT_EXPAND`**
+### **`DEFAULT_EXPAND`**
 If enabled, arguments like `-abc` (so **short**s!) are expanded to `-a -b -c`, or with assignment
 `-abc=def` will be `-a=def -b=def -c=def`.
 
 **BUT** if enabled, you can't use strings with .length > 1, so only single chars! Otherwise also
 possible 'd be `-short`..
 
-#### Dependencies
+### Dependencies
 I implemented it with the help of my own JavaScript Library (all my own, just from scratch).
 
 The library is originally the [**libjs.de**](https://libjs.de/), but this one was replaced by a newer,
@@ -91,7 +90,7 @@ to my [**`v4`** repository](https://github.com/kekse1/v4/); also visible (with r
 Maybe I'll give you a tiny replacement of the used extensions some day, but until then feel free to
 modify the source or implement the necessary functions by yourself.. there are really not many.!
 
-#### Module and Namespace
+### Module and Namespace
 By default I'm using `export default getopt`.
 
 If you are not running in ES module mode (so no `{ type: 'module' }` in `package.json`), you should
@@ -101,7 +100,7 @@ mode (using `typeof this !== 'undefined'`).
 At all, you don't need to use any export, since the `getopt` base function is also exported under the
 global namespace (so `global.getopt()` is **always** available).
 
-### References
+## References
 Maybe also interesting for you: the **`config.js`**? And a reference to my documentation for this **`getopt.js`**:
 
 * [**`getopt`**.md](https://github.com/kekse1/v4/blob/git/docs/modules/lib/getopt.md)
@@ -109,9 +108,8 @@ Maybe also interesting for you: the **`config.js`**? And a reference to my docum
 
 The documentation (located in my `v4` repository) is also still TODO.
 
-## Copyright and License
+# Copyright and License
 The Copyright is [(c) Sebastian Kucharczyk](COPYRIGHT.txt),
 and it's licensed under the [MIT](LICENSE.txt) (also known as 'X' or 'X11' license).
 
 ![kekse.biz](favicon.png)
-
