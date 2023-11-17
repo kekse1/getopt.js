@@ -15,6 +15,10 @@ Just (nearly..) finished it (for my newest project `mudz`, etc.).
 ### Features
 //TODO/(describe 'em)//
 
+
+//if(!DEFAULT_EXPAND) also .short-strings w/ .length > 1 allowed..
+
+
 ### Download
 * [**`getopt.js`**](js/getopt.js)
 
