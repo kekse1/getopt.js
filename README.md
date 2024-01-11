@@ -36,7 +36,7 @@ I'm not sure if the following list is really complete. But most things are encou
 * It's possible to enqueue multiple parameters consecutive, after which the values are collectable in order (so `-ab eins zwei` or `--one --two eins zwei`)
 * Multiple short parameters with only one `-` prefix are possible (e.g. `-abc` will be enforced (then) to `-a -b -c`, or `-abc=def` to `-a=def -b=def -c=def`)
 * Values after equal sign assignment can sometimes be an advantage (`--key=value`); they also can encode lists, separated by `,` (escapable!)
-* All values can be parsed (so checking for Numbers, RegExp, Booleans, ..); also the regularily pushed parameters (without key match), if wished
+* All values can be parsed (so checking for Numbers, RegExp, Booleans, ..); also the normally pushed parameters (without key match), if wished
 * If a single `--` occures in the command line, the regular behavior is (usually) to abort the process and add the rest as regular list items
 * Undefined parameters or those without any value will result in an Integer which counts the amount of their occurences
 * BUT if defaults are defined in the vector, these will be used (can be either for all, or separately one for undefined keys and one for empty keys, without values)
