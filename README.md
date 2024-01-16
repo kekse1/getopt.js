@@ -78,14 +78,19 @@ These are the items your getopt vector (first argument to `getopt()`, is an obje
 Just some `const DEFAULT_*` on top of the file. The `DEFAULT_EXPAND` is the most important one, because it is a global setting,
 no default value for the getopt vector.. the rest is just being used if it's vector items are not properly set-up.
 
-| Name                  | Description                                                                                          |
-| --------------------: | :--------------------------------------------------------------------------------------------------- |
-| `DEFAULT_EXPAND`      | Multiple shorts in one dash `-` item (`-abc` to `-a -b -c` or `-abc=def` to `-a=def -b=def -c=def`)  |
-| `DEFAULT_GROUPS`      | Possibility to globally disable any group feature (but why should you?)                              |
-| `DEFAULT_PARSE`       | If no `.parse` vector item defined, this will be the default (list parsing will have the same value) |
-| `DEFAULT_ASSIGN`      | Default behavior for `=` assignments                                                                 |
-| `DEFAULT_ASSIGN_LIST` | Default setting whether to enable assigned (only!) lists, separated by `,` (escpable)                |
-| `DEFAULT_CLONE`       | The default setting for cloning default elements (or not, or the depth)                              |
+| Name                         | Description                                                                                          |
+| ---------------------------: | :--------------------------------------------------------------------------------------------------- |
+| `DEFAULT_EXPAND`             | Multiple shorts in one dash `-` item (`-abc` to `-a -b -c` or `-abc=def` to `-a=def -b=def -c=def`)  |
+| `DEFAULT_GROUPS`             | Possibility to globally disable any group feature (but why should you?)                              |
+| `DEFAULT_PARSE`              | If no `.parse` vector item defined, this will be the default (list parsing will have the same value) |
+| `DEFAULT_ASSIGN`             | Default behavior for `=` assignments                                                                 |
+| `DEFAULT_ASSIGN_LIST`        | Default setting whether to enable assigned (only!) lists, separated by `,` (escpable)                |
+| `DEFAULT_CLONE`              | The default setting for cloning default elements (or not, or the depth)                              |
+| `DEFAULT_HELP`               | If `--help / -?` should be inserted automatically, if not already present                            |
+| `DEFAULT_HELP_INDENT`        | Base indention for the help view                                                                     |
+| `DEFAULT_HELP_INDENT_PREFIX` | Prefix for the real `[help]` strings                                                                 |
+| `DEFAULT_HELP_INDENT_DOUBLE` | More indention for more types of (help) parameters                                                   |
+| `DEFAULT_HELP_INDENT_KEYS`   | And the last indention (all above and this are integers (>=0)                                        |
 
 ### **`DEFAULT_EXPAND`**
 If enabled, arguments like `-abc` (so **short**s!) are expanded to `-a -b -c`, or with assignment `-abc=def` to `-a=def -b=def -c=def`.

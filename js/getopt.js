@@ -1,8 +1,7 @@
 // 
 // Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
 // https://kekse.biz/
-//
-// Version 0.2.0
+// v0.2.0
 // 
 
 //
@@ -19,7 +18,7 @@ const DEFAULT_CLONE = false;		//boolean or integer (integer is still TODO! see '
 //
 const DEFAULT_HELP = true;
 const DEFAULT_HELP_INDENT = 2;
-const DEFAULT_HELP_INDENT_STRING = '// ';
+const DEFAULT_HELP_INDENT_PREFIX = '// ';
 const DEFAULT_HELP_INDENT_DOUBLE = 12;
 const DEFAULT_HELP_INDENT_KEYS = 3;
 
@@ -234,7 +233,7 @@ const help = (_vector, _list, _item) => { const out = process.aTTY; if(!out) ret
 		if(item.help) { const lines = [ item.help ]; while(lines[lines.length - 1].length > (consoleWidth - DEFAULT_HELP_INDENT - 4)) {
 				lines[lines.length] = lines[lines.length - 1].substr(0, consoleWidth - DEFAULT_HELP_INDENT - 4);
 				lines[lines.length - 2] = lines[lines.length - 2].substr(0, consoleWidth - DEFAULT_HELP_INDENT - 4); }
-			for(var j = 0; j < lines.length; ++j) lines[j] = indent + DEFAULT_HELP_INDENT_STRING + lines[j].trim(); result += EOL + lines.join(EOL) + eol(2); }
+			for(var j = 0; j < lines.length; ++j) lines[j] = indent + DEFAULT_HELP_INDENT_PREFIX + lines[j].trim(); result += EOL + lines.join(EOL) + eol(2); }
 		result += EOL; }
 	//
 	out.write(result); process.exit();
