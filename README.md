@@ -18,8 +18,11 @@ This is my own interpretation of the well known `getopt` functionality.
     * [References](#references)
 * [Copyright and License](#copyright-and-license)
 
+## News
+* New v**0.2.0** \[2024-01-16\]: now w/ automatical `help()` functionality, refers to `--help / -?`
+
 ## Download
-* [**`getopt.js`**](js/getopt.js) (**206** lines atm)
+* [**`getopt.js`**](js/getopt.js) (**243** lines atm)
 * [`polyfill.js`](js/polyfill.js) (if you don't use [my library](https://github.com/kekse1/v4/))
 
 ## Description
@@ -40,8 +43,8 @@ I'm not sure if the following list is really complete. But most things are encou
 * If a single `--` occures in the command line, the regular behavior is (usually) to abort the process and add the rest as regular list items
 * Undefined parameters or those without any value will result in an Integer which counts the amount of their occurences
 * BUT if defaults are defined in the vector, these will be used (can be either for all, or separately one for undefined keys and one for empty keys, without values)
-* Defaults can be optionally cloned.. and if `.args>1` in a vector item plus an array as default value, the array items will be used adequately
-* By default multiple values are possible (use `.args` vector item).
+* Defaults can be optionally cloned.. and if `.params>1` in a vector item plus an array as default value, the array items will be used adequately
+* By default multiple values are possible (use `.params` vector item).
 * Use the `group` vector item to group all defined values together in the `(result).group[]` array (beneath their original `(result).index`s)
 * It's possible to let short keys be found automatically (finding nearest possible character)
 * Automatically created help pages/views (if no manuall `--help / -?` override defined in the vector); using `.help` vector items to show each ones descriptions
@@ -59,13 +62,13 @@ These are the items your getopt vector (first argument to `getopt()`, is an obje
 | `long`      | Boolean, String  | The long key index, with `--` double dash prefix in the command line                                      |
 | `short`     | Boolean, String  | Short key index, with `-` single dash prefix                                                              |
 | `env`       | Boolean, String  | (**TODO**!) Environment variable key index, without any dash                                              |
-| `args`      | Boolean, Integer | How many arguments per key index, or if at all any                                                        |
+| `params`    | Boolean, Integer | How many arguments per key index, or if at all any                                                        |
 | `index`     | Boolean, Integer | If multiple values are defined, in the end this setting will select one of the elements                   |
 | `parse`     | Boolean          | Recongnizing RegExp, Numbers, etc..                                                                       |
 | `assign`    | Boolean          | If '--key=value' are allowed (otherwise these ones will be only regular cmdline elements)                 |
 | `list`      | Boolean          | If comma `,` in the values of `=` assignments (only there!) should create array elements (if not escaped) |
 | `group`     | String           | All results will be referenced in a `(result)[GROUP]` array, too.. out of possibly more than one key/index|
-| `default`   | Array, \*        | Default value(s) for unspecified parameters (if `.args > 0`!): will set BOTH `null` and `undefined`       |
+| `default`   | Array, \*        | Default value(s) for unspecified parameters (if `.params > 0`!): will set BOTH `null` and `undefined`     |
 | `null`      | Array, \*        | If a parameter is given by it's index keys, but no value for it defined                                   |
 | `undefined` | Array, \*        | If a parameter is not given by index keys at all; so no `--key`, not only a missing value                 |
 | `clone`     | Boolean, Integer | The both default values can optionally be cloned every time (**Integer**s are still TODO)                 |
