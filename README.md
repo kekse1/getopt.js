@@ -25,6 +25,8 @@ This is my own interpretation of the well known `getopt` functionality.
 * [**`getopt.js`**](js/getopt.js) (**243** lines atm)
 * [`polyfill.js`](js/polyfill.js) (if you don't use [my library](https://github.com/kekse1/v4/))
 
+I'm not sure if the polyfill is really complete. So just test it - and please write me a message if smth. is wrong here.
+
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
 Since I really love to implement any feature I need for myself, I also created this implementation. Maybe you like it, or my way of handling it? :-)

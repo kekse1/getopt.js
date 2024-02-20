@@ -1,4 +1,13 @@
 //
+// Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
+// https://kekse.biz/
+//
+// I don't really know if this is complete to use my `getopt.js`,
+// but it should work.. it's a polyfill, since I'm using my own library
+// within the `getopt.js`, see <https://github.com/kekse1/v4/>.
+//
+
+//
 Reflect.defineProperty(Object, 'isObject', { value: (... _args) => {
 	if(_args.length === 0) return null;
 	else for(var i = 0; i < _args.length; ++i) if(typeof _args[i] !== 'object' || _args[i] === null) return false;
@@ -66,7 +75,6 @@ Reflect.defineProperty(RegExp, 'parse', { value: (_string, _throw = DEFAULT_THRO
 		return (_throw ? error(_error) : null); }}});
 
 //
-//
 const _ownKeys = Reflect.ownKeys.bind(Reflect);
 
 Reflect.defineProperty(Reflect, '_ownKeys', { value: _ownKeys });
@@ -77,20 +85,22 @@ Reflect.defineProperty(Reflect, 'ownKeys', { value: (... _args) => {
 Reflect.defineProperty(Reflect, 'clone', { value: (_object, _map = null, _function = DEFAULT_CLONE_FUNCTION, ... _clone_args) => {
 	if(!_map) _map = new Map(); else if(_map.has(_object)) return _map.get(_object); else if(!Reflect.isExtensible(_object)) return _object;
 	else if(typeof _object === 'undefined' || _object === null) return _object; const keys = Reflect.ownKeys(_object);
-	const isArray = (Array._isArray(_object) ? _object.length : -1); var result; var hasCloneFunc = false; try {
-		hasCloneFunc = (typeof _object.clone === 'function'); } catch(_err) {} if(hasCloneFunc) result = _object.clone(... _clone_args);
-	else if(isArray > -1) { result = new Array(isArray); for(var i = 0; i < _object.length; ++i)
-		result[i] = Reflect.clone(_object[i], _map, _function, ... _clone_args); for(var i = _object.length - 1; i >= 0; --i)
-			keys.remove(i.toString()); keys.remove('length'); } else if(typeof _object === 'function') {
-		if(Function.isNative(_object) || !_function) result = _object; else try { eval('result = ' + _object.toString()); } catch(_error) {
-			result = _object; } keys.remove('length', 'name', 'arguments', 'caller', 'prototype'); }
+	var cloneFunc; if(typeof _object.clone === 'function') cloneFunc = _object.clone.bind(_object, ... _clone_args); else if(typeof _object.cloneNode === 'function')
+		cloneFunc = _object.cloneNode.bind(_object, true, ... _clone_args); else cloneFunc = null; if(cloneFunc === null && !Reflect.isExtensible(_object)) {
+			_map.set(_object, _object); return _object; } const isArray = (cloneFunc !== null ? -1 : (Array._isArray(_object) ?
+			_object.length : -1)); var result; if(cloneFunc !== null) { result = cloneFunc(); _map.set(_object, result); return result; }
+	else if(isArray > -1) { result = new Array(isArray); for(var i = 0; i < _object.length; ++i) { keys.remove(i.toString()); result[i] = Reflect.clone(_object[i], _map, _function,
+		... _clone_args); keys.remove('length'); }} else if(typeof _object === 'function') { if(Function.isNative(_object) || !_function) result = _object;
+			else try { eval('result = ' + _object.toString()); } catch(_error) { result = _object; } keys.remove('length', 'name', 'arguments', 'caller', 'prototype'); }
 	else if(Object.isNull(_object)) result = Object.create(null); else try { result = Object.create(Reflect.getPrototypeOf(_object)); }
 	catch(_error) { result = {}; } _map.set(_object, result); _map.set(result, result); var desc; for(var i = 0; i < keys.length; ++i) {
-	try { desc = Reflect.getOwnPropertyDescriptor(_object, keys[i]); } catch(_err) { desc = { value: _object[keys[i]] }; }
-		if('value' in desc) desc.value = Reflect.clone(desc.value, _map, _function, ... _clone_args);
-		else { if('get' in desc) desc.get = Reflect.clone(desc.get, _map, _function, ... _clone_args);
-			if('set' in desc) desc.set = Reflect.clone(desc.set, _map, _function, ... _clone_args); }
-	Reflect.defineProperty(result, keys[i], desc); } return result; }});
+		try { desc = Reflect.getOwnPropertyDescriptor(_object, keys[i]);
+			if('value' in desc) { desc.value = Reflect.clone(desc.value, _map, _function, ... _clone_args); delete desc.get; delete desc.set; }
+			else {	if(typeof desc.get === 'function') desc.get = Reflect.clone(desc.get, _map, _function, ... _clone_args); else delete desc.get;
+				if(typeof desc.set === 'function') desc.set = Reflect.clone(desc.set, _map, _function, ... _clone_args); else delete desc.set; }
+		} catch(_err) { desc = { value: _object[keys[i]] }; } Reflect.defineProperty(result, keys[i], desc); } return result; }});
+
+Reflect.defineProperty(Object, 'clone', { value: Reflect.clone });
 
 Reflect.defineProperty(Reflect, 'is', { value: (_object, ... _args) => {
 	var className = true; for(var i = 0; i < _args.length; ++i) {
@@ -128,3 +138,29 @@ Reflect.defineProperty(Array.prototype, 'unique', { value: function()
 Reflect.defineProperty(Array, '_isArray', { value: Array.isArray });
 
 //
+Reflect.defineProperty(process, 'aTTY', { get: () => {
+	if(process.stdout.isTTY) return process.stdout;
+	else if(process.stderr.isTTY) return process.stderr;
+	return null; }});
+Reflect.defineProperty(console, 'width', { get: () => {
+	const tty = process.aTTY; if(!tty) return 0;
+	return tty.rows; }});
+
+//too simple version.. my library provides smth. w/ own String.format(), etc..
+//so you'll only see '%' in the error message where I used String.printf(); ..
+Reflect.defineProperty(global, 'error', { value: (_error, ... _args) => {
+	throw new Error(_error);
+}});
+
+//
+Reflect.defineProperty(String, 'fill', { value: (_count, _string) => (''.fill(_count, _string)) });
+Reflect.defineProperty(String.prototype, 'fill', { value: function(_count, _string) {
+	if(typeof _string !== 'string') return error('Invalid % argument', null, '_string');
+	else if(_string.length === 0) return this.valueOf();
+	if(!Number.isInt(_count)) return error('Invalid % argument (no %)', null, '_count', 'Integer');
+	else if(_count <= 0) return this.valueOf(); var result = this.valueOf();
+	for(var i = 0, j = 0; i < _count; ++i, j = (j + 1) % _string.length)
+	result += _string[j]; return result; }});
+
+//
+

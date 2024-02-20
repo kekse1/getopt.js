@@ -1,7 +1,10 @@
 // 
 // Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
-// https://kekse.biz/
-// v0.2.0
+// https://kekse.biz/ https://github.com/kekse1/getopt.js/
+// v0.2.1
+//
+// Maybe you'd like to use my `js/polyfill.js` (within this github repository),
+// since this one uses my own library <https://github.com/kekse1/v4/>.
 // 
 
 //
