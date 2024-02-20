@@ -19,6 +19,7 @@ This is my own interpretation of the well known `getopt` functionality.
 * [Copyright and License](#copyright-and-license)
 
 ## News
+* Updated the **`polyfill.js`**, hope it now implements all necessary extensions from [**my own library**](https://github.com/kekse1/v4/)..
 * New v**0.2.0** \[2024-01-16\]: now w/ automatical `help()` functionality, refers to `--help / -?`
 
 ## Download
