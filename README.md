@@ -24,7 +24,7 @@ This is my own interpretation of the well known `getopt` functionality.
 
 ## Download
 * [**`getopt.js`**](js/getopt.js) (**245** code lines, in **v0.2.1**)
-* [`polyfill.js`](js/polyfill.js) (**166** code lines) if you don't use [my library](https://github.com/kekse1/v4/))
+* [`polyfill.js`](js/polyfill.js) (**166** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
 
 I'm not sure if the polyfill is really complete. So just test it - and please write me a message if smth. is wrong here.
 
