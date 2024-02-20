@@ -1,6 +1,6 @@
 //
 // Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
-// https://kekse.biz/
+// https://kekse.biz/ https://github.com/kekse1/getopt.js/
 //
 // I don't really know if this is complete to use my `getopt.js`,
 // but it should work.. it's a polyfill, since I'm using my own library
