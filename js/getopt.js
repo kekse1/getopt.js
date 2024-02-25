@@ -1,7 +1,7 @@
 // 
 // Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
 // https://kekse.biz/ https://github.com/kekse1/getopt.js/
-// v0.2.1
+// v0.3.0
 //
 // Maybe you'd like to use my `js/polyfill.js` (within this github repository),
 // since this one uses my own library <https://github.com/kekse1/v4/>.
@@ -13,6 +13,8 @@ const VECTOR = [ 'long', 'short', 'env', 'params', 'index', 'parse', 'assign', '
 //
 const DEFAULT_EXPAND = true;		//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=def -b=def -c=def); BUT then multiple chars are not allowed for all `short`!!
 const DEFAULT_GROUPS = true;		//it's possible to globally disable GROUPs here.. but why should you? ^_^
+//
+const DEFAULT_SHORT = true;		//whether to automatically define [short]'s in the vector.. same as setting [short] = true;
 //
 const DEFAULT_PARSE = true;		//recognizing numbers, regexp, booleans, ..
 const DEFAULT_ASSIGN = true;		//'=' assignment (which will reset previously enqueued items for the same key)
@@ -32,15 +34,17 @@ const getopt = global.getopt = (_vector, _parse = DEFAULT_PARSE, _parse_values =
 	return result; };
 	
 //
-//export default getopt;
-//if(typeof this !== 'undefined') module.exports = getopt;
+export default getopt;
+if(typeof this !== 'undefined') module.exports = getopt;
 
 //
 Reflect.defineProperty(getopt, 'vector', { get: () => [ ... VECTOR ] });
 
 //
 const prepareVector = (_vector, _parse, _assign, _assigned_list) => { if(DEFAULT_HELP && !('help' in _vector)) _vector.help = { short: '?' };
-	for(const idx in _vector) if(!String.isString(_vector[idx].long, false)) _vector[idx].long = idx;
+	for(const idx in _vector) { if(!String.isString(_vector[idx].long, false)) _vector[idx].long = idx;
+		if(DEFAULT_SHORT) if(typeof _vector[idx].short !== 'boolean' && typeof _vector[idx].short !== 'string') _vector[idx].short = true;
+			else if(_vector[idx].short === false) delete _vector[idx].short; }
 	const vector = Object.create(null); var keys = Object.keys(_vector); const VECT = [ ... VECTOR ]; const bestShortIndex = [];
 	for(const v of VECT) { vector[v.toUpperCase()] = new Map(); if(keys.includes(v.toUpperCase())) return error('The key `%` is a *reserved* getopt vector key', null, v.toUpperCase()); }
 	for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(key.isUpperCase) return error('No getopt vector key may be *upper-case* only'); vector[key] = Object.create(null);
@@ -96,19 +100,21 @@ const prepareVector = (_vector, _parse, _assign, _assigned_list) => { if(DEFAULT
 		if(!Number.isInt(vector[key].params)) vector[key].params = 0; if(vector[key].params <= 0) { vector[key].params = 0; delete vector[key].undefined; delete vector[key].null; }
 		if(!(Number.isInt(vector[key].index) || vector[key].index === null)) vector[key].index = null;
 		if(typeof vector[key].parse !== 'boolean') vector[key].parse = _parse; if(typeof vector[key].list !== 'boolean') vector[key].list = _assigned_list;
-		if(typeof vector[key].assign !== 'boolean') vector[key].assign = _assign; if(typeof vector[key].clone !== 'boolean' && !(Number.isInt(vector[key].clone) && vector[key].clone >= 0)) vector[key].clone = DEFAULT_CLONE;
+		if(typeof vector[key].assign !== 'boolean') vector[key].assign = _assign; if(typeof vector[key].clone !== 'boolean' && !(Number.isInt(vector[key].clone)
+			&& vector[key].clone >= 0)) vector[key].clone = DEFAULT_CLONE;
 		if(!vector[key].short) vector[key].short = ''; if(!vector[key].env) vector[key].env = '';
 		if(DEFAULT_GROUPS && !vector[key].group) vector[key].group = ''; if(!vector[key].help) vector[key].help = ''; }
 	if(DEFAULT_GROUPS) vector.GROUP.forEach((_value, _key) => { if(keys.includes(_value)) return error('You can\'t define a getopt GROUP with a key index which exists in your getopt vector, too'); });
-	var bestIndex; for(const key of bestShortIndex) { if(!(bestIndex = prepareVector.findBestShort(key, vector[key], vector))) return error('Couldn\'t find best short index for item `%` in getopt vector', null, key);
+	var bestIndex; for(const key of bestShortIndex) { if(!(bestIndex = prepareVector.findBestShort(key, vector[key], vector)))
+			return error('Couldn\'t find best short index for item `%` in getopt vector', null, key);
 	vector[key].short = bestIndex; prepareVector.appendIndex(vector, 'SHORT', key, bestIndex, false, false); }
 	if(!vector.help.help) vector.help.help = 'Call the help for ' + vector.LONG.size + ' possible `getopt` parameters';
-	keys = Object.keys(vector); vLoop: for(var v of VECT) { switch(v = v.toUpperCase()) { case 'LONG': case 'SHORT': case 'ENV': keys.remove(v); continue vLoop;
-		default: if(vector[v].size === 0) delete vector[v]; keys.remove(v); break; }} const allKeys = Object.keys(vector);
+	/*keys = Object.keys(vector); vLoop: for(var v of VECT) { switch(v) { case 'long': case 'short': case 'env': keys.remove(v.toUpperCase()); continue vLoop;
+		default: break; }}*/ const allKeys = Object.keys(vector);
 	const result = Object.create(null); result.ITEMS = new Array(keys.length); keys.sort(); result.COUNT = keys.length; vector.ITEMS = new Array(keys.length);
 	for(var i = 0; i < keys.length; ++i) { vector.ITEMS[i] = vector[keys[i]]; vector.ITEMS[i]._ = keys[i]; } vector.ITEMS.sort('group');
 	for(var i = 0; i < vector.ITEMS.length; ++i) { result[vector.ITEMS[i]._] = vector.ITEMS[i];
-			result.ITEMS[i] = vector.ITEMS[i]._; delete result[vector.ITEMS[i]._]._; }
+		result.ITEMS[i] = vector.ITEMS[i]._; delete result[vector.ITEMS[i]._]._; }
 	for(const k of allKeys) if(!(k in result)) result[k] = vector[k]; return result; };
 
 prepareVector.vectorIncludesLongShortEnv = (_result, _key, _throw = false) => {
@@ -171,15 +177,18 @@ const parseCommandLine = (_vector, _list = process.argv, _parse_values = _parse)
 	var dashes; for(var i = 0; i < _list.length; ++i) { if(_list === '--') { result.push(... _list.slice(i)); break; } else dashes = 0;
 	while(_list[i][dashes] === '-') ++dashes; dashes = Math.min(2, dashes); const orig = _list[i]; const word = _list[i].slice(dashes);
 	if((word === 'help' || word === '?') && _vector.help && _vector.help.params === 0) return help(_vector, _list, orig);
-	else if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state)) { var type = find(_vector, word, dashes, false);
-	if(!compare(type, dashes)) type = 'value'; const key = (type === 'value' ? null : find(_vector, word, dashes, true)); if(type !== 'value') {
-	++index[key]; } handle[type](result, _vector, state, (type === 'value' ? orig : word), i, _list, _vector[key], key); }}
+	else if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state)) {
+	if(dashes === 1 && word.length > 1 && tryShortAssignment(word, _vector, result, index, state)) continue;
+	var type = find(_vector, word, dashes, false); if(!compare(type, dashes)) type = 'value';
+	const key = (type === 'value' ? null : find(_vector, word, dashes, true));
+	if(type !== 'value') { ++index[key]; } handle[type](result, _vector, state, (type === 'value' ? orig : word), i, _list, _vector[key], key); }}
 	return parseCommandLine.handleResult(result, _vector, state, index, _list, _parse_values); };
 
 parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse_values = _parse) => { const elements = _result.splice(0, _result.length);
 	if(_parse_values) for(var i = 0; i < elements.length; ++i) elements[i] = parseValue(elements[i]); const unfinished = todo(_state); const keys = Object.keys(_result);
-	var fill; for(var i = 0; i < keys.length; ++i) { const key = keys[i]; const vect = _vector[key]; if(unfinished.includes(key) && ('null' in vect) &&
-	(fill = left(key, _state)) > 0) { if(Array._isArray(vect.null)) for(var j = _result[key].length, k = 0, l = (j % vect.null.length); k < fill; j++, k++, l = ((l + 1) % vect.null.length))
+	for(var i = keys.length - 1; i >= 0; --i) if(keys[i].isUpperCase) keys.splice(i, 1); var fill; for(var i = 0; i < keys.length; ++i) {
+	const key = keys[i]; const vect = _vector[key]; if(unfinished.includes(key) && ('null' in vect) && (fill = left(key, _state)) > 0) {
+	if(Array._isArray(vect.null)) for(var j = _result[key].length, k = 0, l = (j % vect.null.length); k < fill; j++, k++, l = ((l + 1) % vect.null.length))
 	_result[key][j] = (vect.clone ? Reflect.clone(vect.null[l]) : vect.null[l]); else for(var j = _result[key].length, k = 0; k < fill; ++j, ++k) _result[key][j] = (vect.clone ? Reflect.clone(vect.null) : vect.null); }
 	else if(_result[key].length === 0) { if(!('undefined' in vect)) _result[key] = _index[key]; else if(Array._isArray(vect.undefined) && vect.params > 1)
 	for(var j = 0, k = 0, l = 0; k < vect.params; ++j, ++k, l = ((l + 1) % vect.undefined.length)) _result[key][j] = (vect.clone ? Reflect.clone(vect.undefined[l]) : vect.undefined[l]);
@@ -187,8 +196,10 @@ parseCommandLine.handleResult = (_result, _vector, _state, _index, _list, _parse
 	for(var j = 0; j < _result[key].length; ++j) _result[key][j] = parseValue(_result[key][j]); var sum = 0; for(var j = 0; j < _result[key].length; ++j) {
 	if(typeof _result[key][j] === 'boolean') sum += (_result[key][j] ? 1 : -1); else { sum = null; break; }} if(sum !== null) { if(_result[key][0] === false) ++sum; _result[key] = sum; }}
 	if(Array._isArray(_result[key])) { if(_result[key].length === 1) { if(typeof _result[key][0] === 'boolean') _result[key] = (_result[key][0] ? 1 : 0); else _result[key] = _result[key][0]; }
-	else if(vect.index !== null) _result[key] = _result[key][Math.getIndex(vect.index, _result[key].length)]; }}  if(DEFAULT_GROUPS) { _vector.GROUP.forEach((_value, _key) => (_result[_value] = []));
-	for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(!_vector.GROUP.has(key)) continue; const target = _vector.GROUP.get(key); if(Array._isArray(_result[key]))
+	else if(vect.index !== null) _result[key] = _result[key][Math.getIndex(vect.index, _result[key].length)]; }} if(DEFAULT_GROUPS) {
+		_vector.GROUP.forEach((_value, _key) => (_result[_value] = []));
+	for(var i = 0; i < keys.length; ++i) { const key = keys[i]; if(!_vector.GROUP.has(key)) continue;
+			const target = _vector.GROUP.get(key); if(Array._isArray(_result[key]))
 		_result[target].push(... _result[key]); else _result[target].push(_result[key]); }} _result.push(... elements); return _result; };
 
 const parseValue = (_string) => { if(typeof _string !== 'string') return _string;
@@ -197,6 +208,10 @@ const parseValue = (_string) => { if(typeof _string !== 'string') return _string
 	if(!isNaN(_string)) return Number(_string); else if(_string[_string.length - 1] === 'n' &&
 		!isNaN(_string.slice(0, -1))) return BigInt(_string.slice(0, -1));
 	else if(RegExp.isRegExp(_string)) return RegExp.parse(_string); return _string; };
+
+const tryShortAssignment = (_word, _vector, _result, _index, _state) => {
+	const key = _word[0]; const given = find(_vector, key, 1, true); if(!given) return false; else _word = _word.substr(1);
+	if(Array._isArray(_result[given])) _result[given].push(_word); else _result[given] = _word; ++_index[given]; return true; };
 
 const tryAssignment = (_word, _dashes, _vector, _result, _index, _state) => {
 	const idx = _word.indexOf('='); if(idx === -1) return false; const key = _word.substr(0, idx); const given = find(_vector, key, _dashes, true); if(!given) return false;
@@ -227,7 +242,7 @@ const help = (_vector, _list, _item) => { const out = process.aTTY; if(!out) ret
 			lines[lines.length] = lines[lines.length - 1].substr(consoleWidth - DEFAULT_HELP_INDENT_DOUBLE - _key.length) + EOL;
 			lines[lines.length - 2] = lines[lines.length - 2].substr(0, consoleWidth - DEFAULT_HELP_INDENT_DOUBLE - _key.length); }
 		for(var i = 0; i < lines.length; ++i) lines[i] = doubleIndent + (i === 0 ? _key : String.fill(_key.length, ' ')) + lines[i].trim(); return lines.join(EOL) + EOL; };
-	maxLong += 2; var key; for(var i = 0; i < _vector.COUNT; ++i) { const item = _vector[_vector.ITEMS[i]];
+	maxLong += 2; var key; for(var i = 0; i < _vector.COUNT; ++i) { if(_vector.ITEMS[i].isUpperCase) continue; const item = _vector[_vector.ITEMS[i]];
 		if(long[i] || short[i]) result += (indent + (long[i] ? '--' + long[i] : '').padStart(maxLong, ' ') + keyIndent + (short[i] ? (long[i] ? '/' : '') + ' -' + short[i] : '') + EOL);
 		if(item.group || item.params || item.index) { result += EOL; const lines = [];
 			if(item.group) result += lineDistribution(' Group: ', item.group);

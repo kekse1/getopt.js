@@ -19,14 +19,16 @@ This is my own interpretation of the well known `getopt` functionality.
 * [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2024-02-20**\] Updated the **`polyfill.js`**, hope it now implements all necessary extensions from [**my own library**](https://github.com/kekse1/v4/)..
-* \[**2024-01-16**\] New v**0.2.0**: now w/ automatical `help()` functionality, refers to `--help / -?`
+* \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
+
+## Bugs
+* _ONE_ atm: multiple `[params]` are not being collected (but the first only).. even though they disappear from the list of regular cmd-line-arguments.. :-/
 
 ## Download
-* [**`getopt.js`**](js/getopt.js) (**245** code lines, in **v0.2.1**)
-* [`polyfill.js`](js/polyfill.js) (**166** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
+* [**`getopt.js`**](js/getopt.js) (**260** code lines, in **v0.3.0**)
+* [`polyfill.js`](js/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
 
-I'm not sure if the polyfill is really complete. So just test it - and please write me a message if smth. is wrong here.
+And here's also my [**`test.js`**](js/test.js)..
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
@@ -51,6 +53,7 @@ I'm not sure if the following list is really complete. But most things are encou
 * Use the `group` vector item to group all defined values together in the `(result).group[]` array (beneath their original `(result).index`s)
 * It's possible to let short keys be found automatically (finding nearest possible character)
 * Automatically created help pages/views (if no manuall `--help / -?` override defined in the vector); using `.help` vector items to show each ones descriptions
+* \[2024-02-25\] **Update**: now w/ `-p8080`, e.g.. so _direct_ parameters on `[short]` items..
 
 ### Function call
 This is the exported function `getopt(_vector, _parse, _parse_values, _assign, _assigned_list, _list = process.argv, _start = 0);`

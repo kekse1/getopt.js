@@ -137,6 +137,37 @@ Reflect.defineProperty(Array.prototype, 'unique', { value: function()
 
 Reflect.defineProperty(Array, '_isArray', { value: Array.isArray });
 
+Reflect.defineProperty(Array.prototype, 'remove', { value: function(... _args)
+{
+	const result = [];
+
+	for(var i = 0, k = 0; i < this.length; ++i)
+	{
+		for(var j = 0; j < _args.length; ++j)
+		{
+			if(this[i] === _args[j])
+			{
+				result[k++] = this.splice(i--, 1)[0];
+				break;
+			}
+		}
+	}
+
+	return result;
+}});
+
+//VERY simplified version, and *only* for use in 'getopt.js'..
+const _sort = Array.prototype.sort;
+Reflect.defineProperty(Array.prototype, 'sort', { value: function(_key, _asc = true)
+{
+	if(!String.isString(_key, false)) return _sort.call(this, (_a, _b) => {
+		if(_asc) return _a.localeCompare(_b);
+		return _b.localeCompare(_a); });
+	return _sort.call(this, (_a, _b) => { try {
+		if(typeof _a[_key] !== 'string' || typeof _b[_key] !== 'string') return 0;
+		else if(_asc) return _a[_key].localeCompare(_b[_key]);
+		return _b[_key].localeCompare(_a[_key]); } catch(_err) { return error(_err); }}); }});
+
 //
 Reflect.defineProperty(process, 'aTTY', { get: () => {
 	if(process.stdout.isTTY) return process.stdout;
@@ -161,6 +192,130 @@ Reflect.defineProperty(String.prototype, 'fill', { value: function(_count, _stri
 	else if(_count <= 0) return this.valueOf(); var result = this.valueOf();
 	for(var i = 0, j = 0; i < _count; ++i, j = (j + 1) % _string.length)
 	result += _string[j]; return result; }});
+
+Reflect.defineProperty(String.prototype, 'isUpperCase', { get: function()
+{ return (this.toUpperCase() === this.valueOf()); }});
+Reflect.defineProperty(String.prototype, 'isLowerCase', { get: function()
+{ return (this.toLowerCase() === this.valueOf()); }});
+
+//
+Reflect.defineProperty(Math, 'getIndex', { value: (_index, _length) => {
+	if(Number.isNumber(_index))
+	{
+		_index = Math.int(_index);
+	}
+	else
+	{
+		return error('Invalid % argument', null, '_index');
+	}
+
+	if(Number.isNumber(_length))
+	{
+		_length = Math.int(_length);
+	}
+	else
+	{
+		return error('Invalid % argument', null, '_length');
+	}
+
+	if(_length < 1)
+	{
+		return null;
+	}
+	else if((_index %= _length) < 0)
+	{
+		_index = ((_length + _index) % _length);
+	}
+
+	return (_index || 0);
+}});
+
+Reflect.defineProperty(Math, 'int', { value: (_value, _precision = 0, _inverse = false) => {
+	if(typeof _value === 'bigint')
+	{
+		return _value;
+	}
+	else if(!Number.isNumber(_value))
+	{
+		return error('Invalid % argument (not numeric)', null, '_value');
+	}
+
+	if(!Number.isInt(_precision) || _precision < 0)
+	{
+		_precision = 0;
+	}
+
+	const a = (_value < 0);
+	const b = (!!_inverse);
+
+	return (((((a&&b)||!(a||b)) ? Math.floor : Math.ceil)(_value, _precision)) || 0);
+}});
+
+const _round = Math.round.bind(Math);
+const _floor = Math.floor.bind(Math);
+const _ceil = Math.ceil.bind(Math);
+
+Reflect.defineProperty(Math, 'round', { value: (_value, _precision = 0) => {
+	if(typeof _value === 'bigint')
+	{
+		return _value;
+	}
+	else if(!Number.isNumber(_value))
+	{
+		return error('Invalid % argument (not numeric)', null, '_value');
+	}
+	
+	if(!Number.isInt(_precision) || _precision < 0)
+	{
+		_precision = 0;
+	}
+	
+	const coefficient = Math.pow(10, _precision);
+	return ((_round(_value * coefficient) / coefficient) || 0);
+}});
+
+Reflect.defineProperty(Math, 'floor', { value: (_value, _precision = 0) => {
+	if(typeof _value === 'bigint')
+	{
+		return _value;
+	}
+	else if(!Number.isNumber(_value))
+	{
+		return error('Invalid % argument (not numeric)', null, '_value');
+	}
+
+	if(!Number.isInt(_precision) || _precision < 0)
+	{
+		_precision = 0;
+	}
+
+	const coefficient = Math.pow(10, _precision);
+	return ((_floor(_value * coefficient) / coefficient) || 0);
+}});
+
+Reflect.defineProperty(Math, 'ceil', { value: (_value, _precision = 0) => {
+	if(typeof _value === 'bigint')
+	{
+		return _value;
+	}
+	else if(!Number.isNumber(_value))
+	{
+		return error('Invalid % argument (not numeric)', null, '_value');
+	}
+
+	if(!Number.isInt(_precision) || _precision < 0)
+	{
+		_precision = 0;
+	}
+
+	const coefficient = Math.pow(10, _precision);
+	return ((_ceil(_value * coefficient) / coefficient) || 0);
+}});
+
+//
+Reflect.defineProperty(global, 'EOL', { value: (typeof os === 'undefined' ? '\n' : os.EOL) });
+Reflect.defineProperty(global, 'eol', { value: (_count) => {
+	var result = ''; while(--_count >= 0) result += global.EOL; return result; }});
 
 //
 
