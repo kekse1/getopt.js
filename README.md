@@ -19,13 +19,14 @@ This is my own interpretation of the well known `getopt` functionality.
 * [Copyright and License](#copyright-and-license)
 
 ## News
+* \[**2024-03-04**\] New version **v0.4.0**
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
 ## Bugs
 * _ONE_ atm: multiple `[params]` are not being collected (but the first only).. even though they disappear from the list of regular cmd-line-arguments.. :-/
 
 ## Download
-* [**`getopt.js`**](js/getopt.js) (**260** code lines, in **v0.3.0**)
+* [**`getopt.js`**](js/getopt.js) (**252** code lines, in **v0.4.0**)
 * [`polyfill.js`](js/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
 
 And here's also my [**`test.js`**](js/test.js)..
@@ -67,7 +68,6 @@ These are the items your getopt vector (first argument to `getopt()`, is an obje
 | ----------: | :--------------- | :-------------------------------------------------------------------------------------------------------: |
 | `long`      | Boolean, String  | The long key index, with `--` double dash prefix in the command line                                      |
 | `short`     | Boolean, String  | Short key index, with `-` single dash prefix                                                              |
-| `env`       | Boolean, String  | (**TODO**!) Environment variable key index, without any dash                                              |
 | `params`    | Boolean, Integer | How many arguments per key index, or if at all any                                                        |
 | `index`     | Boolean, Integer | If multiple values are defined, in the end this setting will select one of the elements                   |
 | `parse`     | Boolean          | Recongnizing RegExp, Numbers, etc..                                                                       |

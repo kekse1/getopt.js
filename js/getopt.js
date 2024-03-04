@@ -1,14 +1,14 @@
 // 
 // Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
 // https://kekse.biz/ https://github.com/kekse1/getopt.js/
-// v0.3.0
+// v0.4.0
 //
 // Maybe you'd like to use my `js/polyfill.js` (within this github repository),
 // since this one uses my own library <https://github.com/kekse1/v4/>.
 // 
 
 //
-const VECTOR = [ 'long', 'short', 'env', 'params', 'index', 'parse', 'assign', 'list', 'group', 'clone', 'default', 'null', 'undefined', 'help' ];
+const VECTOR = [ 'long', 'short', 'params', 'index', 'parse', 'assign', 'list', 'group', 'clone', 'default', 'null', 'undefined', 'help' ];
 
 //
 const DEFAULT_EXPAND = true;		//expand '-abc' to '-a -b -c' (or '-abc=def' to '-a=def -b=def -c=def); BUT then multiple chars are not allowed for all `short`!!
@@ -41,7 +41,9 @@ if(typeof this !== 'undefined') module.exports = getopt;
 Reflect.defineProperty(getopt, 'vector', { get: () => [ ... VECTOR ] });
 
 //
-const prepareVector = (_vector, _parse, _assign, _assigned_list) => { if(DEFAULT_HELP && !('help' in _vector)) _vector.help = { short: '?' };
+const prepareVector = (_vector, _parse, _assign, _assigned_list) => {
+	var autoHelp = false; if(DEFAULT_HELP && !('help' in _vector)) {
+		_vector.help = { short: '?' }; autoHelp = true; }
 	for(const idx in _vector) { if(!String.isString(_vector[idx].long, false)) _vector[idx].long = idx;
 		if(DEFAULT_SHORT) if(typeof _vector[idx].short !== 'boolean' && typeof _vector[idx].short !== 'string') _vector[idx].short = true;
 			else if(_vector[idx].short === false) delete _vector[idx].short; }
@@ -64,13 +66,6 @@ const prepareVector = (_vector, _parse, _assign, _assigned_list) => { if(DEFAULT
 				else if(_vector[key].short === '=') return error('The getopt `%` vector key `%` may not be a `%` assignment', null, 'short', key, '=');
 				else if(_vector[key].short.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'short', key);
 				else prepareVector.vectorIncludesLongShortEnv(vector, _vector[key].short, true); vector[key].short = _vector[key].short; prepareVector.appendIndex(vector, 'SHORT', key, _vector[key].short, false, false); break;
-			case 'env': if(typeof _vector[key].env === 'boolean') { if(_vector[key].env) _vector[key].env = key; else break; }
-				else if(!String.isString(_vector[key].env, false)) return error('The getopt `%` vector key `%` needs to be a non-empty %', null, 'env', key, 'String');
-				else if(_vector[key].env[0] === '-') return error('The getopt `%` vector key `%` may not start with a dash `%`', null, 'env', key, '-');
-				else if(_vector[key].env.includes(' ')) return error('The getopt `%` vector key `%` may not contain a space `%`', null, 'env', key, ' ');
-				else if(_vector[key].env.includes('=')) return error('The getopt `%` vector key `%` may not contain a `%` assignment', null, 'env', key, '=');
-				else if(_vector[key].env.binary) return error('The getopt `%` vector key `%` may not contain *binary data*', null, 'env', key);
-				else prepareVector.vectorIncludesLongShortEnv(vector, _vector[key].env, true); vector[key].env = _vector[key].env; prepareVector.appendIndex(vector, 'ENV', key, _vector[key].env, false, false); break;
 			case 'params': if(typeof _vector[key].params === 'boolean') _vector[key].params = (_vector[key].params ? 1 : 0);
 				else if(!Number.isInt(_vector[key].params) || _vector[key].params < 0) return error('The getopt `%` vector key `%` needs to be a positive % (or %)', null, 'params', key, 'Integer', 'zero');
 				vector[key].params = _vector[key].params; prepareVector.appendIndex(vector, 'PARAMS', key, _vector[key].params, false, true); break;
@@ -102,25 +97,24 @@ const prepareVector = (_vector, _parse, _assign, _assigned_list) => { if(DEFAULT
 		if(typeof vector[key].parse !== 'boolean') vector[key].parse = _parse; if(typeof vector[key].list !== 'boolean') vector[key].list = _assigned_list;
 		if(typeof vector[key].assign !== 'boolean') vector[key].assign = _assign; if(typeof vector[key].clone !== 'boolean' && !(Number.isInt(vector[key].clone)
 			&& vector[key].clone >= 0)) vector[key].clone = DEFAULT_CLONE;
-		if(!vector[key].short) vector[key].short = ''; if(!vector[key].env) vector[key].env = '';
+		if(!vector[key].short) vector[key].short = '';
 		if(DEFAULT_GROUPS && !vector[key].group) vector[key].group = ''; if(!vector[key].help) vector[key].help = ''; }
 	if(DEFAULT_GROUPS) vector.GROUP.forEach((_value, _key) => { if(keys.includes(_value)) return error('You can\'t define a getopt GROUP with a key index which exists in your getopt vector, too'); });
 	var bestIndex; for(const key of bestShortIndex) { if(!(bestIndex = prepareVector.findBestShort(key, vector[key], vector)))
 			return error('Couldn\'t find best short index for item `%` in getopt vector', null, key);
 	vector[key].short = bestIndex; prepareVector.appendIndex(vector, 'SHORT', key, bestIndex, false, false); }
 	if(!vector.help.help) vector.help.help = 'Call the help for ' + vector.LONG.size + ' possible `getopt` parameters';
-	/*keys = Object.keys(vector); vLoop: for(var v of VECT) { switch(v) { case 'long': case 'short': case 'env': keys.remove(v.toUpperCase()); continue vLoop;
-		default: break; }}*/ const allKeys = Object.keys(vector);
+	const allKeys = Object.keys(vector);
 	const result = Object.create(null); result.ITEMS = new Array(keys.length); keys.sort(); result.COUNT = keys.length; vector.ITEMS = new Array(keys.length);
 	for(var i = 0; i < keys.length; ++i) { vector.ITEMS[i] = vector[keys[i]]; vector.ITEMS[i]._ = keys[i]; } vector.ITEMS.sort('group');
 	for(var i = 0; i < vector.ITEMS.length; ++i) { result[vector.ITEMS[i]._] = vector.ITEMS[i];
 		result.ITEMS[i] = vector.ITEMS[i]._; delete result[vector.ITEMS[i]._]._; }
-	for(const k of allKeys) if(!(k in result)) result[k] = vector[k]; return result; };
+	for(const k of allKeys) if(!(k in result)) result[k] = vector[k];
+	result.help.auto = !!autoHelp; return result; };
 
 prepareVector.vectorIncludesLongShortEnv = (_result, _key, _throw = false) => {
 	if(_result.LONG.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'long') : true);
 	else if(_result.SHORT.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'short') : true);
-	else if(_result.ENV.has(_key)) return (_throw ? error('The getopt `%` vector key `%` is already defined as `%` item', null, 'long', _key, 'env') : true);
 	return false; };
 
 prepareVector.appendIndex = (_result, _type, _key, _value, _inverse, _array = true) => { if(!_result[_type].has(_inverse ? _key : _value)) _result[_type].set(_inverse ? _key : _value,
@@ -143,11 +137,10 @@ prepareVector.findBestShort.find = (_index, _vector_item, _vector) => { const me
 const find = (_vector, _word, _dashes, _index = false) => {
 	switch(_dashes) {
 		case 2: if(_vector.LONG.has(_word)) return (_index ? _vector.LONG.get(_word) : 'long'); break;
-		case 1: if(_vector.SHORT.has(_word)) return (_index ? _vector.SHORT.get(_word) : 'short'); break;
-		case 0: if(_vector.ENV.has(_word)) return (_index ? _vector.ENV.get(_word) : 'env'); break; }
+		case 1: if(_vector.SHORT.has(_word)) return (_index ? _vector.SHORT.get(_word) : 'short'); break; }
 	return (_index ? null : 'value'); };
 const compare = (_type, _dashes) => { switch(_dashes) {
-	case 0: return (_type === 'value' || _type === 'env');
+	case 0: return (_type === 'value');
 	case 1: return (_type === 'short');
 	case 2: return (_type === 'long');
 	default: return null; }};
@@ -164,7 +157,6 @@ const left = (_key, _state) => { var result = 0; for(var i = 0; i < _state.lengt
 const handle = {};
 
 handle.value = (_result, _vector, _state, _word, _index, _list) => { if(!fill(_result, _state, _word)) _result.push(_word); };
-handle.env = (_result, _vector, _state, _word, _index, _list, _item, _key) => { return error('TODO: handle.env();'); };
 handle.short = (_result, _vector, _state, _word, _index, _list, _item, _key) => { if(_item.params === 0) {
 	if(typeof _result[_key] === 'number') ++_result[_key]; else if(Array._isArray(_result[_key])) _result[_key].push(true);
 	else _result[_key] = 1; } else enqueue(_vector, _state, _key, _item.params); };
@@ -176,7 +168,7 @@ const parseCommandLine = (_vector, _list = process.argv, _parse_values = _parse)
 	for(const idx in _vector) if(!idx.isUpperCase) { result[idx] = []; state[idx] = []; index[idx] = 0; } _list = expandShorts(_list, _vector);
 	var dashes; for(var i = 0; i < _list.length; ++i) { if(_list === '--') { result.push(... _list.slice(i)); break; } else dashes = 0;
 	while(_list[i][dashes] === '-') ++dashes; dashes = Math.min(2, dashes); const orig = _list[i]; const word = _list[i].slice(dashes);
-	if((word === 'help' || word === '?') && _vector.help && _vector.help.params === 0) return help(_vector, _list, orig);
+	if((word === 'help' || word === '?') && _vector.help && _vector.help.params === 0 && _vector.help.auto) return help(_vector, _list, orig);
 	else if(!word.includes('=') || !tryAssignment(word, dashes, _vector, result, index, state)) {
 	if(dashes === 1 && word.length > 1 && tryShortAssignment(word, _vector, result, index, state)) continue;
 	var type = find(_vector, word, dashes, false); if(!compare(type, dashes)) type = 'value';
