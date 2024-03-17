@@ -1,4 +1,4 @@
-<img src="https://kekse.biz/github.php?draw&override=github:getopt.js&text=v4&draw" />
+![https://kekse.biz/github.php?draw&override=github:getopt.js](getopt.js)
 
 # `getopt.js`
 This is my own interpretation of the well known `getopt` functionality.
