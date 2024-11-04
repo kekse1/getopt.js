@@ -8,6 +8,7 @@ And now there's also a **tiny alternative version** available.
 * [News](#news)
 * [Start](#getoptjs)
     * [Download](#download)
+    * [Tiny alternative version](#tiny-alternative-version)
     * [Description](#description)
         * [Features](#features)
         * [Function call](#function-call)
@@ -17,6 +18,7 @@ And now there's also a **tiny alternative version** available.
         * [`DEFAULT_EXPAND`](#default_expand)
     	* [Dependencies](#dependencies)
 	* [Namespace](#namespace)
+	* [Bugs](#bugs)
     * [References](#references)
 * [Copyright and License](#copyright-and-license)
 
@@ -24,11 +26,6 @@ And now there's also a **tiny alternative version** available.
 * \[**2024-11-04**\] Included my **`getopt.tiny.js`** in here (as alternative);
 * \[**2024-03-04**\] New version **v0.4.0**
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
-
-## Bugs
-This only holds for the regular, big version. The tiny alternative version should have no bugs at all..
-
-* _ONE_ atm: multiple `[params]` are not being collected (but the first only).. even though they disappear from the list of regular cmd-line-arguments.. :-/
 
 ## Download
 * [**`getopt.js`**](js/getopt.js) (**252** code lines, in **v0.4.0**)
@@ -40,12 +37,12 @@ The `getopt.tiny.js` does **not** need a extra polyfill. There's only one
 
 And here's also my [**`test.js`**](js/test.js)..
 
+## Tiny alternative version
+The tiny alternative version doesn't have most of the features of the regular version. But works great as well.
+
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
 Since I really love to implement any feature I need for myself, I also created this implementation. Maybe you like it, or my way of handling it? :-)
-
-### Tiny alternative version
-The tiny alternative version doesn't have most of the features of the regular version. But works great as well.
 
 ### Features
 I'm not sure if the following list is really complete. But most things are encountered here:
@@ -130,6 +127,11 @@ to my [**`v4`** repository](https://github.com/kekse1/v4/); also visible (with r
 
 ### Namespace
 The whole base **`getopt()`** function is being exported under the **`global`** namespace! So you just have to **`getopt(vector, ...)`**.
+
+### Bugs
+This only holds for the regular, big version. The tiny alternative version should have no bugs at all..
+
+* _ONE_ atm: multiple `[params]` are not being collected (but the first only).. even though they disappear from the list of regular cmd-line-arguments.. :-/
 
 ## References
 Maybe also interesting for you: the **`config.js`**? And a reference to my documentation for this **`getopt.js`**:
