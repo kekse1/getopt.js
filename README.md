@@ -26,6 +26,8 @@ And now there's also a **tiny alternative version** available.
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
 ## Bugs
+This only holds for the regular, big version. The tiny alternative version should have no bugs at all..
+
 * _ONE_ atm: multiple `[params]` are not being collected (but the first only).. even though they disappear from the list of regular cmd-line-arguments.. :-/
 
 ## Download
