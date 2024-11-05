@@ -30,12 +30,11 @@ And now there's also a **tiny alternative version** available.
 ## Download
 * [**`getopt.js`**](js/getopt.js) (**252** code lines, in **v0.4.0**)
 * [`polyfill.js`](js/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](js/getopt.tiny.js) (**199** code lines)
+* [**`getopt.tiny.js`**](js/getopt.tiny.js) (**275** code lines)
+* [`test.js`](js/test.js) (tiny test, jfyi..);
 
-The `getopt.tiny.js` does **not** need a extra polyfill. There's only one
-(String) extension which is included in the file itself.
-
-And here's also my [**`test.js`**](js/test.js)..
+The `getopt.tiny.js` does **not** need a extra polyfill. There only three extensions are included
+at the bottom of the file itself.
 
 ## Tiny alternative version
 The tiny alternative version doesn't have most of the features of the regular version. But works great as well.
