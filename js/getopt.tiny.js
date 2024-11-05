@@ -5,11 +5,11 @@
 
 //
 const DEFAULT_CAST = true;
-const DEFAULT_EQUAL = true;
+const DEFAULT_EQUAL_ASSIGN = true;
 const DEFAULT_ARRAY = false;
 
 //
-const getopt = (_cast = DEFAULT_CAST) => {
+const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
 	const result = [];
 	var end = false;
 	var key = '';
@@ -30,7 +30,7 @@ const getopt = (_cast = DEFAULT_CAST) => {
 		
 		if(key)
 		{
-			if((key in result) && DEFAULT_ARRAY)
+			if((key in result) && _array)
 			{
 				if(array(result[key]))
 				{
@@ -55,7 +55,7 @@ const getopt = (_cast = DEFAULT_CAST) => {
 	};
 	
 	const checkKeyForEqualSign = () => {
-		if(! (DEFAULT_EQUAL && key))
+		if(! (_equal_assign && key))
 		{
 			return null;
 		}
@@ -74,13 +74,13 @@ const getopt = (_cast = DEFAULT_CAST) => {
 		return true;
 	};
 	
-	for(var i = 2; i < process.argv.length; ++i)
+	for(var i = _start; i < _vector.length; ++i)
 	{
 		if(end)
 		{
-			set(process.argv[i]);
+			set(_vector[i]);
 		}
-		else if(process.argv[i] === '--')
+		else if(_vector[i] === '--')
 		{
 			if(key)
 			{
@@ -89,16 +89,16 @@ const getopt = (_cast = DEFAULT_CAST) => {
 			
 			end = true;
 		}
-		else if(process.argv[i][0] === '-')
+		else if(_vector[i][0] === '-')
 		{
-			if(process.argv[i].length === 1)
+			if(_vector[i].length === 1)
 			{
 				set('-');
 				continue;
 			}
-			else if(process.argv[i][1] !== '-')
+			else if(_vector[i][1] !== '-')
 			{
-				const numberTest = process.argv[i].substr(1);
+				const numberTest = _vector[i].substr(1);
 
 				if(numberTest.length > 0 && !isNaN(numberTest))
 				{
@@ -112,20 +112,20 @@ const getopt = (_cast = DEFAULT_CAST) => {
 				set('');
 			}
 			
-			if(process.argv[i][1] === '-')
+			if(_vector[i][1] === '-')
 			{
-				key = process.argv[i].substr(2);
+				key = _vector[i].substr(2);
 			}
 			else
 			{
-				key = process.argv[i].substr(1);
+				key = _vector[i].substr(1);
 			}
 			
 			checkKeyForEqualSign();
 		}
 		else
 		{
-			set(process.argv[i]);
+			set(_vector[i]);
 		}
 	}
 	
@@ -273,3 +273,4 @@ if(typeof global.__getopt_ext !== 'number')
 }
 
 //
+

@@ -23,7 +23,7 @@ And now there's also a **tiny alternative version** available.
 * [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2024-11-04**\] Included my **`getopt.tiny.js`** in here (as alternative);
+* \[**2024-11-04**\] Included my **`getopt.tiny.js`** in here (as alternative) \[and updated it now!\];
 * \[**2024-03-04**\] New version **v0.4.0**
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
