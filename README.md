@@ -23,21 +23,27 @@ And now there's also a **tiny alternative version** available.
 * [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2024-11-04**\] Included my **`getopt.tiny.js`** in here (as alternative) \[and updated it now!\];
+* \[**2024-11-26**\] Updated my [**`getopt.tiny.js`**](#tiny-alternative-version);
 * \[**2024-03-04**\] New version **v0.4.0**
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in **v0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js) (**275** code lines)
+* [**`getopt.tiny.js`**](src/getopt.tiny.js) (**333** code lines)
 * [`test.js`](src/test.js) (tiny test, jfyi..);
-
-The `getopt.tiny.js` does **not** need a extra polyfill. There only three extensions are included
-at the bottom of the file itself.
 
 ## Tiny alternative version
 The tiny alternative version doesn't have most of the features of the regular version. But works great as well.
+There are not so many features, but the main difference is that you don't define a 'vector' with all possible/allowed
+parameters, so any `-` or `--` (are the same here) will be interpreted as valid key. So handling this version is
+also much easier and quicker.
+
+The [`getopt.tiny.js`](src/getopt.tiny.js) does **not** need an extra polyfill. It's included on the file's bottom.
+
+> [!INFO]
+> The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'` will unescape
+> the string to interprete a newline `\n` character.
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.

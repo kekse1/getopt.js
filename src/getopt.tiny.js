@@ -5,11 +5,14 @@
 
 //
 const DEFAULT_CAST = true;
+const DEFAULT_CAST_EMPTY = true;
+const DEFAULT_CAST_REGEXP = false; //prob: paths.. xD~
 const DEFAULT_EQUAL_ASSIGN = true;
 const DEFAULT_ARRAY = false;
+const DEFAULT_UNESCAPE = true;
 
 //
-const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
+const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
 	const result = [];
 	var end = false;
 	var key = '';
@@ -18,14 +21,10 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _equal_assign = DE
 	const set = (_value) => {
 		if(_cast)
 		{
-			if(_value.length === 0)
-			{
-				_value = true;
-			}
-			else
-			{
-				_value = _value.tryCast();
-			}
+			_value = _value.tryCast(
+				DEFAULT_CAST_EMPTY,
+				_unescape,
+				DEFAULT_CAST_REGEXP);
 		}
 		
 		if(key)
@@ -270,7 +269,65 @@ if(typeof global.__getopt_ext !== 'number')
 
 		return false;
 	}});
+
+	Reflect.defineProperty(String.prototype, 'unescape', { value: function()
+	{
+		var result = '', byte;
+
+		for(var i = 0; i < this.length; ++i)
+		{
+			if(this[i] === '\\' && i < (this.length - 1))
+			{
+				if(this[i + 1] === '\\')
+				{
+					result += this[++i];
+					continue;
+				}
+
+				byte = this.charCodeAt(++i);
+
+				switch(byte)
+				{
+					case 48:
+						result += String.fromCharCode(0);
+						break;
+					case 97:
+						result += String.fromCharCode(7);
+						break;
+					case 98:
+						result += String.fromCharCode(8);
+						break;
+					case 101:
+						result += String.fromCharCode(27);
+						break;
+					case 116:
+						result += String.fromCharCode(9);
+						break;
+					case 110:
+						result += String.fromCharCode(10);
+						break;
+					case 118:
+						result += String.fromCharCode(11);
+						break;
+					case 102:
+						result += String.fromCharCode(12);
+						break;
+					case 114:
+						result += String.fromCharCode(13);
+						break;
+					default:
+						result += this[--i];
+						break;
+				}
+			}
+			else
+			{
+				result += this[i];
+			}
+		}
+
+		return result;
+	}});
 }
 
 //
-
