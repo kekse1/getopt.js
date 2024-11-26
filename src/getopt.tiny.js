@@ -27,7 +27,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 				DEFAULT_CAST_REGEXP);
 		}
 		
-		if(key)
+		if(key && !(key in Array.prototype))
 		{
 			if((key in result) && _array)
 			{
