@@ -41,7 +41,7 @@ also much easier and quicker.
 
 The [`getopt.tiny.js`](src/getopt.tiny.js) does **not** need an extra polyfill. It's included on the file's bottom.
 
-> [!INFO]
+> [!TIP]
 > The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'` will unescape
 > the string to interprete a newline `\n` character.
 
