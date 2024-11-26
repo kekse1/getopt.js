@@ -28,10 +28,10 @@ And now there's also a **tiny alternative version** available.
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
 ## Download
-* [**`getopt.js`**](js/getopt.js) (**252** code lines, in **v0.4.0**)
-* [`polyfill.js`](js/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](js/getopt.tiny.js) (**275** code lines)
-* [`test.js`](js/test.js) (tiny test, jfyi..);
+* [**`getopt.js`**](src/getopt.js) (**252** code lines, in **v0.4.0**)
+* [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
+* [**`getopt.tiny.js`**](src/getopt.tiny.js) (**275** code lines)
+* [`test.js`](src/test.js) (tiny test, jfyi..);
 
 The `getopt.tiny.js` does **not** need a extra polyfill. There only three extensions are included
 at the bottom of the file itself.
@@ -121,8 +121,8 @@ to my [**`v4`** repository](https://github.com/kekse1/v4/); also visible (with r
 [**kekse.biz**/projects page](https://kekse.biz/#github://kekse1/).
 
 > **Warning**
-> If using this script stand-alone, without my library being loaded/used, you should also import the [**`polyfill.js`**](js/polyfill.js).
-> I **hope** this file is complete, I neither tested any case, nor did I scrolled through the [**`getopt.js`**](js/getopt.js).. xD~
+> If using this script stand-alone, without my library being loaded/used, you should also import the [**`polyfill.js`**](src/polyfill.js).
+> I **hope** this file is complete, I neither tested any case, nor did I scrolled through the [**`getopt.js`**](src/getopt.js).. xD~
 
 ### Namespace
 The whole base **`getopt()`** function is being exported under the **`global`** namespace! So you just have to **`getopt(vector, ...)`**.
