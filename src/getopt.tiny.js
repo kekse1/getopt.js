@@ -88,38 +88,14 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 			
 			end = true;
 		}
-		else if(_vector[i][0] === '-')
+		else if(_vector[i][0] === '-' && _vector[i][1] === '-')
 		{
-			if(_vector[i].length === 1)
-			{
-				set('-');
-				continue;
-			}
-			else if(_vector[i][1] !== '-')
-			{
-				const numberTest = _vector[i].substr(1);
-
-				if(numberTest.length > 0 && !isNaN(numberTest))
-				{
-					set('-' + numberTest);
-					continue;
-				}
-			}
-
 			if(key)
 			{
 				set('');
 			}
 			
-			if(_vector[i][1] === '-')
-			{
-				key = _vector[i].substr(2);
-			}
-			else
-			{
-				key = _vector[i].substr(1);
-			}
-			
+			key = _vector[i].substr(2);
 			checkKeyForEqualSign();
 		}
 		else
