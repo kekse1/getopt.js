@@ -149,8 +149,8 @@ if(typeof global.__getopt_ext !== 'number')
 
 		if(result.length <= 9) switch(result.toLowerCase())
 		{
-			case 'no': case 'false': return false;
-			case 'yes': case 'true': return true;
+			case 'no': case 'false': case 'off': return false;
+			case 'yes': case 'true': case 'on': return true;
 			case 'null': return null;
 			case 'undefined': return undefined;
 		}
