@@ -37,6 +37,9 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 Just for your info: Both versions stop parsing the rest of the command line after the
 occurence of an 'empty' `--` parameter. That's a (good) convention.
 
+Another info: with enabled `_cast` also the regular parameters (not only those with the
+`--` prefix, or rather (only) their values) are being converted (e.g. to Numbers).
+
 ## Tiny alternative version
 The tiny alternative version doesn't have most of the features of the regular version. But works great as well.
 There are not so many features, but the main difference is that you don't define a 'vector' with all possible/allowed
@@ -53,7 +56,8 @@ Everything's included on the file's bottom.
 > [!NOTE]
 > Since **v2.0.0** the keys are stored **with `--`** prefix, to prevent collisions with the
 > `.prototype` implementation of the resulting **Array** (which is preferred over
-> `Object.create(null)` because so the whole (filtered) command line can be stored this way.
+> `Object.create(null)` because that's the best way to also store the complete (filtered)
+> command line).
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
