@@ -1,6 +1,22 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
- * https://norbert.com.es/
+ * https://kekse.biz/ https://github.com/kekse1/getopt.js/
+ * v2.0.0
+ */
+
+/*
+ * HINT: This newest version stores the keys *with*
+ * '--' prefix, since the resulting array may conflict
+ * in its .prototype implementation!
+ *
+ * We could also use 'Object.create(null)', BUT there
+ * would not be any regular command line argument (so
+ * those w/o '--' prefix)..
+ *
+ * This change was really tiny, so dass ich mangels
+ * Lust oder wg. Faulheit (etc..) auf einen erneuten
+ * Testlauf verzichtet habe...! xD~
+ *
  */
 
 //
@@ -27,8 +43,10 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 				DEFAULT_CAST_REGEXP);
 		}
 		
-		if(key && !(key in Array.prototype))
+		if(key)
 		{
+			key = '--' + key;
+
 			if((key in result) && _array)
 			{
 				if(array(result[key]))

@@ -2,7 +2,7 @@
 
 # `getopt.js`
 This is my own interpretation of the well known `getopt` functionality.
-And now there's also a **tiny alternative version** available.
+And now there's also a [**tiny alternative version**](#tiny-alternative-version).
 
 ## Index
 * [News](#news)
@@ -23,14 +23,14 @@ And now there's also a **tiny alternative version** available.
 * [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2024-11-26**\] Updated my [**`getopt.tiny.js`**](#tiny-alternative-version);
+* \[**2025-01-10**\] Useful update at [**`getopt.tiny.js`**](#tiny-alternative-version), **v2.0.0**;
 * \[**2024-03-04**\] New version **v0.4.0**
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in **v0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js) (**333** code lines)
+* [**`getopt.tiny.js`**](src/getopt.tiny.js), **v2.0.0** (**327** code lines);
 * [`test.js`](src/test.js) (tiny test, jfyi..);
 
 ## Tiny alternative version
@@ -39,11 +39,17 @@ There are not so many features, but the main difference is that you don't define
 parameters, so any `-` or `--` (are the same here) will be interpreted as valid key. So handling this version is
 also much easier and quicker.
 
-The [`getopt.tiny.js`](src/getopt.tiny.js) does **not** need an extra polyfill. It's included on the file's bottom.
+The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfill.
+Everything's included on the file's bottom.
 
 > [!TIP]
 > The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'` will unescape
 > the string to interprete a newline `\n` character.
+
+> [!NOTE]
+> Since **v2.0.0** the keys are stored **with `--`** prefix (to prevent collisions with the
+> `.prototype` implementation of the resulting **Array** (which is preferred over
+> `Object.create(null)` because so the whole (filtered) command line can be stored this way.
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
