@@ -33,10 +33,14 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 * [**`getopt.tiny.js`**](src/getopt.tiny.js), **v2.0.0** (**327** code lines);
 * [`test.js`](src/test.js) (tiny test, jfyi..);
 
+## Info
+Just for your info: Both versions stop parsing the rest of the command line after the
+occurence of an 'empty' `--` parameter. That's a (good) convention.
+
 ## Tiny alternative version
 The tiny alternative version doesn't have most of the features of the regular version. But works great as well.
 There are not so many features, but the main difference is that you don't define a 'vector' with all possible/allowed
-parameters, so any `-` or `--` (are the same here) will be interpreted as valid key. So handling this version is
+parameters, so any `--` prefixed parameter will be interpreted as valid key. So handling this version is
 also much easier and quicker.
 
 The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfill.
