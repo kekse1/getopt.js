@@ -51,7 +51,7 @@ Everything's included on the file's bottom.
 > the string to interprete a newline `\n` character.
 
 > [!NOTE]
-> Since **v2.0.0** the keys are stored **with `--`** prefix (to prevent collisions with the
+> Since **v2.0.0** the keys are stored **with `--`** prefix, to prevent collisions with the
 > `.prototype` implementation of the resulting **Array** (which is preferred over
 > `Object.create(null)` because so the whole (filtered) command line can be stored this way.
 
