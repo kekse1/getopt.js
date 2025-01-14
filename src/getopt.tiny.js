@@ -180,6 +180,13 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 		return [ ... this ];
 	}
 
+	get object()
+	{
+		const result = this.vector;
+		Object.assign(result, this.values);
+		return result;
+	}
+
 	get keys()
 	{
 		return [ ... this._keys ];
