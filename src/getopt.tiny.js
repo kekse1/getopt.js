@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.2.0
+ * v2.2.1
  */
 
 //
@@ -33,7 +33,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 			_value = _value.unescape();
 		}
 		
-		if(key)
+		if(key = GetOpt.checkKey(key, false))
 		{
 			if(_array && !_equal_sign)
 			{
