@@ -23,14 +23,14 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 * [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2025-01-14**\] Updated [**`getopt.tiny.js`**](#tiny-alternative-version), v**2.1.0**;
+* \[**2025-01-14**\] Updated [**`getopt.tiny.js`**](#tiny-alternative-version), v**2.2.0**;
 * \[**2024-03-04**\] New version v**0.4.0**
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js), v**2.1.0** (**440** code lines);
+* [**`getopt.tiny.js`**](src/getopt.tiny.js), v**2.2.0** (**485** code lines);
 * [`test.js`](src/test.js) (tiny test, jfyi..);
 
 ## Info
@@ -49,19 +49,22 @@ also much easier and quicker.
 The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfill.
 Everything's included on the file's bottom.
 
-> [!TIP]
-> The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'` will unescape
-> the string to interprete a newline `\n` character.
+### Newest features
+The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'`
+will unescape the string to interprete with a newline character `\n`.
 
-> [!NOTE]
-> Since v**2.0.0** the keys are stored **with `--`** prefix, to prevent collisions with the
-> `.prototype` implementation of the resulting **Array** (which is preferred over
-> `Object.create(null)` because that's the best way to also store the complete (filtered)
-> command line).
+Since v**2.0.0** the keys are stored **with `--`** prefix, to prevent collisions with the
+`.prototype` implementation of the resulting **Array** (which is preferred over
+`Object.create(null)` because that's the best way to also store the complete (filtered)
+command line).
 
-> [!NOTE]
-> With v**2.1.0** there's also an interface (`extends Array`) to manage this thing better.
-> .. but everything's yet **untested**.
+With v**2.1.0** there's also an interface (`extends Array`) to manage this thing better.
+
+And since v**2.2.0** assigning via `=` char (so e.g. `--key=value`) will directly replace
+the whole value with the newest one, even when it's set to count multiple occurences of
+the same key into an array (see parameter/const `_array = DEFAULT_ARRAY`).
+
+These new features are **barely tested**...
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.

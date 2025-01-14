@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.1.0
+ * v2.2.0
  */
 
 //
@@ -20,7 +20,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 	var key = '';
 	var idx, value;
 	
-	const set = (_value) => {
+	const set = (_value, _equal_sign = false) => {
 		if(_cast)
 		{
 			_value = _value.tryCast(
@@ -28,21 +28,16 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 				_unescape,
 				DEFAULT_CAST_REGEXP);
 		}
+		else if(_unescape)
+		{
+			_value = _value.unescape();
+		}
 		
 		if(key)
 		{
-			key = GetOpt.checkKey(key);
-
-			if((key in result) && _array)
+			if(_array && !_equal_sign)
 			{
-				if(Array.isArray(result[key]))
-				{
-					result[key].push(_value);
-				}
-				else
-				{
-					result[key] = [ result[key], _value ];
-				}
+				result.add(key, _value, false, false);
 			}
 			else
 			{
@@ -72,7 +67,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 		
 		const value = key.substr(idx + 1);
 		key = key.substr(0, idx);
-		set(value);
+		set(value, true);
 
 		return true;
 	};
@@ -81,13 +76,13 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 	{
 		if(end)
 		{
-			set(_vector[i]);
+			set(_vector[i], false);
 		}
 		else if(_vector[i] === '--')
 		{
 			if(key)
 			{
-				set('');
+				set('', false);
 			}
 			
 			end = true;
@@ -96,7 +91,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 		{
 			if(key)
 			{
-				set('');
+				set('', false);
 			}
 			
 			key = _vector[i].substr(2);
@@ -104,7 +99,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 		}
 		else
 		{
-			set(_vector[i]);
+			set(_vector[i], false);
 		}
 	}
 	
@@ -112,7 +107,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 	{
 		if(!checkKeyForEqualSign())
 		{
-			set('');
+			set('', false);
 		}
 	}
 
@@ -183,12 +178,19 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			return undefined;
 		}
 
-		if(typeof _value === 'string' && _cast)
+		if(typeof _value === 'string')
 		{
-			_value = _value.tryCast(
-				DEFAULT_CAST_EMPTY,
-				_unescape,
-				DEFAULT_CAST_REGEXP);
+			if(_cast)
+			{
+				_value = _value.tryCast(
+					DEFAULT_CAST_EMPTY,
+					_unescape,
+					DEFAULT_CAST_REGEXP);
+			}
+			else if(_unescape)
+			{
+				_value = _value.unescape();
+			}
 		}
 
 		if(!this._keys.include(_key))
@@ -196,6 +198,49 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			this._keys.push(_key);
 		}
 
+		return this[_key] = _value;
+	}
+
+	add(_key, _value, _cast = DEFAULT_CAST, _unescape = DEFAULT_UNESCAPE)
+	{
+		if(!(_key = GetOpt.checkKey(_key)))
+		{
+			return undefined;
+		}
+
+		if(typeof _value === 'string')
+		{
+			if(_cast)
+			{
+				_value = _value.tryCast(
+					DEFAULT_CAST_EMPTY,
+					_unescape,
+					DEFAULT_CAST_REGEXP);
+			}
+			else if(_unescape)
+			{
+				_value = _value.unescape();
+			}
+		}
+
+		if(this._keys.includes(_key))
+		{
+			if(Array.isArray(this[_key]))
+			{
+				this[_key].push(
+					_value);
+			}
+			else
+			{
+				this[_key] = [
+					this[_key],
+					_value ];
+			}
+
+			return this[_key];
+		}
+
+		this._keys.push(_key);
 		return this[_key] = _value;
 	}
 
