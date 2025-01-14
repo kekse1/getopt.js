@@ -61,6 +61,7 @@ Everything's included on the file's bottom.
 
 > [!NOTE]
 > With v**2.1.0** there's also an interface (`extends Array`) to manage this thing better.
+> .. but everything's yet **untested**.
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
