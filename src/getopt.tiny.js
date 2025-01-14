@@ -25,10 +25,10 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 		{
 			_value = _value.tryCast(
 				DEFAULT_CAST_EMPTY,
-				_unescape,
 				DEFAULT_CAST_REGEXP);
 		}
-		else if(_unescape)
+		
+		if(typeof _value === 'string' && _unescape)
 		{
 			_value = _value.unescape();
 		}
@@ -184,10 +184,10 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			{
 				_value = _value.tryCast(
 					DEFAULT_CAST_EMPTY,
-					_unescape,
 					DEFAULT_CAST_REGEXP);
 			}
-			else if(_unescape)
+
+			if(_unescape && typeof _value === 'string')
 			{
 				_value = _value.unescape();
 			}
@@ -214,10 +214,10 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			{
 				_value = _value.tryCast(
 					DEFAULT_CAST_EMPTY,
-					_unescape,
 					DEFAULT_CAST_REGEXP);
 			}
-			else if(_unescape)
+
+			if(_unescape && typeof _value === 'string')
 			{
 				_value = _value.unescape();
 			}
@@ -301,7 +301,7 @@ if(typeof global.__getopt_ext !== 'number')
 	global.__getopt_ext = Date.now();
 	
 	//
-	Reflect.defineProperty(String.prototype, 'tryCast', { value: function(_empty_true = false)
+	Reflect.defineProperty(String.prototype, 'tryCast', { value: function(_empty_true = DEFAULT_CAST_EMPTY, _regexp = DEFAULT_CAST_REGEXP)
 	{
 		const result = this.valueOf();
 		var tmp;
@@ -339,17 +339,9 @@ if(typeof global.__getopt_ext !== 'number')
 		return result;
 	}});
 
-	Reflect.defineProperty(String, 'tryCast', { value: (_value, _empty_true = false) => {
-		if(typeof _value !== 'string')
-		{
-			return _value;
-		}
-		else if(_value.length === 0)
-		{
-			return (_empty_true ? true : '');
-		}
-		
-		return _value.tryCast(_empty_true);
+	Reflect.defineProperty(String, 'tryCast', { value: (_value, _empty_true = DEFAULT_CAST_EMPTY, _regexp = DEFAULT_CAST_REGEXP) => {
+		if(typeof _value !== 'string') return _value;
+		return _value.tryCast(_empty_true, _regexp);
 	}});
 
 	Reflect.defineProperty(RegExp, 'parse', { value: (_value) => {
