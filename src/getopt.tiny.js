@@ -1,25 +1,11 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.0.0
- */
-
-/*
- * HINT: This newest version stores the keys *with*
- * '--' prefix, since the resulting array may conflict
- * in its .prototype implementation!
- *
- * We could also use 'Object.create(null)', BUT there
- * would not be any regular command line argument (so
- * those w/o '--' prefix)..
- *
- * This change was really tiny, so dass ich mangels
- * Lust oder wg. Faulheit (etc..) auf einen erneuten
- * Testlauf verzichtet habe...! xD~
- *
+ * v2.1.0
  */
 
 //
+const DEFAULT_THROW = true;
 const DEFAULT_CAST = true;
 const DEFAULT_CAST_EMPTY = true;
 const DEFAULT_CAST_REGEXP = false; //prob: paths.. xD~
@@ -29,7 +15,7 @@ const DEFAULT_UNESCAPE = true;
 
 //
 const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
-	const result = [];
+	const result = new GetOpt();
 	var end = false;
 	var key = '';
 	var idx, value;
@@ -45,11 +31,11 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 		
 		if(key)
 		{
-			key = '--' + key;
+			key = GetOpt.checkKey(key);
 
 			if((key in result) && _array)
 			{
-				if(array(result[key]))
+				if(Array.isArray(result[key]))
 				{
 					result[key].push(_value);
 				}
@@ -60,7 +46,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 			}
 			else
 			{
-				result[key] = _value;
+				result.set(key, _value, false, false);
 			}
 				
 			key = '';
@@ -132,6 +118,132 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 
 	return result;
 };
+
+const GetOpt = getopt.GetOpt = class GetOpt extends Array
+{
+	constructor(... _args)
+	{
+		super(... _args);
+
+		this._keys = [];
+	}
+
+	static checkKey(_key, _throw = DEFAULT_THROW)
+	{
+		if(typeof _key !== 'string')
+		{
+			if(_throw)
+			{
+				throw new Error('Invalid _key argument (not a String)');
+			}
+
+			return null;
+		}
+
+		if(!_key.startsWith('--'))
+		{
+			_key = '--' + _key;
+		}
+
+		if(_key.length <= 2)
+		{
+			if(_throw)
+			{
+				throw new Error('Invalid _key argument (may not be empty)');
+			}
+
+			return null;
+		}
+
+		return _key;
+	}
+	
+	clear()
+	{
+		const result = [ ... this._keys ];
+		for(const k of this._keys) delete this[k];
+		this._keys.length = 0;
+		return result;
+	}
+
+	get keys()
+	{
+		return [ ... this._keys ];
+	}
+
+	get size()
+	{
+		return this._keys.length;
+	}
+
+	set(_key, _value, _cast = DEFAULT_CAST, _unescape = DEFAULT_UNESCAPE)
+	{
+		if(!(_key = GetOpt.checkKey(_key)))
+		{
+			return undefined;
+		}
+
+		if(typeof _value === 'string' && _cast)
+		{
+			_value = _value.tryCast(
+				DEFAULT_CAST_EMPTY,
+				_unescape,
+				DEFAULT_CAST_REGEXP);
+		}
+
+		if(!this._keys.include(_key))
+		{
+			this._keys.push(_key);
+		}
+
+		return this[_key] = _value;
+	}
+
+	get(_key)
+	{
+		if(!(_key = GetOpt.checkKey(_key)))
+		{
+			return undefined;
+		}
+
+		if(!this._keys.include(_key))
+		{
+			return undefined;
+		}
+
+		return this[_key];
+	}
+
+	has(_key)
+	{
+		if(!(_key = GetOpt.checkKey(_key)))
+		{
+			return null;
+		}
+
+		return this._keys.includes(_key);
+	}
+
+	remove(_key)
+	{
+		if(!(_key = GetOpt.checkKey(_key)))
+		{
+			return null;
+		}
+
+		for(var i = this._keys.length - 1; i >= 0; --i)
+		{
+			if(this._keys[i] === _key)
+			{
+				this._keys.splice(i, 1);
+				delete this[_key];
+				return true;
+			}
+		}
+
+		return false;
+	}
+}
 
 export default getopt;
 
@@ -325,3 +437,4 @@ if(typeof global.__getopt_ext !== 'number')
 }
 
 //
+

@@ -23,14 +23,14 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 * [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2025-01-10**\] Useful update at [**`getopt.tiny.js`**](#tiny-alternative-version), **v2.0.0**;
-* \[**2024-03-04**\] New version **v0.4.0**
+* \[**2025-01-14**\] Updated [**`getopt.tiny.js`**](#tiny-alternative-version), v**2.1.0**;
+* \[**2024-03-04**\] New version v**0.4.0**
 * \[**2024-02-25**\] Updated the **`polyfill.js`** to be _really_ complete now; and the **`getopt.js`** also has a new **`test.js`** (BUT ONE BUG FOUND atm, TODO!)
 
 ## Download
-* [**`getopt.js`**](src/getopt.js) (**252** code lines, in **v0.4.0**)
+* [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js), **v2.0.0** (**327** code lines);
+* [**`getopt.tiny.js`**](src/getopt.tiny.js), v**2.1.0** (**440** code lines);
 * [`test.js`](src/test.js) (tiny test, jfyi..);
 
 ## Info
@@ -54,10 +54,13 @@ Everything's included on the file's bottom.
 > the string to interprete a newline `\n` character.
 
 > [!NOTE]
-> Since **v2.0.0** the keys are stored **with `--`** prefix, to prevent collisions with the
+> Since v**2.0.0** the keys are stored **with `--`** prefix, to prevent collisions with the
 > `.prototype` implementation of the resulting **Array** (which is preferred over
 > `Object.create(null)` because that's the best way to also store the complete (filtered)
 > command line).
+
+> [!NOTE]
+> With v**2.1.0** there's also an interface (`extends Array`) to manage this thing better.
 
 ## Description
 You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
