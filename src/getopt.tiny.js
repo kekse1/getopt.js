@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.2.1
+ * v2.2.2
  */
 
 //
@@ -161,6 +161,25 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 		return result;
 	}
 
+	get values()
+	{
+		const result = Object.create(null);
+
+		for(const key of this._keys)
+		{
+			result[key] =
+				result[key.substr(2)] =
+					this[key];
+		}
+		
+		return result;
+	}
+
+	get vector()
+	{
+		return [ ... this ];
+	}
+
 	get keys()
 	{
 		return [ ... this._keys ];
@@ -246,6 +265,11 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 	get(_key)
 	{
+		if(arguments.length === 0 || _key === '')
+		{
+			return this.values;
+		}
+
 		if(!(_key = GetOpt.checkKey(_key)))
 		{
 			return undefined;
