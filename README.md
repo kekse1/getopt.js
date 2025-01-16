@@ -5,8 +5,8 @@ This is my own interpretation of the well known `getopt` functionality.
 And now there's also a [**tiny alternative version**](#tiny-alternative-version).
 
 ## Index
-* [News](#news)
-* [Start](#getoptjs)
+1. [News](#news)
+2. [Start](#getoptjs)
     * [Download](#download)
     * [Tiny alternative version](#tiny-alternative-version)
     * [Description](#description)
@@ -20,7 +20,8 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 	* [Namespace](#namespace)
 	* [Bugs](#bugs)
     * [References](#references)
-* [Copyright and License](#copyright-and-license)
+3. [Contact](#contact)
+4. [Copyright and License](#copyright-and-license)
 
 ## News
 * \[**2025-01-14**\] Updated [**`getopt.tiny.js`**](#tiny-alternative-version), v**2.2.1**;
@@ -166,6 +167,9 @@ Maybe also interesting for you: the **`config.js`**? And a reference to my docum
 * [**`config`**.md](https://github.com/kekse1/v4/blob/git/docs/modules/lib/config.md)
 
 The documentation (located in my `v4` repository) is also still TODO.
+
+# Contact
+<img src="https://kekse.biz/github.php?override=github:getopt.js&draw&text=kuchen@kekse.biz&angle=6&size=24px&fg=150,20,90&font=OpenSans&ro&readonly&h=64&v=16" />
 
 # Copyright and License
 The Copyright is [(c) Sebastian Kucharczyk](COPYRIGHT.txt),
