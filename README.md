@@ -169,7 +169,7 @@ Maybe also interesting for you: the **`config.js`**? And a reference to my docum
 The documentation (located in my `v4` repository) is also still TODO.
 
 # Contact
-<img src="https://kekse.biz/github.php?override=github:getopt.js&draw&text=kuchen@kekse.biz&angle=6&size=24px&fg=150,20,90&font=OpenSans&ro&readonly&h=64&v=16" />
+<img src="https://kekse.biz/github.php?override=github:getopt.js&draw&text=getopt.js@kekse.biz&angle=6&size=38pt&fg=150,20,90&font=OpenSans&ro&readonly&h=64&v=16" />
 
 # Copyright and License
 The Copyright is [(c) Sebastian Kucharczyk](COPYRIGHT.txt),
