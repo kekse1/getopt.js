@@ -4,9 +4,6 @@
 This is my own interpretation of the well known `getopt` functionality.
 And now there's also a [**tiny alternative version**](#tiny-alternative-version).
 
-> [!TIP]
-> Currently I'm also planning a [**new version**](https://github.com/kekse1/getopt/).
-
 ## Index
 1. [News](#news)
 2. [Start](#getoptjs)
