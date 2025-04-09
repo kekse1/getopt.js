@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.2.2
+ * v2.3.0
  */
 
 //
@@ -12,6 +12,7 @@ const DEFAULT_CAST_REGEXP = false; //prob: paths.. xD~
 const DEFAULT_EQUAL_ASSIGN = true;
 const DEFAULT_ARRAY = false;
 const DEFAULT_UNESCAPE = true;
+const DEFAULT_SPLIT = true;
 
 //
 const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
@@ -19,6 +20,33 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 	var end = false;
 	var key = '';
 	var idx, value;
+
+	if(DEFAULT_SPLIT) for(var i = 0; i < _vector.length; ++i)
+	{
+		if(_vector[i] === '--')
+		{
+			break;
+		}
+		else if(_vector[i].startsWith('--'))
+		{
+			_vector[i] = _vector[i].split(' ');
+
+			for(var j = 0, k = 0; j < _vector[i].length; ++j)
+			{
+				if(!_vector[i][j])
+				{
+					_vector[i].splice(j--, 1);
+				}
+				else if(j > 0)
+				{
+					_vector.splice(i + ++k, 0,
+						_vector[i].splice(j--, 1)[0]);
+				}
+			}
+
+			_vector[i] = _vector[i][0];
+		}
+	}
 	
 	const set = (_value, _equal_sign = false) => {
 		if(_cast)
