@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.3.0
+ * v2.3.1
  */
 
 //
@@ -317,6 +317,23 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 		return this[_key];
 	}
+
+	//
+	//TODO/"Reflect.{is,was}()"! @ polyfill, e.g..
+	//
+	/*is(_key, ... _args)
+	{
+		return Reflect.is(
+			this.get(_key),
+			... _args);
+	}
+
+	was(_key, ... _args)
+	{
+		return Reflect.was(
+			this.get(_key),
+			... _args);
+	}*/
 
 	has(_key)
 	{
