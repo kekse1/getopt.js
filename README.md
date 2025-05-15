@@ -11,7 +11,7 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 > [!TIP]
 > So the [tiny alternative version](#tiny-alternative-version) (which got it's own polyfill, so it should
 > run 'as is'..) got the latest feature of supporting multiple radix (if parsing/etc. of paramters is
-> enabled), like `--int '(8)1777'` or `--hex '(16)ffff'`. ;-)
+> enabled), like `--perm '(8)1777'` or `--int '(16)ffff'`. ;-)
 
 ## Index
 1. [News](#news)
@@ -58,8 +58,8 @@ The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfi
 Everything's included on the file's bottom.
 
 > [!TIP]
-> Since v**2.4.0** it also supports different radix/base, e.g. `--int '(8)1777'`
-> or `--hex '(16)ffff'`. ;-) Well, it's really untested, but should work well..
+> Since v**2.4.0** it also supports different radix/base, e.g. `--perm '(8)1777'`
+> or `--int '(16)ffff'`. ;-) Well, it's really untested, but should work well..
 
 ### Newest features
 The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'`
