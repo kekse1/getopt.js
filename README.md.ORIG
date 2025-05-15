@@ -4,15 +4,6 @@
 This is my own interpretation of the well known `getopt` functionality.
 And now there's also a [**tiny alternative version**](#tiny-alternative-version).
 
-> [!NOTE]
-> The regular/big version has at least one bug. And my [**tiny alternative version**](#tiny-alternative-version)
-> is maintained a bit more frequently (currently I'm not in the mood of fixing the regular version).
-
-> [!TIP]
-> So the [tiny alternative version](#tiny-alternative-version) (which got it's own polyfill, so it should
-> run 'as is'..) got the latest feature of supporting multiple radix (if parsing/etc. of paramters is
-> enabled), like `--int '(8)1777'` or `--hex '(16)ffff'`. ;-)
-
 ## Index
 1. [News](#news)
 2. [Start](#getoptjs)
@@ -34,11 +25,12 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 
 ## News
 * \[**2025-05-15**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version) again, v**2.4.0**;
+* \[**2025-04-22**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version), v**2.3.1**;
 
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js), v**2.4.0** (updated **2025-05-15**, w/ **668** code lines in total);
+* [**`getopt.tiny.js`**](src/getopt.tiny.js), v**2.3.1** (**553** code lines);
 * [`test.js`](src/test.js) (tiny test, jfyi..);
 
 ## Info
@@ -56,10 +48,6 @@ also much easier and quicker.
 
 The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfill.
 Everything's included on the file's bottom.
-
-> [!TIP]
-> Since v**2.4.0** it also supports different radix/base, e.g. `--int '(8)1777'`
-> or `--hex '(16)ffff'`. ;-) Well, it's really untested, but should work well..
 
 ### Newest features
 The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'`

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.3.1
+ * v2.4.0
  */
 
 //
@@ -13,6 +13,10 @@ const DEFAULT_EQUAL_ASSIGN = true;
 const DEFAULT_ARRAY = false;
 const DEFAULT_UNESCAPE = true;
 const DEFAULT_SPLIT = true;
+const DEFAULT_RADIX_FALLBACK = 10;
+const DEFAULT_RADIX_FALLBACK_PARSE = null;
+const DEFAULT_RADIX_CHECK = true;
+const DEFAULT_RADIX_CHECK_FALLBACK = true;
 
 //
 const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
@@ -387,6 +391,16 @@ if(typeof global.__getopt_ext !== 'number')
 			return (_empty_true ? true : result);
 		}
 		
+		if(result.includes('(') && result.includes(')'))
+		{
+			tmp = result.parseNumber(null);
+			
+			if(tmp !== null)
+			{
+				return tmp;
+			}
+		}
+		
 		if(!isNaN(result))
 		{
 			return Number(result);
@@ -546,6 +560,107 @@ if(typeof global.__getopt_ext !== 'number')
 		}
 
 		return result;
+	}});
+	
+	Reflect.defineProperty(String.prototype, 'parseNumber', { value: function(_fallback = DEFAULT_RADIX_FALLBACK_PARSE)
+	{
+		if(this[this.length - 1] === 'n')
+		{
+			return this.parseBigInt(_fallback);
+		}
+		
+		return this.parseInt(_fallback);
+	}});
+	
+	Reflect.defineProperty(String.prototype, 'parseFloat', { value: function(_fallback = DEFAULT_RADIX_FALLBACK_PARSE)
+	{
+		throw new Error('TODO');
+	}});
+	
+	Reflect.defineProperty(String.prototype, 'parseInt', { value: function(_fallback = DEFAULT_RADIX_FALLBACK_PARSE)
+	{
+		var result = this.getRadix(_fallback);
+		
+		if(!result)
+		{
+			return null;
+		}
+		
+		result = parseInt(result[1], result[0]);
+		
+		if(Number.isNaN(result))
+		{
+			return null;
+		}
+		
+		return result;
+	}});
+	
+	Reflect.defineProperty(String.prototype, 'parseBigInt', { value: function(_fallback = DEFAULT_RADIX_FALLBACK_PARSE)
+	{
+		throw new Error('TODO');
+	}});
+	
+	Reflect.defineProperty(String.prototype, 'getRadix', { value: function(_fallback = DEFAULT_RADIX_FALLBACK, _check_radix = DEFAULT_RADIX_CHECK, _check_fallback = DEFAULT_RADIX_CHECK_FALLBACK)
+	{
+		var data = this.valueOf();
+		
+		if(data[0] !== '(')
+		{
+			if(!_fallback)
+			{
+				return null;
+			}
+			
+			return [ (_fallback || 10), data ];
+		}
+		
+		const closeIdx = data.indexOf(')');
+		
+		if(closeIdx === -1)
+		{
+			if(!_fallback)
+			{
+				return null;
+			}
+			
+			return [ (_fallback || 10), data ];
+		}
+		
+		const radix = Number(data.substring(1, closeIdx));
+		data = data.substr(closeIdx + 1);
+		
+		if(Number.isNaN(radix))
+		{
+			if(!_fallback)
+			{
+				return null;
+			}
+			
+			return [ (_fallback || 10), data ];
+		}
+		
+		if(_check_radix)
+		{
+			if(radix < 2 || radix > 36)
+			{
+				if(!_fallback)
+				{
+					return null;
+				}
+				
+				if(_check_fallback)
+				{
+					radix = (_fallback || 10);
+				}
+				else
+				{
+					radix = null;
+				}
+			}
+		}
+		
+		return [ radix, data ];
 	}});
 }
 
