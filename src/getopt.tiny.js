@@ -391,7 +391,7 @@ if(typeof global.__getopt_ext !== 'number')
 			return (_empty_true ? true : result);
 		}
 		
-		if(result.includes('(') && result.includes(')'))
+		if(result[0] === '(' && result.includes(')'))
 		{
 			tmp = result.parseNumber(null);
 			
