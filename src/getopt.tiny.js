@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.4.0
+ * v2.4.1
  */
 
 //
@@ -17,6 +17,7 @@ const DEFAULT_RADIX_FALLBACK = 10;
 const DEFAULT_RADIX_FALLBACK_PARSE = null;
 const DEFAULT_RADIX_CHECK = true;
 const DEFAULT_RADIX_CHECK_FALLBACK = true;
+const DEFAULT_HELP = true;
 
 //
 const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
@@ -106,7 +107,11 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 	
 	for(var i = _start; i < _vector.length; ++i)
 	{
-		if(end)
+		if(DEFAULT_HELP && (_vector[i] === '--help' || _vector[i] === '-?'))
+		{
+			result.help = true;
+		}
+		else if(end)
 		{
 			set(_vector[i], false);
 		}
@@ -151,8 +156,8 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 	constructor(... _args)
 	{
 		super(... _args);
-
 		this._keys = [];
+		this.help = (DEFAULT_HELP ? false : null);
 	}
 
 	static checkKey(_key, _throw = DEFAULT_THROW)
