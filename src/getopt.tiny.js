@@ -1,12 +1,13 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.4.1
+ * v2.4.2
  */
 
 //
 const DEFAULT_THROW = true;
 const DEFAULT_CAST = true;
+const DEFAULT_CAST_REGULAR = false;
 const DEFAULT_CAST_EMPTY = true;
 const DEFAULT_CAST_REGEXP = false; //prob: paths.. xD~
 const DEFAULT_EQUAL_ASSIGN = true;
@@ -20,7 +21,7 @@ const DEFAULT_RADIX_CHECK_FALLBACK = true;
 const DEFAULT_HELP = true;
 
 //
-const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
+const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _cast_regular = DEFAULT_CAST_REGULAR, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
 	const result = new GetOpt();
 	var end = false;
 	var key = '';
@@ -54,11 +55,16 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 	}
 	
 	const set = (_value, _equal_sign = false) => {
-		if(_cast)
+		key = GetOpt.checkKey(key, false);
+
+		if(_cast || _cast_regular)
 		{
-			_value = _value.tryCast(
-				DEFAULT_CAST_REGEXP,
-				DEFAULT_CAST_EMPTY);
+			if((key && _cast) || (!key && _cast_regular))
+			{
+				_value = _value.tryCast(
+					DEFAULT_CAST_REGEXP,
+					DEFAULT_CAST_EMPTY);
+			}
 		}
 		
 		if(typeof _value === 'string' && _unescape)

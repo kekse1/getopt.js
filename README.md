@@ -33,13 +33,12 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 4. [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2025-06-26**\] New **`--help / -?`** feature in [**`getopt.tiny.js`**](#tiny-alternative-version) (untested!); v**2.4.1**.
-* \[**2025-05-15**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version) again, v**2.4.0**;
+* \[**2025-08-20**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version), v**2.4.2**;
 
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js), v**2.4.1** (updated **2025-06-26**, w/ **673** code lines in total);
+* [**`getopt.tiny.js`**](src/getopt.tiny.js), v**2.4.2** (updated **2025-08-20**, w/ **679** code lines in total);
 * [`test.js`](src/test.js) (tiny test, jfyi..);
 
 ## Info
