@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
  * https://kekse.biz/ https://github.com/kekse1/getopt.js/
- * v2.4.2
+ * v2.4.3
  */
 
 //
@@ -129,6 +129,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 			}
 			
 			end = true;
+			_cast = _cast_regular = false;
 		}
 		else if(_vector[i][0] === '-' && _vector[i][1] === '-')
 		{
