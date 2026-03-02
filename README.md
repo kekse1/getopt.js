@@ -33,7 +33,7 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 4. [Copyright and License](#copyright-and-license)
 
 ## News
-* \[**2026-03-02**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version);
+* \[**2026-03-02**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version)
 
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
