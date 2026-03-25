@@ -76,6 +76,7 @@ const type = (_value, _types) => {
 			if(bigint(_value)) return true;
 			break;
 		case 'function':
+		case 'func':
 			if(func(_value)) return true;
 			break;
 		case 'object':
@@ -132,6 +133,7 @@ Reflect.defineProperty(type, 'types', { get: () => [
 	'regexp',
 	'bigint',
 	'function',
+	'func',
 	'object',
 	'null',
 	'undefined'
