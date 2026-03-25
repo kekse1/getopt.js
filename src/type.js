@@ -39,6 +39,7 @@ const type = (_value, _types) => {
 			if(port(_value)) return true;
 			break;
 		case 'string':
+		case 'str':
 			if(string(_value)) return true;
 			break;
 		case 'char':
@@ -73,6 +74,7 @@ const type = (_value, _types) => {
 			if(regexp(_value)) return true;
 			break;
 		case 'bigint':
+		case 'big':
 			if(bigint(_value)) return true;
 			break;
 		case 'function':
@@ -80,6 +82,7 @@ const type = (_value, _types) => {
 			if(func(_value)) return true;
 			break;
 		case 'object':
+		case 'obj':
 			if(object(_value)) return true;
 			break;
 		case 'null':
@@ -118,6 +121,7 @@ Reflect.defineProperty(type, 'types', { get: () => [
 	'host',
 	'port',
 	'string',
+	'str',
 	'char',
 	'character',
 	'byte',
@@ -132,9 +136,11 @@ Reflect.defineProperty(type, 'types', { get: () => [
 	'bool',
 	'regexp',
 	'bigint',
+	'big',
 	'function',
 	'func',
 	'object',
+	'obj',
 	'null',
 	'undefined'
 ]});
