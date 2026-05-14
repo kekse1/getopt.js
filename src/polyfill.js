@@ -202,7 +202,7 @@ Reflect.defineProperty(String.prototype, 'isLowerCase', { get: function()
 Reflect.defineProperty(Math, 'getIndex', { value: (_index, _length) => {
 	if(Number.isNumber(_index))
 	{
-		_index = Math.int(_index);
+		_index = Math.trunc(_index);
 	}
 	else
 	{
@@ -211,7 +211,7 @@ Reflect.defineProperty(Math, 'getIndex', { value: (_index, _length) => {
 
 	if(Number.isNumber(_length))
 	{
-		_length = Math.int(_length);
+		_length = Math.trunc(_length);
 	}
 	else
 	{
@@ -230,7 +230,8 @@ Reflect.defineProperty(Math, 'getIndex', { value: (_index, _length) => {
 	return (_index || 0);
 }});
 
-Reflect.defineProperty(Math, 'int', { value: (_value, _precision = 0, _inverse = false) => {
+//using Math.trunc() now.
+/*Reflect.defineProperty(Math, 'int', { value: (_value, _precision = 0, _inverse = false) => {
 	if(typeof _value === 'bigint')
 	{
 		return _value;
@@ -249,7 +250,7 @@ Reflect.defineProperty(Math, 'int', { value: (_value, _precision = 0, _inverse =
 	const b = (!!_inverse);
 
 	return (((((a&&b)||!(a||b)) ? Math.floor : Math.ceil)(_value, _precision)) || 0);
-}});
+}});*/
 
 const _round = Math.round.bind(Math);
 const _floor = Math.floor.bind(Math);
