@@ -1,10 +1,13 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
- * https://kekse.biz/ https://github.com/kekse1/
+ * https://norbert.com.es/
  */
 
 //
-const type = (_value, _types) => {
+const DEFAULT_CHECK = true;
+
+//
+const type = (_value, _types, _check = DEFAULT_CHECK) => {
 	var result = '';
 
 	if(string(_types, false))
@@ -15,8 +18,21 @@ const type = (_value, _types) => {
 	{
 		throw new Error('Invalid _types argument');
 	}
+
+	if(_check) for(var i = 0; i < _types.length; ++i)
+	{
+		if(typeof _types[i] !== 'string' || _types[i].length === 0)
+		{
+			throw new Error('Invalid type[' + i + ']');
+		}
+
+		if(!TYPES.has(_types[i] = _types[i].toLowerCase()))
+		{
+			throw new Error('Unknown type[' + i + ']: `' + _types[i] + '`');
+		}
+	}
 	
-	for(const t of _types) switch(t.toLowerCase())
+	for(const t of _types) switch(t)
 	{
 		case 'path':
 		case 'directory':
@@ -64,6 +80,7 @@ const type = (_value, _types) => {
 			if(numeric(_value)) return true;
 			break;
 		case 'radix':
+		case 'rdx':
 			if(isRadix(_value)) return true;
 			break;
 		case 'boolean':
@@ -86,9 +103,11 @@ const type = (_value, _types) => {
 			if(object(_value)) return true;
 			break;
 		case 'null':
+		case 'nul':
 			if(nul(_value)) return true;
 			break;
 		case 'undefined':
+		case 'undef':
 			if(undef(_value)) return true;
 			break;
 	}
@@ -107,7 +126,7 @@ type.validTypesString = (_types) => {
 };
 
 //
-Reflect.defineProperty(type, 'types', { get: () => [
+const types = [
 	'path',
 	'directory',
 	'dir',
@@ -132,6 +151,7 @@ Reflect.defineProperty(type, 'types', { get: () => [
 	'number',
 	'numeric',
 	'radix',
+	'rdx',
 	'boolean',
 	'bool',
 	'regexp',
@@ -142,9 +162,19 @@ Reflect.defineProperty(type, 'types', { get: () => [
 	'object',
 	'obj',
 	'null',
-	'undefined'
-]});
+	'nul',
+	'undefined',
+	'undef'
+];
 
+Reflect.defineProperty(type, 'types', {
+	get: () => [ ... types ] });
+Reflect.defineProperty(type, 'TYPES', {
+	get: () => new Set(types) });
+
+const TYPES = new Set(types);
+
+//
 export default type;
 
 //
