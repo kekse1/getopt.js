@@ -5,6 +5,7 @@
 
 //
 const DEFAULT_THROW = true;
+const DEFAULT_THROW_GET = false;
 const DEFAULT_CAST = true;
 const DEFAULT_CAST_REGULAR = true;
 const DEFAULT_CAST_EMPTY = true;
@@ -15,6 +16,7 @@ const DEFAULT_UNESCAPE = true;
 const DEFAULT_SPLIT = true;
 const DEFAULT_HELP = true;
 const DEFAULT_FIX = true;
+const DEFAULT_CHECK_TYPE = true;
 
 //
 import type from './type.js';
@@ -391,7 +393,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 		return this[_key] = _value;
 	}
 
-	get(_key)
+	get(_key, _throw_type = DEFAULT_THROW_GET, _check_type = DEFAULT_CHECK_TYPE)
 	{
 		if(arguments.length === 0 || _key === '')
 		{
@@ -405,7 +407,22 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 		if(!this._keys.includes(_key))
 		{
+			if(_throw_type === true)
+			{
+				throw new Error('Invalid key `' + _key + '`');
+			}
+			
 			return undefined;
+		}
+		
+		const result = this[_key];
+		
+		if(string(_throw_type, false) || array(_throw_type, false))
+		{
+			if(!type(result, _throw_type, _check_type))
+			{
+				return undefined;
+			}
 		}
 
 		return this[_key];
@@ -447,12 +464,10 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 	type(_key, _type)
 	{
-		return type(
-			this.get(_key),
-			_type);
+		return type(this.get(_key), _type);
 	}
 
-	has(_key, _type)
+	has(_key, _type, _check_type = DEFAULT_CHECK_TYPE)
 	{
 		if(!(_key = this.checkKey(_key)))
 		{
@@ -466,7 +481,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			return result;
 		}
 
-		return type(this[_key], _type);
+		return type(this[_key], _type, _check_type);
 	}
 
 	remove(_key)

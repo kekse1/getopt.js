@@ -33,13 +33,15 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 4. [Copyright and License](#copyright-and-license)
 
 ## News
+* \[**2026-05-24**\] New updates to the [**`getopt.tiny.js`**](#tiny-alternative-version), w/ [**`type.js`**](./src/type.js); ...
 * \[**2026-03-02**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version)
 
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js) (updated **2026-03-02**, w/ **447** code lines in total);
+* [**`getopt.tiny.js`**](src/getopt.tiny.js) (updated **2026-05-24**, w/ **588** code lines in total);
 * [`test.js`](src/test.js) (tiny test, jfyi..);
+* [`type.js`](src/type.js) (more **type check** features for the **tiny version**);
 
 ## Info
 Just for your info: Both versions stop parsing the rest of the command line after the
@@ -54,7 +56,7 @@ There are not so many features, but the main difference is that you don't define
 parameters, so any `--` prefixed parameter will be interpreted as valid key. So handling this version is
 also much easier and quicker.
 
-The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfill.
+The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfill (at least until now.. I don't really know now);
 Everything's included on the file's bottom.
 
 > [!TIP]
