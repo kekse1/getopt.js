@@ -425,6 +425,16 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			... _args);
 	}
 
+	get types()
+	{
+		return this.constructor.types;
+	}
+
+	get TYPES()
+	{
+		return this.constructor.TYPES;
+	}
+
 	static get types()
 	{
 		return type.types;
