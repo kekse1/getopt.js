@@ -1,6 +1,6 @@
 /*
  * Copyright (c) Sebastian Kucharczyk <kuchen@kekse.biz>
- * https://kekse.biz/ https://github.com/kekse1/
+ * https://norbert.com.es/
  */
 
 //
@@ -14,13 +14,14 @@ const DEFAULT_ARRAY = false;
 const DEFAULT_UNESCAPE = true;
 const DEFAULT_SPLIT = true;
 const DEFAULT_HELP = true;
+const DEFAULT_FIX = true;
 
 //
 import type from './type.js';
 
 //
-const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _cast_regular = DEFAULT_CAST_REGULAR, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
-	if(Object.isObject(_cast))
+const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _cast_regular = DEFAULT_CAST_REGULAR, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
+	if(object(_cast))
 	{
 		if('array' in _cast)
 		{
@@ -55,7 +56,7 @@ const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _u
 		{
 			_start = _cast.start;
 		}
-		else if(Number.isInt(_unescape))
+		else if(int(_unescape))
 		{
 			_start = _unescape;
 		}
@@ -103,9 +104,14 @@ const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _u
 	}
 	
 	const set = (_value, _equal_sign = false) => {
-		key = GetOpt.checkKey(key, false);
+		key = result.checkKey(key, false);
+		
+		if(key && key.length > 1 && key[1] !== '-')
+		{
+			_equal_sign = false;
+		}
 
-		if(_cast || _cast_regular)
+		if(typeof _value === 'string' && (_cast || _cast_regular))
 		{
 			if((key && _cast) || (!key && _cast_regular))
 			{
@@ -130,7 +136,7 @@ const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _u
 			{
 				result.set(key, _value, false, false);
 			}
-				
+
 			key = '';
 		}
 		else
@@ -145,6 +151,7 @@ const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _u
 			return null;
 		}
 		
+		key = result.checkKey(key, false);
 		const idx = key.indexOf('=');
 		
 		if(idx === -1)
@@ -159,7 +166,7 @@ const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _u
 		return true;
 	};
 	
-	for(var i = _start; i < _vector.length; ++i)
+	var min, short, split, next = []; for(var i = _start; i < _vector.length; ++i)
 	{
 		if(DEFAULT_HELP && (_vector[i] === '--help' || _vector[i] === '-?'))
 		{
@@ -179,15 +186,70 @@ const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _u
 			end = true;
 			_cast = _cast_regular = false;
 		}
-		else if(_vector[i][0] === '-' && _vector[i][1] === '-')
+		else if(_vector[i][0] === '-')
 		{
-			if(key)
+			if(_vector[i][1] === '-')
 			{
-				set('', false);
+				if(key)
+				{
+					set('', false);
+				}
+				
+				key = _vector[i];
+				checkKeyForEqualSign();
 			}
-			
-			key = _vector[i].substr(2);
-			checkKeyForEqualSign();
+			else if(_equal_assign && _vector[i].includes('='))
+			{
+				key = '-' + _vector[i].substr(1);
+				checkKeyForEqualSign();
+			}
+			else if((short = _vector[i].substr(1).split('')).length > 0)
+			{
+				if(key)
+				{
+					set('', false);
+				}
+
+				if(short.length === 1)
+				{
+					key = '-' + short;
+					checkKeyForEqualSign();
+				}
+				else
+				{
+					next.length = 0;
+					
+					for(++i, j = 0; i < _vector.length && j < short.length; ++i, ++j)
+					{
+						if(_vector[i][0] === '-')
+						{
+							break;
+						}
+						
+						next[j] = _vector[i];
+					}
+					
+					--i;
+					
+					if(next.length > 0)
+					{
+						min = Math.min(
+							next.length, short.length);
+
+						for(var j = 0; j < min; ++j)
+						{
+							key = '-' + short[j];
+							set(next[j], false);
+						}
+						
+						if(short.length > min) for(var j = min; j < short.length; ++j)
+						{
+							key = '-' + short[j];
+							set('', false);
+						}
+					}
+				}
+			}
 		}
 		else
 		{
@@ -195,12 +257,9 @@ const getopt = global.getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _u
 		}
 	}
 	
-	if(key)
+	if(key && !checkKeyForEqualSign())
 	{
-		if(!checkKeyForEqualSign())
-		{
-			set('', false);
-		}
+		set('', false);
 	}
 
 	return result;
@@ -261,7 +320,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 	set(_key, _value, _cast = DEFAULT_CAST, _unescape = DEFAULT_UNESCAPE)
 	{
-		if(!(_key = GetOpt.checkKey(_key)))
+		if(!(_key = this.checkKey(_key)))
 		{
 			return undefined;
 		}
@@ -291,7 +350,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 	add(_key, _value, _cast = DEFAULT_CAST, _unescape = DEFAULT_UNESCAPE)
 	{
-		if(!(_key = GetOpt.checkKey(_key)))
+		if(!(_key = this.checkKey(_key)))
 		{
 			return undefined;
 		}
@@ -313,7 +372,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 		if(this._keys.includes(_key))
 		{
-			if(Array.isArray(this[_key]))
+			if(array(this[_key], true))
 			{
 				this[_key].push(
 					_value);
@@ -339,7 +398,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			return this.values;
 		}
 
-		if(!(_key = GetOpt.checkKey(_key)))
+		if(!(_key = this.checkKey(_key)))
 		{
 			return undefined;
 		}
@@ -366,6 +425,16 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 			... _args);
 	}
 
+	static get types()
+	{
+		return type.types;
+	}
+
+	static get TYPES()
+	{
+		return type.TYPES;
+	}
+
 	type(_key, _type)
 	{
 		return type(
@@ -375,7 +444,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 	has(_key, _type)
 	{
-		if(!(_key = GetOpt.checkKey(_key)))
+		if(!(_key = this.checkKey(_key)))
 		{
 			return null;
 		}
@@ -392,7 +461,7 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 	remove(_key)
 	{
-		if(!(_key = GetOpt.checkKey(_key)))
+		if(!(_key = this.checkKey(_key)))
 		{
 			return null;
 		}
@@ -409,25 +478,72 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 
 		return false;
 	}
-
-	static checkKey(_key, _throw = DEFAULT_THROW)
+	
+	checkKey(_key, _throw = DEFAULT_THROW, _fix = true)
 	{
-		if(typeof _key !== 'string')
+		if(!this.constructor.isValidKeyType(_key, _throw))
+		{
+			return null;
+		}
+		
+		if(!DEFAULT_FIX)
+		{
+			_fix = null;
+		}
+		else if(!!_fix && _key.length === 1 && _key[0] !== '-')
+		{
+			if(this.keys.includes('--' + _key))
+			{
+				_fix = true;
+			}
+			else
+			{
+				_fix = false;
+			}
+		}
+		else
+		{
+			_fix = null;
+		}
+
+		return this.constructor.checkKey(_key, _throw, _fix);
+	}
+
+	static isValidKeyType(_key, _throw = DEFAULT_THROW)
+	{
+		if(typeof _key !== 'string' || _key.length === 0)
 		{
 			if(_throw)
 			{
-				throw new Error('Invalid _key argument (not a String)');
+				throw new Error('Invalid _key argument (not a non-empty String)');
 			}
-
+			
+			return null;
+		}
+		
+		return true;
+	}
+	
+	static checkKey(_key, _throw = DEFAULT_THROW, _fix = null)
+	{
+		if(!this.isValidKeyType(_key, _throw))
+		{
 			return null;
 		}
 
-		if(!_key.startsWith('--'))
+		if(_key && _key[0] !== '-')
 		{
-			_key = '--' + _key;
+			if(_key.length === 1 && !_fix)
+			{
+				_key = '-' + _key;
+			}
+			else
+			{
+				_key = '--' + _key;
+			}
 		}
 
-		if(_key.length <= 2)
+		if(_key.length < 2)
 		{
 			if(_throw)
 			{
