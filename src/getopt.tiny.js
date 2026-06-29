@@ -22,7 +22,7 @@ const DEFAULT_CHECK_TYPE = true;
 import type from './type.js';
 
 //
-const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _cast_regular = DEFAULT_CAST_REGULAR, _equal_assign = DEFAULT_EQUAL_ASSIGN, _vector = process.argv, _start = 2) => {
+const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAULT_UNESCAPE, _cast_regular = DEFAULT_CAST_REGULAR, _equal_assign = DEFAULT_EQUAL_ASSIGN, _regexp = DEFAULT_CAST_REGEXP, _vector = process.argv, _start = 2) => {
 	if(object(_cast))
 	{
 		if('array' in _cast)
@@ -43,6 +43,11 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 		if('equalAssign' in _cast)
 		{
 			_equal_assign = _cast.equalAssign;
+		}
+		
+		if('regexp' in _cast)
+		{
+			_regexp = _cast.regexp;
 		}
 
 		if('vector' in _cast)
@@ -118,8 +123,7 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 			if((key && _cast) || (!key && _cast_regular))
 			{
 				_value = _value.tryCast(
-					DEFAULT_CAST_REGEXP,
-					DEFAULT_CAST_EMPTY);
+					_regexp, DEFAULT_CAST_EMPTY);
 			}
 		}
 		
