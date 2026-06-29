@@ -188,6 +188,10 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 			end = true;
 			_cast = _cast_regular = false;
 		}
+		else if(_cast && !isNaN(_vector[i]))
+		{
+			set(_vector[i]);
+		}
 		else if(_vector[i][0] === '-')
 		{
 			if(_vector[i][1] === '-')
@@ -274,6 +278,282 @@ const GetOpt = getopt.GetOpt = class GetOpt extends Array
 		super(... _args);
 		this._keys = [];
 		this.help = (DEFAULT_HELP ? false : null);
+	}
+
+	checkTypes(_map, _all = false, _throw = DEFAULT_THROW)
+	{
+		const map = new Map();
+		var key, value;
+
+		if(is(_map, 'Map')) for(const item of _map)
+		{
+			if(!string(item[0], false))
+			{
+				if(_throw)
+				{
+					throw new Error('Invalid map');
+				}
+				
+				return null;
+			}
+			
+			if(item[0][0] !== '-')
+			{
+				if(item[0].length === 1)
+				{
+					key = '-' + item[0];
+				}
+				else if(item[0].length > 1)
+				{
+					key = '--' + item[0];
+				}
+				else
+				{
+					if(_throw)
+					{
+						throw new Error('Invalid map');
+					}
+					
+					return null;
+				}
+			}
+			else
+			{
+				key = item[0];
+			}
+			
+			if(string(item[1], false))
+			{
+				value = [ item[1] ];
+			}
+			else if(array(item[1], false))
+			{
+				value = new Array(item[1].length);
+				
+				for(var i = 0; i < item[1].length; ++i)
+				{
+					if(!string(item[1][i], false))
+					{
+						if(_throw)
+						{
+							throw new Error('Invalid map');
+						}
+						
+						return null;
+					}
+					
+					value[i] = item[1][i];
+				}
+			}
+			else
+			{
+				if(_throw)
+				{
+					throw new Error('Invalid map');
+				}
+				
+				return null;
+			}
+
+			map.set(key, value);
+		}
+		else if(object(_map)) for(var idx in _map)
+		{
+			if(idx[0] !== '-')
+			{
+				if(idx.length === 1)
+				{
+					key = '-' + idx;
+				}
+				else if(idx.length > 1)
+				{
+					key = '--' + idx;
+				}
+				else
+				{
+					if(_throw)
+					{
+						throw new Error('Invalid map');
+					}
+					
+					return null;
+				}
+			}
+			else
+			{
+				key = idx;
+			}
+			
+			if(string(_map[idx], false))
+			{
+				value = [ _map[idx] ];
+			}
+			else if(array(_map[idx], false))
+			{
+				value = new Array(_map[idx].length);
+				
+				for(const item of _map[idx])
+				{
+					if(!string(item, false))
+					{
+						if(_throw)
+						{
+							throw new Error('Invalid map');
+						}
+						
+						return null;
+					}
+					
+					value.push(item);
+				}
+			}
+			else
+			{
+				if(_throw)
+				{
+					throw new Error('Invalid map');
+				}
+				
+				return null;
+			}
+
+			map.set(key, value);
+		}
+		else
+		{
+			if(_throw)
+			{
+				throw new Error('Invalid map');
+			}
+			
+			return null;
+		}
+
+		const result = [];
+
+		if(_all) for(const item of map)
+		{
+			if(!this.type(item[0], item[1]))
+			{
+				result.push(item[0]);
+			}
+		}
+		else for(const item of this.keys)
+		{
+			if(map.has(item))
+			{
+				if(!this.type(item, map.get(item)))
+				{
+					result.push(item);
+				}
+			}
+			else
+			{
+				result.push(item);
+			}
+		}
+
+		if(_throw && result.length > 0)
+		{
+			throw new Error('Invalid type' + (result.length === 1 ? '' : 's') +
+				' [ ' + result.join(', ') + ' ]');
+		}
+		
+		return result;
+	}
+	
+	checkKeys(_keys, _throw = DEFAULT_THROW)
+	{
+		const set = new Set();
+		
+		if(array(_keys, false)) for(const item of _keys)
+		{
+			if(item[0] === '-')
+			{
+				set.add(item);
+			}
+			else if(item.length === 1)
+			{
+				set.add('-' + item);
+			}
+			else if(item.length > 1)
+			{
+				set.add('--' + item);
+			}
+			else
+			{
+				if(_throw)
+				{
+					throw new Error('Invalid set');
+				}
+
+				return null;
+			}
+		}
+		else if(is(_keys, 'Set')) for(const item of _keys)
+		{
+			if(!string(item, false))
+			{
+				if(_throw)
+				{
+					throw new Error('Invalid set');
+				}
+				
+				return null;
+			}
+			
+			if(item[0] !== '-')
+			{
+				if(item.length === 1)
+				{
+					set.add('-' + item);
+				}
+				else if(item.length > 1)
+				{
+					set.add('--' + item);
+				}
+				else
+				{
+					if(_throw)
+					{
+						throw new Error('Invalid set');
+					}
+					
+					return null;
+				}
+			}
+			else
+			{
+				set.add(item);
+			}
+		}
+		else
+		{
+			if(_throw)
+			{
+				throw new Error('Invalid set');
+			}
+			
+			return null;
+		}
+
+		const result = [];
+		
+		for(const key of this.keys)
+		{
+			if(!set.has(key))
+			{
+				result.push(key);
+			}
+		}
+
+		if(_throw && result.length > 0)
+		{
+			throw new Error('Invalid key' + (result.length === 1 ?
+				'' : 's') + ' [ ' + result.join(', ') + ' ]');
+		}
+
+		return result;
 	}
 
 	clear()
