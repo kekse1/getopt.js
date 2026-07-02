@@ -40,6 +40,7 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 4. [Copyright and License](#copyright-and-license)
 
 ## News
+* \[**2026-07-02**\] Tiny update to [**`getopt.tiny.js`**](#tiny-alternative-version);
 * \[**2026-06-29**\] Updates to [**`getopt.tiny.js`**](#tiny-alternative-version);
 * \[**2026-05-24**\] New updates to the [**`getopt.tiny.js`**](#tiny-alternative-version), w/ [**`type.js`**](./src/type.js); ...
 * \[**2026-03-02**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version)
