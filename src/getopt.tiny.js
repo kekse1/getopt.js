@@ -79,6 +79,17 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 	}
 
 	const result = new GetOpt();
+
+	if(_vector.length <= _start)
+	{
+		result.empty = true;
+		return result;
+	}
+	else
+	{
+		result.empty = false;
+	}
+
 	var end = false;
 	var key = '';
 	var idx, value;
