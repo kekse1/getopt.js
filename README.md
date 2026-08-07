@@ -41,7 +41,12 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 4. [Copyright and License](#copyright-and-license)
 
 ## News
+<<<<<<< HEAD
 * \[**2026-08-07**\] Tiny updates to [**`getopt.tiny.js`**](#tiny-alternative-version);
+=======
+* \[**2026-08-04**\] My [**`getopt.tiny.js`**](#tiny-alternative-version) w/ `{empty}` now..
+* \[**2026-07-02**\] Tiny update to [**`getopt.tiny.js`**](#tiny-alternative-version);
+>>>>>>> e20d4738f252dc9e8f10d8b419796d5868069e6d
 * \[**2026-06-29**\] Updates to [**`getopt.tiny.js`**](#tiny-alternative-version);
 * \[**2026-05-24**\] New updates to the [**`getopt.tiny.js`**](#tiny-alternative-version), w/ [**`type.js`**](./src/type.js); ...
 * \[**2026-03-02**\] Updated the [**`getopt.tiny.js`**](#tiny-alternative-version)
@@ -49,7 +54,11 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 ## Download
 * [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
 * [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
+<<<<<<< HEAD
 * [**`getopt.tiny.js`**](src/getopt.tiny.js) (updated **2026-08-07**, w/ **876** code lines in total);
+=======
+* [**`getopt.tiny.js`**](src/getopt.tiny.js) (updated **2026-08-04**, w/ **883** codes)
+>>>>>>> e20d4738f252dc9e8f10d8b419796d5868069e6d
 * [`test.js`](src/test.js) (tiny test, jfyi..);
 * [`type.js`](src/type.js) (more **type check** features for the **tiny version**);
 
