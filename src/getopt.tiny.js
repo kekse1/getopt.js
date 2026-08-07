@@ -192,6 +192,10 @@ const getopt = (_cast = DEFAULT_CAST, _array = DEFAULT_ARRAY, _unescape = DEFAUL
 			end = true;
 			_cast = _cast_regular = false;
 		}
+		else if(_vector[i] === '-')
+		{
+			set('-', false);
+		}
 		else if(_vector[i][0] === '-' && !isNaN(_vector[i][1]))
 		{
 			set(_vector[i], false);
