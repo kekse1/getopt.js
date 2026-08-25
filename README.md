@@ -4,8 +4,8 @@
 <br><br>
 
 > [!IMPORTANT]
-> Currently I'm preparing one bigger version of all of this.
-> But you'll have to wait some days/weeks (dunno exactly atm.).
+> **Currently I'm preparing one bigger version of all of this.
+> But you'll have to wait some days/weeks (dunno exactly atm.).**
 
 <br><br>
 
