@@ -1,6 +1,14 @@
 <img src="without.svg" /><br>
 <img src="https://kekse.biz/github.php?draw&override=github:getopt.js" />
 
+<br><br>
+
+> [!IMPORTANT]
+> Currently I'm preparing one bigger version of all of this.
+> But you'll have to wait some days/weeks (dunno exactly atm.).
+
+<br><br>
+
 # `getopt.js`
 This is my own interpretation of the well known `getopt` functionality.
 And now there's also a [**tiny alternative version**](#tiny-alternative-version).
@@ -18,12 +26,6 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 
 > [!NOTE]
 > Polyfill `out of date`!
-
-<br><br>
-
-> [!IMPORTANT]
-> Currently I'm preparing one bigger version of all of this.
-> But you'll have to wait some days/weeks (dunno exactly atm.).
 
 <br><br>
 
