@@ -21,6 +21,12 @@ And now there's also a [**tiny alternative version**](#tiny-alternative-version)
 
 <br><br>
 
+> [!IMPORTANT]
+> Currently I'm preparing one bigger version of all of this.
+> But you'll have to wait some days/weeks (dunno exactly atm.).
+
+<br><br>
+
 ## Index
 1. [News](#news)
 2. [Start](#getoptjs)
