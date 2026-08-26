@@ -7,7 +7,6 @@
 > **Currently I'm preparing one bigger version of all of this.
 > But you'll have to wait some days/weeks (dunno exactly atm.).**
 > And, btw., it'll run 'as is'.. all my extensions are integrated.
-> https://github.com/kekse1/getopt/
 
 <br><br>
 
