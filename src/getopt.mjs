@@ -135,6 +135,7 @@ class GetOpt extends Array
 			extended: this.extended,
 			allowedKeyCharacters:
 				ALLOWED_KEY_CHARACTERS,
+			options: this.options,
 			vector: this.vector,
 			KEYS: this.KEYS,
 			size: this.size,
@@ -764,14 +765,10 @@ throw new Error('todo');
 		};
 
 		const flush = () => {
-			const res = keys.length;
-
 			while(keys.length > 0)
 			{
 				set('', false);
 			}
-
-			return res;
 		};
 
 		//
