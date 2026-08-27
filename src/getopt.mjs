@@ -26,7 +26,8 @@ const
 	DEFAULT_EXPAND = false,
 	DEFAULT_ARRAY = true,
 	DEFAULT_THROW = false,
-	DEFAULT_ALL = false;
+	DEFAULT_ALL = false,
+	DEFAULT_CAMEL = true;
 
 //
 var	ALLOWED_KEY_CHARACTERS = '',
@@ -40,7 +41,7 @@ var	ALLOWED_KEY_CHARACTERS = '',
 			String.fromCharCode(i);
 	}
 	
-	for(var i = 46; i <= 57; ++i)
+	for(var i = 45; i <= 57; ++i)
 	{
 		ALLOWED_KEY_CHARACTERS +=
 			String.fromCharCode(i);
@@ -76,6 +77,7 @@ var	ALLOWED_KEY_CHARACTERS = '',
 //
 import './getopt.ext.mjs';
 import type from './getopt.type.mjs';
+import camel from './getopt.camel.mjs';
 
 //
 class GetOpt extends Array
@@ -268,13 +270,15 @@ class GetOpt extends Array
 			expand: DEFAULT_EXPAND,
 			param: DEFAULT_PARAM,
 			make: DEFAULT_MAKE,
-			all: DEFAULT_ALL
+			all: DEFAULT_ALL,
+			camel: DEFAULT_CAMEL
 		};
 	}
 
 	static create(... _args)
 	{
-		var _parse, _param;
+		var	_parse = true,
+			_param;
 		
 		for(var i = 0; i < _args.length; ++i)
 		{
@@ -304,8 +308,11 @@ class GetOpt extends Array
 		{
 			if(Object.hasOwn(_param, o) && !Object.hasOwn(_param.options, o))
 			{
-				_param.options[o] = _param[o];
-				delete _param[o];
+				if(!Object.isObject(_param[o]))
+				{
+					_param.options[o] = _param[o];
+					delete _param[o];
+				}
 			}
 		}
 		
@@ -644,7 +651,7 @@ throw new Error('todo');
 			return undefined;
 		}
 
-		if(!(_key = this.prepareKeyUsage(_key, _throw)))
+		if(!(_key = this.prepareKey(_key, _throw)))
 		{
 			return null;
 		}
@@ -761,14 +768,16 @@ throw new Error('todo');
 				return push(_value);
 			}
 
-			key = this.constructor.key(
-				keys.shift(), false,
-				this.options.all === null);
+			if(!(key = this.prepareKey(keys.shift(),
+				this.options.all === null,
+				this.options.camel)))
+			{
+				return push(_value);
+			}
 
 			if(hasVector)
 			{
-				if(item = this.lookUp(key,
-					this.options.throw))
+				if(item = this.lookUp(key, this.options.throw))
 				{
 					key = item;
 					item = vector[item];
@@ -829,7 +838,7 @@ throw new Error('todo');
 				set('', false);
 			}
 		};
-
+		
 		//
 		for(i = this.options.start; i < argv.length; ++i)
 		{
@@ -1146,6 +1155,21 @@ throw new Error('todo');
 	{
 		var result = '';
 		
+		if(!(_string = this.removePrefix(_string.trim()).trim()))
+		{
+			throw new Error('Key string must have a length greater than zero');
+		}
+		
+		while(_string[0] === '-')
+		{
+			if(_throw)
+			{
+				throw new Error('The `-` character is not allowed at the key\'s begin');
+			}
+			
+			_string = _string.substr(1);
+		}
+		
 		for(var i = 0; i < _string.length; ++i)
 		{
 			if(_ALLOWED_KEY_CHARACTERS.has(_string[i]))
@@ -1158,22 +1182,28 @@ throw new Error('todo');
 			}
 		}
 		
-		return result;
+		return result.trim();
 	}
 	
-	static key(_string, _prefix, _throw = DEFAULT_THROW)
+	static key(_string, _prefix, _throw = DEFAULT_THROW, _camel = DEFAULT_CAMEL)
 	{
 		if(typeof _string !== 'string' || _string.length === 0)
 		{
 			return null;
 		}
 		
-		if(!(_string = this.keyCharacterFilter(this.
-			removePrefix(_string), _throw)))
+		if(!(_string = this.keyCharacterFilter(_string, _throw)))
 		{
 			return null;
 		}
-		
+console.dir({_string,_camel});
+		if(_camel)
+		{
+const orig = _string;
+			_string = camel.disable(_string);
+console.dir({orig,_string});
+		}
+
 		if(!_prefix)
 		{
 			return _string;
@@ -1203,10 +1233,10 @@ throw new Error('todo');
 			_item, _types, _throw);
 	}
 	
-	prepareKeyUsage(_key, _throw = this.options.throw)
+	prepareKey(_key, _throw = this.options.throw, _camel = this.options.camel)
 	{
 		const result = this.constructor.key(
-				_key, false, _throw);
+			_key, false, _throw, _camel);
 		
 		if(!result && _throw)
 		{
@@ -1246,7 +1276,7 @@ throw new Error('todo');
 
 	has(_key, _types, _throw = this.options.throw)
 	{
-		if(!(_key = this.prepareKeyUsage(_key, _throw)))
+		if(!(_key = this.prepareKey(_key, _throw)))
 		{
 			return null;
 		}
@@ -1289,7 +1319,7 @@ throw new Error('todo');
 
 	get(_key, _types, _throw = this.options.throw)
 	{
-		if(!(_key = this.prepareKeyUsage(_key, _throw)))
+		if(!(_key = this.prepareKey(_key, _throw)))
 		{
 			return null;
 		}
@@ -1324,7 +1354,7 @@ throw new Error('todo');
 
 	set(_key, _value, _throw = this.options.throw)
 	{
-		if(!(_key = this.prepareKeyUsage(_key, _throw)))
+		if(!(_key = this.prepareKey(_key, _throw)))
 		{
 			return null;
 		}
@@ -1341,7 +1371,7 @@ throw new Error('todo');
 
 	remove(_key, _throw = this.options.throw)
 	{
-		if(!(_key = this.prepareKeyUsage(_key, _throw)))
+		if(!(_key = this.prepareKey(_key, _throw)))
 		{
 			return null;
 		}
@@ -1424,7 +1454,7 @@ throw new Error('todo');
 
 	getList(_key, _throw = this.options.throw)
 	{
-		if(!(_key = this.prepareKeyUsage(_key, _throw)))
+		if(!(_key = this.prepareKey(_key, _throw)))
 		{
 			return null;
 		}
@@ -1461,7 +1491,7 @@ throw new Error('todo');
 	
 	isList(_key, _throw = this.options.throw)
 	{
-		if(!(_key = this.prepareKeyUsage(_key, _throw)))
+		if(!(_key = this.prepareKey(_key, _throw)))
 		{
 			return null;
 		}

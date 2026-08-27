@@ -244,4 +244,15 @@ Reflect.defineProperty(Array.prototype, 'sort', { value: function(_asc = true, .
 }});
 
 //
+Reflect.defineProperty(String.prototype, 'isLowerCase', { get: function()
+{
+	return (this.toLowerCase() === this.valueOf());
+}});
+
+Reflect.defineProperty(String.prototype, 'isUpperCase', { get: function()
+{
+	return (this.toUpperCase() === this.valueOf());
+}});
+
+//
 

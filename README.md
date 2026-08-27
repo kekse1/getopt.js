@@ -23,7 +23,7 @@ This is my own interpretation of the well known `getopt` functionality.
 
 **No other dependencies**, only real plain **Vanilla JavaScript** (for
 the [Node.js](https://nodejs.org/) interpreter). Run it 'as is' (in
-**four modules**).
+**five modules**).
 
 <br><br>
 
@@ -36,7 +36,7 @@ As said above.. this code is still **TODO**. It's a first preview snapshot.
 <br>
 
 This whole **`class GetOpt extends Array`** is divided in (currently)
-**four modules**. Use all of them to get this thing alive (so just
+**five modules**. Use all of them to get this thing alive (so just
 place them in one directory - or change the `import`s).
 
 As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
@@ -48,7 +48,8 @@ As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 - [x] Possible (configurable) type casts, both for any parameter, specific parameters and/or the regular `argc`.
 - [x] My favorite [`(cast)`](./src/getopt.num.mjs) logics, smth. like `--perm '(8)1777'` or `--big '(16n)ffff'`.
 - [x] An (optional, as usual) automatic [`unescape`](./src/getopt.ext.mjs) of cmdline arguments and parameters.
-- [x] Division into **four modules (atm.)** for some really clean/general/.. architecture.
+- [x] Division into **five modules (atm.)** for some really clean/general/.. architecture.
+- [x] If activated, it's using the [`getopt.camel.mjs` module](./src/getopt.camel.mjs) to correct 'wrong' key strings.
 - [x] Own [`type.js`](./src/getopt.type.mjs) for own, special **type checks** on the resulting getopt params.
 - [x] Many `{options}`, both global per instance and local per {vector}-item (the possible parameters).
 - [x] Either simple logics (to use all recognized parameters) or the possibility for a special {vector};
