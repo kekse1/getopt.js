@@ -66,7 +66,7 @@ As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 - [x] Space splitting on arguments like `'--key value'` (so as one string);
 - [x] Of course the well-known `--` argument is possible, to take all following arguments into the vector[] base (unhandled);
 - [x] All in one `class GetOpt extends Array` - either access arguments by index, or use my interface with parameter keys.
-- [ ] Some more features are missing yet...!!
+- [ ] Some more features are missing yet...!! Also most of the {vector} thing.. it's prepared, but not yet (fully) running.
 - [ ] Much testing is still necessary..!
 - [ ] A good/full (markdown) **documentation** here in this repository is also still TODO!
 
