@@ -758,6 +758,17 @@ throw new Error('todo');
 			return true;
 		};
 
+		const flush = () => {
+			const res = keys.length;
+
+			while(keys.length > 0)
+			{
+				set('', false);
+			}
+
+			return res;
+		};
+
 		//
 		for(i = this.options.start; i < argv.length; ++i)
 		{
@@ -773,19 +784,11 @@ throw new Error('todo');
 			}
 			else if(string === '--')
 			{
-				while(keys.length > 0)
-				{
-					set('', false);
-				}
-
 				break;
 			}
 			else if(string[0] === '-' && isNaN(string))
 			{
-				while(keys.length > 0)
-				{
-					set('', false);
-				}
+				flush();
 
 				if(string[1] === '-')
 				{
@@ -953,10 +956,7 @@ throw new Error('todo');
 			}
 		}
 
-		while(keys.length > 0)
-		{
-			set('', false);
-		}
+		flush();
 
 		for(; i < argv.length; ++i)
 		{
