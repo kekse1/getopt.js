@@ -30,7 +30,7 @@ the [Node.js](https://nodejs.org/) interpreter). Run it 'as is' (in
 ## Download
 As said above.. this code is still **TODO**. It's a first preview snapshot.
 
-* [`./src/`](./src/): the `.mjs` modules, plus some [`./src/test/`](./src/test/) scripts.
+* [`./src/`](./src/): the newest `.mjs` modules (plus some [`./src/test/`](./src/test/) scripts);
 * [`./src.ORIG/`](./src.ORIG/): the old, original code (from here!);
 
 <br>
