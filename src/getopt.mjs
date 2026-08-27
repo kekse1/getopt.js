@@ -1196,12 +1196,10 @@ throw new Error('todo');
 		{
 			return null;
 		}
-console.dir({_string,_camel});
+		
 		if(_camel)
 		{
-const orig = _string;
 			_string = camel.disable(_string);
-console.dir({orig,_string});
 		}
 
 		if(!_prefix)
