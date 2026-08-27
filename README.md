@@ -62,7 +62,7 @@ As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 - [x] A special error case is handled by the 'all' option: allow or disallow/throw unknown parameters (w/ {vector});
 - [x] Lists instead of only single skalars possible. Either by multiple usage of keys or via special list value syntax.
 - [ ] Default (-/+) index possible if lists occur, so a parameter query will not return the whole list, but a special item
-- [x] assignments via `=` value syntax (will also reset the possible lists, resulting in only one value);
+- [x] assignments via `=` value syntax - also to reset any possible, previous list value..
 - [x] Space splitting on arguments like `'--key value'` (so as one string);
 - [x] Of course the well-known `--` argument is possible, to take all following arguments into the vector[] base (unhandled);
 - [x] All in one `class GetOpt extends Array` - either access arguments by index, or use my interface with parameter keys.
