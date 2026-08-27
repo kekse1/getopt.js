@@ -91,18 +91,22 @@ Reflect.defineProperty(String.prototype, 'unescape', { value: function()
 	return result;
 }});
 
-Reflect.defineProperty(String, 'tryCast', { value: (_item, _empty_true = false, _array = false) => {
+Reflect.defineProperty(String, 'tryCast', { value: (_item, _opts) => {
 	if(typeof _item !== 'string')
 	{
 		return _item;
 	}
+	
+	_opts = Object.assign({},
+		{ empty: false, array: false },
+		_opts);
 
 	var original = _item;
 	_item = _item.trim();
 	
 	if(_item.length === 0)
 	{
-		return (_empty_true ? true : '');
+		return (_opts.empty ? true : '');
 	}
 
 	if(isNumeric(_item, true))
@@ -131,17 +135,15 @@ Reflect.defineProperty(String, 'tryCast', { value: (_item, _empty_true = false, 
 			return undefined;
 	}
 
-	if(_array && _item.includes(':'))
+	if(_opts.array && _item.includes(':'))
 	{
 		_item = _item.split(':');
 		const res = new Array(_item.length);
 
 		for(var i = 0; i < _item.length; ++i)
 		{
-			res[i] = String.tryCast(
-				_item[i].trim(),
-				_empty_true,
-				false);
+			res[i] = String.tryCast(_item[i].trim(),
+				Object.assign({}, _opts, { array: false }));
 		}
 
 		return res;

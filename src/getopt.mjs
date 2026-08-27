@@ -683,13 +683,12 @@ throw new Error('todo');
 			esc,
 			i;
 
-		const push = (_value) => {
-			this[index++] = this.constructor.handleString(
-				_value, this.options.unescapeRegular,
-				this.options.castRegular, false,
-				this.options.array);
-			return true;
-		};
+		const push = (_value) => (this[index++] =
+			this.constructor.handleString(_value, {
+				unescape: this.options.unescapeRegular,
+				cast: this.options.castRegular,
+				array: this.options.array,
+				empty: false }));
 
 		const set = (_value, _reset = false) => {
 			if(keys.length === 0)
@@ -721,7 +720,7 @@ throw new Error('todo');
 						throw new Error('Unknown key `' + key + '`');
 					}
 
-					return false;
+					return;
 				}
 			}
 			else
@@ -732,8 +731,8 @@ throw new Error('todo');
 				cast = this.options.cast;
 			}
 
-			_value = this.constructor.handleString(
-				_value, unescape, cast, true, array);
+			_value = this.constructor.handleString(_value, {
+				unescape, cast, empty: true, array });
 
 			//
 			if(!_reset && this.options.list && this.map.has(key))
@@ -755,8 +754,6 @@ throw new Error('todo');
 			{
 				this.map.set(key, _value);
 			}
-			
-			return true;
 		};
 
 		const flush = () => {
@@ -968,26 +965,30 @@ throw new Error('todo');
 		return true;
 	}
 
-	static handleString(_item, _unescape = true, _cast = true, _empty_true = null, _array = DEFAULT_ARRAY)
+	static handleString(_item, _opts)
 	{
+		if(typeof _item !== 'string')
+		{
+			return _item;
+		}
+		
+		if(!Object.isObject(_opts))
+		{
+			_opts = {
+				unescape: DEFAULT_UNESCAPE,
+				cast: DEFAULT_CAST,
+				empty: true,
+				array: DEFAULT_ARRAY };
+		}
+		
 		var result = _item;
 
-		if(typeof result !== 'string')
+		if(_opts.cast && typeof (result = String.tryCast(result, _opts)) !== 'string')
 		{
 			return result;
 		}
 
-		if(_cast)
-		{
-			result = String.tryCast(result, _empty_true, _array);
-
-			if(typeof result !== 'string')
-			{
-				return result;
-			}
-		}
-
-		if(_unescape)
+		if(_opts.unescape)
 		{
 			result = result.unescape();
 		}
