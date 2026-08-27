@@ -4,6 +4,9 @@
  */
 
 //
+import './getopt.num.mjs';
+
+//
 Reflect.defineProperty(String.prototype, 'escape', { value: function()
 {
 	var result = '', byte;
@@ -118,6 +121,16 @@ Reflect.defineProperty(String, 'tryCast', { value: (_item, _opts) => {
 
 		return Number(_item);
 	}
+	
+	if(_opts.radix)
+	{
+		const radixCast = String.radixCast(_item);
+		
+		if(radixCast !== null)
+		{
+			return radixCast;
+		}
+	}
 
 	switch(_item.toLowerCase())
 	{
@@ -150,69 +163,6 @@ Reflect.defineProperty(String, 'tryCast', { value: (_item, _opts) => {
 	}
 
 	return original;
-}});
-
-//
-Reflect.defineProperty(global, 'isNumeric', { value: (_value, _string = true) => {
-	if(Number.isNumber(_value) || typeof _value === 'bigint')
-	{
-		return true;
-	}
-
-	if(!_string || typeof _value !== 'string')
-	{
-		return false;
-	}
-
-	if(!_value)
-	{
-		// i don't like the default behavior of `isNaN()`... :-/
-		return false;
-	}
-
-	if(_value[_value.length - 1] === 'n' && !_value.includes('.'))
-	{
-		return !isNaN(_value.slice(0, -1));
-	}
-
-	return !isNaN(_value);
-}});
-
-Reflect.defineProperty(Number, 'isNumber', { value: (_value) => {
-	return Number.isFinite(_value);
-	
-	/*if(typeof _value !== 'number')
-	{
-		return false;
-	}
-
-	if(!Number.isFinite(_value))
-	{
-		return false;
-	}
-
-	if(Number.isNaN(_value))
-	{
-		return false;
-	}*/
-}});
-
-Reflect.defineProperty(Number, 'isInt', { value: (_value) => {
-	if(!Number.isNumber(_value))
-	{
-		return false;
-	}
-
-	return ((_value % 1) === 0);
-}});
-
-Reflect.defineProperty(Number, 'isFloat', { value: (_value) => {
-	if(!Number.isNumber(_value))
-	{
-		return false;
-	}
-
-	return ((_value % 1) !== 0);
 }});
 
 //

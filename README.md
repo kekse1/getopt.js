@@ -23,7 +23,7 @@ This is my own interpretation of the well known `getopt` functionality.
 
 **No other dependencies**, only real plain **Vanilla JavaScript** (for
 the [Node.js](https://nodejs.org/) interpreter). Run it 'as is' (in
-**three modules**).
+**four modules**).
 
 <br><br>
 
@@ -36,17 +36,38 @@ As said above.. this code is still **TODO**. It's a first preview snapshot.
 <br>
 
 This whole **`class GetOpt extends Array`** is divided in (currently)
-**three modules**. You want all of them to really run it 'as is'.
+**four modules**. You want all of them to really run it 'as is'.
 
 As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 
 <br><br>
 
-## TODO
-- [ ] my favorite kind of `cast`: smth. like `--perm '(8)1777'` or `--hexa '(16)ffff'` (again..);
-- [ ] some other things.. including real usage (and tests) of the (this time) **optional** {vector};
-- [ ] testing all of this, beyond the first [`test.sh`](./src/test.sh);
-- [ ] a good/full **documentation** in this `README.md`;
+## Features / TODO
+- [x] Both **LONG** and **SHORT** parameters possible. With an extended alphabet for the keys..
+- [x] Possible (configurable) type casts, both for any parameter, specific parameters and/or the regular `argc`.
+- [x] My favorite [`(cast)`](./src/getopt.num.mjs) logics, smth. like `--perm '(8)1777'` or `--hexa '(16)ffff'`.
+- [x] An (optional, as usual) automatic `unescape` of cmdline arguments and parameters.
+- [x] Division into **four modules (atm.)** for some really clean/general/.. architecture.
+- [x] Own [`type.js`](./src/getopt.type.mjs) for own, special **type checks** on the resulting getopt params.
+- [x] Many `{options}`, both global per instance and local per {vector}-item (the possible parameters).
+- [x] Either simple logics (to use all recognized parameters) or the possibility for a special {vector};
+- [x] With a special {vector} each of its items can contain both **long** and **short** to be grouped under it!
+- [x] When such items are defined without **short** keys, they can be automatically and kinda intelligent be auto-inserted.
+- [x] Any `--help / -h / -?` parameter can be catched/queried/...
+- [ ] .. but yet missing my automatic help generation (TTY output, when a {vector} is defined);
+- [x] Short parameters can be 'extended' to define multiple keys and use kinda 'queue' waiting for the values
+- [x] While with**out** extending shorts any following string (after the one char keys) will be the new value.
+- [x] Throw errors or not.. configurable.
+- [x] A special error case is handled by the 'all' option: allow or disallow/throw unknown parameters (w/ {vector});
+- [x] Lists instead of only single skalars possible. Either by multiple usage of keys or via special list value syntax.
+- [ ] Default (-/+) index possible if lists occur, so a parameter query will not return the whole list, but a special item
+- [x] assignments via `=` value syntax (will also reset the possible lists, resulting in only one value);
+- [x] Space splitting on arguments like `'--key value'` (so as one string);
+- [x] Of course the well-known `--` argument is possible, to take all following arguments into the vector[] base (unhandled);
+- [x] All in one `class GetOpt extends Array` - either access arguments by index, or use my interface with parameter keys.
+- [ ] Some more features are missing yet...!!
+- [ ] Much testing is still necessary..!
+- [ ] A good/full (markdown) **documentation** here in this repository is also still TODO!
 
 <br>
 

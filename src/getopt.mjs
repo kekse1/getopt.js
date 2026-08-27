@@ -7,7 +7,6 @@
  * TODO * options(/vect..) wie v.a. {index} umsetzen.
  *	.. v.a. denke ich an {vector}-usage. w/ .parse(); ...
  * TODO * many more things... please finish all of 'em!! s00n
- * TODO * my favorite kind of cast: `--perm '(8)1777'`, `--hexa '(16)ffff'`, ...
  */
 
 //
@@ -15,6 +14,7 @@ const
 	DEFAULT_LIST = true,
 	DEFAULT_CAST = true,
 	DEFAULT_CAST_REGULAR = false,
+	DEFAULT_CAST_RADIX = true,
 	DEFAULT_INDEX = -1,
 	DEFAULT_UNESCAPE = true,
 	DEFAULT_UNESCAPE_REGULAR = false,
@@ -254,6 +254,7 @@ class GetOpt extends Array
 		return {
 			cast: DEFAULT_CAST,
 			castRegular: DEFAULT_CAST_REGULAR,
+			radix: DEFAULT_CAST_RADIX,
 			array: DEFAULT_ARRAY,
 			list: DEFAULT_LIST,
 			index: DEFAULT_INDEX,
@@ -316,6 +317,7 @@ class GetOpt extends Array
 			long: '',
 			short: '',
 			cast: DEFAULT_CAST,
+			radix: DEFAULT_CAST_RADIX,
 			unescape: DEFAULT_UNESCAPE,
 			assign: DEFAULT_ASSIGN,
 			split: DEFAULT_SPLIT,
@@ -331,6 +333,7 @@ class GetOpt extends Array
 			'array',
 			'list',
 			'cast',
+			'radix',
 			'index',
 			'make',
 			'param',
@@ -675,6 +678,7 @@ throw new Error('todo');
 			unescape,
 			idx, tmp,
 			string,
+			radix,
 			array,
 			list,
 			item,
@@ -687,6 +691,7 @@ throw new Error('todo');
 			this.constructor.handleString(_value, {
 				unescape: this.options.unescapeRegular,
 				cast: this.options.castRegular,
+				radix: this.options.castRadix,
 				array: this.options.array,
 				empty: false }));
 
@@ -710,6 +715,7 @@ throw new Error('todo');
 
 					unescape = item.unescape;
 					array = item.array;
+					radix = item.radix;
 					list = item.list;
 					cast = item.cast;
 				}
@@ -727,12 +733,13 @@ throw new Error('todo');
 			{
 				unescape = this.options.unescape;
 				array = this.options.array;
+				radix = this.options.radix;
 				list = this.options.list;
 				cast = this.options.cast;
 			}
 
 			_value = this.constructor.handleString(_value, {
-				unescape, cast, empty: true, array });
+				unescape, cast, array, radix, empty: true });
 
 			//
 			if(!_reset && this.options.list && this.map.has(key))
@@ -971,16 +978,15 @@ throw new Error('todo');
 		{
 			return _item;
 		}
-		
-		if(!Object.isObject(_opts))
-		{
-			_opts = {
+
+		_opts = Object.assign({
 				unescape: DEFAULT_UNESCAPE,
+				radix: DEFAULT_CAST_RADIX,
+				array: DEFAULT_ARRAY,
 				cast: DEFAULT_CAST,
-				empty: true,
-				array: DEFAULT_ARRAY };
-		}
-		
+				empty: true },
+			_opts);
+
 		var result = _item;
 
 		if(_opts.cast && typeof (result = String.tryCast(result, _opts)) !== 'string')
