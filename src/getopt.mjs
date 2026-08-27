@@ -274,13 +274,13 @@ class GetOpt extends Array
 
 	static create(... _args)
 	{
-		var _start, _param;
+		var _parse, _param;
 		
 		for(var i = 0; i < _args.length; ++i)
 		{
 			if(typeof _args[i] === 'boolean')
 			{
-				_start = _args[i];
+				_parse = _args[i];
 			}
 			else if(Object.isObject(_args[i]))
 			{
@@ -292,7 +292,7 @@ class GetOpt extends Array
 			keys = Object.keys(opts);
 
 		_param = Object.assign({ vector: null, options: {},
-			argv: process.argv, start: null,
+			argv: process.argv, parse: null,
 			throw: DEFAULT_THROW }, _param);
 		
 		if(!Object.isObject(_param.options))
@@ -312,17 +312,17 @@ class GetOpt extends Array
 		_param.options = Object.assign(
 			opts, _param.options);
 
-		if(typeof _start !== 'boolean' && typeof _param.start === 'boolean')
+		if(typeof _parse !== 'boolean' && typeof _param.parse === 'boolean')
 		{
-			_start = _param.start;
-			delete _param.start;
+			_parse = _param.parse;
+			delete _param.parse;
 		}
 		
 		const result = new GetOpt(
 			_param.vector,
 			_param.options,
 			_param.argv,
-			_param.start);
+			_param.parse);
 		
 		var THROW;
 		
@@ -340,7 +340,7 @@ class GetOpt extends Array
 			THROW = _param.options.throw = DEFAULT_THROW;
 		}
 
-		if(_start)
+		if(_parse)
 		{
 			result.parse(_param.throw, true);
 		}
