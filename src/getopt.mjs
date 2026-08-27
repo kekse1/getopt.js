@@ -6,6 +6,7 @@
 /*
  * TODO * options(/vect..) wie v.a. {index} umsetzen.
  *	.. v.a. denke ich an {vector}-usage. w/ .parse(); ...
+ * TODO * many more things... please finish all of 'em!! s00n
  */
 
 //
