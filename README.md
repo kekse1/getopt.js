@@ -45,7 +45,7 @@ As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 ## Features / TODO
 - [x] Both **LONG** and **SHORT** parameters possible (optionally!). .. w/ an extended alphabet for your keys.
 - [x] Possible (configurable) type casts, both for any parameter, specific parameters and/or the regular `argc`.
-- [x] My favorite [`(cast)`](./src/getopt.num.mjs) logics, smth. like `--perm '(8)1777'` or `--hexa '(16)ffff'`.
+- [x] My favorite [`(cast)`](./src/getopt.num.mjs) logics, smth. like `--perm '(8)1777'` or `--big '(16n)ffff'`.
 - [x] An (optional, as usual) automatic `unescape` of cmdline arguments and parameters.
 - [x] Division into **four modules (atm.)** for some really clean/general/.. architecture.
 - [x] Own [`type.js`](./src/getopt.type.mjs) for own, special **type checks** on the resulting getopt params.
