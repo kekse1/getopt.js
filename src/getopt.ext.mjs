@@ -193,8 +193,13 @@ Reflect.defineProperty(Object, 'isObject', { value: (_item) => {
 //
 const _sort = Array.prototype.sort;
 Reflect.defineProperty(Array.prototype, '_sort', { value: _sort });
-Reflect.defineProperty(Array.prototype, 'sort', { value: function(_asc = true)
+Reflect.defineProperty(Array.prototype, 'sort', { value: function(_asc = true, ... _args)
 {
+	if(typeof _asc === 'function')
+	{
+		return _sort.call(this, _asc, ... _args);
+	}
+
 	return _sort.call(this, (_a, _b) => {
 		if((_a instanceof Date) && (_b instanceof Date))
 		{
