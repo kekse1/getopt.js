@@ -105,20 +105,14 @@ Reflect.defineProperty(String, 'tryCast', { value: (_item, _empty_true = false, 
 		return (_empty_true ? true : '');
 	}
 
-	if(!isNaN(_item))
+	if(isNumeric(_item, true))
 	{
-		return Number(_item);
-	}
-
-	if(_item[_item.length - 1] === 'n')
-	{
-		const temp = _item.
-			slice(0, -1).trim();
-
-		if(!isNaN(temp))
+		if(_item[_item.length - 1] === 'n')
 		{
-			return BigInt(temp);
+			return BigInt(_item.slice(0, -1));
 		}
+
+		return Number(_item);
 	}
 
 	switch(_item.toLowerCase())
@@ -157,6 +151,31 @@ Reflect.defineProperty(String, 'tryCast', { value: (_item, _empty_true = false, 
 }});
 
 //
+Reflect.defineProperty(global, 'isNumeric', { value: (_value, _string = true) => {
+	if(Number.isNumber(_value) || typeof _value === 'bigint')
+	{
+		return true;
+	}
+
+	if(!_string || typeof _value !== 'string')
+	{
+		return false;
+	}
+
+	if(!_value)
+	{
+		// i don't like the default behavior of `isNaN()`... :-/
+		return false;
+	}
+
+	if(_value[_value.length - 1] === 'n' && !_value.includes('.'))
+	{
+		return !isNaN(_value.slice(0, -1));
+	}
+
+	return !isNaN(_value);
+}});
+
 Reflect.defineProperty(Number, 'isNumber', { value: (_value) => {
 	return Number.isFinite(_value);
 	
