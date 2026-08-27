@@ -17,7 +17,8 @@
 
 <br><br>
 
-# `getopt.js`
+<!--# `getopt.js`-->
+# `class GetOpt extends Array`
 This is my own interpretation of the well known `getopt` functionality.
 
 <br>
