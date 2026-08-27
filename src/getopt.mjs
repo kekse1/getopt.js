@@ -110,16 +110,7 @@ class GetOpt extends Array
 
 		this.start = _start;
 		this.argv = _argv;
-
-		if(Object.isObject(_vector))
-		{
-			this.vector = _vector;
-		}
-		else
-		{
-			this.long = null;
-			this.short = null;
-		}
+		this.vector = _vector;
 	}
 
 	get object()
@@ -232,24 +223,26 @@ class GetOpt extends Array
 			return this._vector = null;
 		}
 
-		if(Object.keys(_value).length === 0)
+		this._vector = {};
+		this.long = new Map();
+		this.short = new Map();
+
+		for(const idx in _value)
 		{
-			this.long = this.short = null;
-			return this._vector = null;
+			this.appendItem(idx, _value);
 		}
 
-		return this._vector = this.
-			handleVector(_value);
+		return this._vector;
 	}
 
 	get simple()
 	{
-		return !this._vector;
+		return this.emptyVector;
 	}
 	
 	get extended()
 	{
-		return !!this._vector;
+		return !this.emptyVector;
 	}
 
 	static get options()
@@ -356,13 +349,85 @@ class GetOpt extends Array
 	}
 
 	//
-	//todo/...
-	//
-	static createItem(_index, ... _args)
+	appendItem(_index, _item)
 	{
+		if(!Object.isObject(this._vector))
+		{
+			this._vector = {};
+			this.long = new Map();
+			this.short = new Map();
+		}
+		
 		const result = Object.assign(
-			this.item, ... _args);
-		return result;
+				this.item, _item);
+
+		if(!(_index = this.prepareKey(_index, false, this.options.camel)))
+		{
+			if(result.long = this.prepareKey(
+				result.long, false, this.options.camel))
+			{
+				_index = result.long;
+			}
+			else
+			{
+				throw new Error('Missing index/key');
+			}
+		}
+		else if(!(result.long = this.prepareKey(
+			result.long, false, this.options.camel)))
+		{
+			result.long = _index;
+		}
+
+		if(Object.hasOwn(this._vector, _index))
+		{
+			throw new Error('Index already exists');
+		}
+
+		if(this.long.has(result.long))
+		{
+			throw new Error('This long key already exists');
+		}
+
+		if(Object.hasOwn(result, 'short'))
+		{
+			if(!(result.short = this.prepareKey(result.short, false)))
+			{
+				throw new Error('Invalid short key');
+			}
+		}
+		else if(this.options.make)
+		{
+			if(!(result.short = this.makeShort(result)))
+			{
+				result.short = '';
+			}
+		}
+		else
+		{
+			result.short = '';
+		}
+
+		if(result.short)
+		{
+			if(this.short.has(result.short))
+			{
+				throw new Error('Short key already exists');
+			}
+
+			this.short.set(result.short, _index);
+		}
+
+		return this._vector[_index] = result;
+	}
+
+	makeShort()
+	{
+		throw new Error('todo (and remove the orig func???)');
+
+
+
+		//return this.prepareKey(...., false);
 	}
 
 	get item()
@@ -421,112 +486,10 @@ class GetOpt extends Array
 			value.length);
 	}
 
-	static handleVector(_vector)
-	{
-throw new Error('todo');
-		/*const result = {};
-
-		var key; for(const idx in _vector)
-		{
-			if(!_vector[idx])
-			{
-				continue;
-			}
-
-			key = this.removePrefix(idx);
-
-			_vector[idx].index = this.removePrefix(
-				_vector[idx].index);
-			_vector[idx].long = this.removePrefix(
-				_vector[idx].long);
-			_vector[idx].short = this.removePrefix(
-				_vector[idx].short);
-
-			//
-			result[key] = _vector[idx];
-		}
-
-		return result;*/
-	}
-	
-	static checkVector(_vector, _throw = DEFAULT_THROW)
-	{
-throw new Error('todo');
-		/*const set = new Set();
-		
-		for(const idx in _vector)
-		{
-			if(_vector[idx].long)
-			{
-				if(set.has(_vector[idx].long))
-				{
-					if(_throw) throw new Error('The long key `' +
-							_vector[idx].long + '` ' +
-							'already exists');
-					return false;
-				}
-			}
-			else
-			{
-			
-			if(set.has(_vector[idx].short))
-			{
-				if(_throw) throw new Error('The short key `' +
-						_vector[idx].short + '` ' +
-						'already exists');
-				return false;
-			}
-			
-			set.add(_vector[idx].long);
-			set.add(_vector[idx].short);
-		}
-		
-		return true;*/
-	}
-//zzzzzzzzzzz
 	//
-	//todo/u.a. fehlende {long} mit vektor-index fuellen,
-	//	.. alles auf mehrfache testen, .. make-shorts, ...
+	//TODO/take the logics to '.makeShort()' (called on each '.appendItem()'),
+	//	then remove this whole old, static version..!1
 	//
-	handleVector(_vector)
-	{
-		_vector = this.constructor.
-			handleVector(_vector);
-		this.constructor.
-			checkVector(_vector);
-
-		if(this.options.make)
-		{
-			this.constructor.
-				makeShorts(
-					_vector);
-		}
-
-		this.indexVector(_vector);
-		return _vector;
-	}
-
-	indexVector(_vector)
-	{
-		this.long = new Map();
-		this.short = new Map();
-
-		for(const idx in _vector)
-		{
-			if(_vector[idx].long)
-			{
-				this.long.set(_vector[idx].
-					long, idx);
-			}
-
-			if(_vector[idx].short)
-			{
-				this.short.set(_vector[idx].
-					short, idx);
-			}
-		}
-	}
-
 	static makeShorts(_vector, _item)
 	{
 		const	set = new Set(),
@@ -737,8 +700,10 @@ throw new Error('todo');
 	
 	PARSE()
 	{
-		const	vector = this.vector,
-			hasVector = !!vector,
+		const	hasVector = this.extended,
+			vector = (hasVector ?
+				this._vector :
+					null),
 			argv = this.argv,
 			keys = [];
 		var	index = 0,
@@ -1081,8 +1046,13 @@ throw new Error('todo');
 	
 	HELP()
 	{
-		if(!this.vector)
+		if(this.emptyVector)
 		{
+			if(this.options.throw)
+			{
+				throw new Error('No vector set, or it\'s empty');
+			}
+
 			return null;
 		}
 		
@@ -1135,12 +1105,29 @@ throw new Error('todo');
 	
 	get KEYS()
 	{
-		if(this.vector)
+		if(!Object.isObject(this._vector))
 		{
-			return Object.keys(this.vector).sort(true);
+			this._vector = this.long =
+				this.short = null;
+			return [];
 		}
-		
-		return null;
+
+		return Object.keys(this.
+			_vector).sort(true);
+	}
+
+	get emptyVector()
+	{
+		if(!Object.isObject(this._vector))
+		{
+			return !(this._vector =
+				this.long =
+				this.short =
+					null);
+		}
+
+		return (Object.keys(this.
+			_vector).length === 0);
 	}
 
 	static removePrefix(_string)
@@ -1197,7 +1184,7 @@ throw new Error('todo');
 			return null;
 		}
 		
-		if(_camel)
+		if(_camel && _string.length > 1)
 		{
 			_string = camel.disable(_string);
 		}
@@ -1246,7 +1233,7 @@ throw new Error('todo');
 
 	findKey(_key, _throw = this.options.throw)
 	{
-		if(!this._vector)
+		if(this.emptyVector)
 		{
 			return _key;
 		}
