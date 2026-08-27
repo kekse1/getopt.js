@@ -36,8 +36,8 @@ As said above.. this code is still **TODO**. It's a first preview snapshot.
 <br>
 
 This whole **`class GetOpt extends Array`** is divided in (currently)
-**four modules**. Use all of them to get this thing to become alive;
-so just place them in one directory (or change the `import`s).
+**four modules**. Use all of them to get this thing alive (so just
+place them in one directory - or change the `import`s).
 
 As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 
