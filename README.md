@@ -43,7 +43,7 @@ As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 <br><br>
 
 ## Features / TODO
-- [x] Both **LONG** and **SHORT** parameters possible. With an extended alphabet for the keys..
+- [x] Both **LONG** and **SHORT** parameters possible (optionally!). .. w/ an extended alphabet for your keys.
 - [x] Possible (configurable) type casts, both for any parameter, specific parameters and/or the regular `argc`.
 - [x] My favorite [`(cast)`](./src/getopt.num.mjs) logics, smth. like `--perm '(8)1777'` or `--hexa '(16)ffff'`.
 - [x] An (optional, as usual) automatic `unescape` of cmdline arguments and parameters.
