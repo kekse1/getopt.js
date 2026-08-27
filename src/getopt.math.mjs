@@ -4,6 +4,26 @@
  */
 
 //
+Reflect.defineProperty(Math, 'getIndex', { value: (_index, _length) => {
+	if(!Number.isInt(_index))
+	{
+		return undefined;
+	}
+
+	if(!Number.isInt(_length) || _length < 1)
+	{
+		return null;
+	}
+
+	if((_index %= _length) < 0)
+	{
+		return (_length + _index);
+	}
+
+	return _index;
+}});
+
+//
 Reflect.defineProperty(String, 'radixCast', { value: (_string, _length_max = 256) => {
 	if(typeof _string !== 'string')
 	{

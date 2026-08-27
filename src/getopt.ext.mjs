@@ -4,7 +4,7 @@
  */
 
 //
-import './getopt.num.mjs';
+import './getopt.math.mjs';
 
 //
 Reflect.defineProperty(String.prototype, 'escape', { value: function()
@@ -163,26 +163,6 @@ Reflect.defineProperty(String, 'tryCast', { value: (_item, _opts) => {
 	}
 
 	return original;
-}});
-
-//
-Reflect.defineProperty(Math, 'getIndex', { value: (_index, _length) => {
-	if(!Number.isInt(_index))
-	{
-		return undefined;
-	}
-
-	if(!Number.isInt(_length) || _length < 1)
-	{
-		return null;
-	}
-
-	if((_index %= _length) < 0)
-	{
-		return (_length + _index);
-	}
-
-	return _index;
 }});
 
 //
