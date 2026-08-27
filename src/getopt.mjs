@@ -7,6 +7,7 @@
  * TODO * options(/vect..) wie v.a. {index} umsetzen.
  *	.. v.a. denke ich an {vector}-usage. w/ .parse(); ...
  * TODO * many more things... please finish all of 'em!! s00n
+ * TODO * my favorite kind of cast: `--perm '(8)1777'`, `--hexa '(16)ffff'`, ...
  */
 
 //
