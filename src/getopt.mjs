@@ -5,8 +5,8 @@
 
 /*
  * TODO * options(/vect..) wie v.a. {index} umsetzen.
- *	.. v.a. denke ich an {vector}-usage. w/ .parse(); ...
- * TODO * many more things... please finish all of 'em!! s00n
+ *	.. u.a. denke ich an {vector}-usage. w/ .parse(); ...
+ * TODO * some more things... please finish all of 'em!1!1 ..
  */
 
 //
@@ -29,51 +29,6 @@ const
 	DEFAULT_FORCE = false,
 	DEFAULT_ALL = false,
 	DEFAULT_CAMEL = true;
-
-//
-var	ALLOWED_KEY_CHARACTERS = '',
-	_ALLOWED_KEY_CHARACTERS;
-
-(() => {
-	//
-	for(var i = 33; i <= 44; ++i)
-	{
-		ALLOWED_KEY_CHARACTERS +=
-			String.fromCharCode(i);
-	}
-	
-	for(var i = 45; i <= 57; ++i)
-	{
-		ALLOWED_KEY_CHARACTERS +=
-			String.fromCharCode(i);
-	}
-	
-	for(var i = 63; i <= 90; ++i)
-	{
-		ALLOWED_KEY_CHARACTERS +=
-			String.fromCharCode(i);
-	}
-	
-	for(var i = 94; i <= 95; ++i)
-	{
-		ALLOWED_KEY_CHARACTERS +=
-			String.fromCharCode(i);
-	}
-	
-	for(var i = 97; i <= 122; ++i)
-	{
-		ALLOWED_KEY_CHARACTERS +=
-			String.fromCharCode(i);
-	}
-	
-	ALLOWED_KEY_CHARACTERS +=
-		String.fromCharCode(126);
-
-	//
-	_ALLOWED_KEY_CHARACTERS = new Set(
-		ALLOWED_KEY_CHARACTERS.
-			split(''));
-})();
 
 //
 import './getopt.ext.mjs';
@@ -1661,9 +1616,63 @@ class GetOpt extends Array
 		
 		return Array.isArray(this.map.get(_key));
 	}
+	
+	static get allowedKeyCharacters()
+	{
+		return ALLOWED_KEY_CHARACTERS;
+	}
+	
+	static get _allowedKeyCharacters()
+	{
+		return new Set(_ALLOWED_KEY_CHARACTERS);
+	}
 }
 
 export default GetOpt;
 
 //
+var	ALLOWED_KEY_CHARACTERS = '',
+	_ALLOWED_KEY_CHARACTERS;
 
+(() => {
+	//
+	for(var i = 33; i <= 44; ++i)
+	{
+		ALLOWED_KEY_CHARACTERS +=
+			String.fromCharCode(i);
+	}
+	
+	for(var i = 45; i <= 57; ++i)
+	{
+		ALLOWED_KEY_CHARACTERS +=
+			String.fromCharCode(i);
+	}
+	
+	for(var i = 63; i <= 90; ++i)
+	{
+		ALLOWED_KEY_CHARACTERS +=
+			String.fromCharCode(i);
+	}
+	
+	for(var i = 94; i <= 95; ++i)
+	{
+		ALLOWED_KEY_CHARACTERS +=
+			String.fromCharCode(i);
+	}
+	
+	for(var i = 97; i <= 122; ++i)
+	{
+		ALLOWED_KEY_CHARACTERS +=
+			String.fromCharCode(i);
+	}
+	
+	ALLOWED_KEY_CHARACTERS +=
+		String.fromCharCode(126);
+
+	//
+	_ALLOWED_KEY_CHARACTERS = new Set(
+		ALLOWED_KEY_CHARACTERS.
+			split(''));
+})();
+
+//
