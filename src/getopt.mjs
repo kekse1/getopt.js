@@ -272,20 +272,79 @@ class GetOpt extends Array
 		};
 	}
 
-	static create(_param)
+	static create(... _args)
 	{
-		if(!Object.isObject(_param))
+		var _start, _param;
+		
+		for(var i = 0; i < _args.length; ++i)
 		{
-			_param = {};
+			if(typeof _args[i] === 'boolean')
+			{
+				_start = _args[i];
+			}
+			else if(Object.isObject(_args[i]))
+			{
+				_param = _args[i];
+			}
+		}
+		
+		const	opts = this.options,
+			keys = Object.keys(opts);
+
+		_param = Object.assign({ vector: null, options: {},
+			argv: process.argv, start: null,
+			throw: DEFAULT_THROW }, _param);
+		
+		if(!Object.isObject(_param.options))
+		{
+			_param.options = {};
 		}
 
+		for(const o of keys)
+		{
+			if(Object.hasOwn(_param, o) && !Object.hasOwn(_param.options, o))
+			{
+				_param.options[o] = _param[o];
+				delete _param[o];
+			}
+		}
+		
+		_param.options = Object.assign(
+			opts, _param.options);
+
+		if(typeof _start !== 'boolean' && typeof _param.start === 'boolean')
+		{
+			_start = _param.start;
+			delete _param.start;
+		}
+		
 		const result = new GetOpt(
 			_param.vector,
 			_param.options,
 			_param.argv,
 			_param.start);
+		
+		var THROW;
+		
+		if(typeof _param.throw === 'boolean')
+		{
+			THROW = _param.options.throw = _param.throw;
+			delete _param.throw;
+		}
+		else if(typeof _param.options.throw === 'boolean')
+		{
+			THROW = _param.options.throw;
+		}
+		else
+		{
+			THROW = _param.options.throw = DEFAULT_THROW;
+		}
 
-		result.parse(_param.throw, true);
+		if(_start)
+		{
+			result.parse(_param.throw, true);
+		}
+
 		return result;
 	}
 
