@@ -235,6 +235,11 @@ class GetOpt extends Array
 
 		return this._vector;
 	}
+	
+	removeVector()
+	{
+		return this.vector = null;
+	}
 
 	setVector(_value)
 	{
@@ -258,7 +263,7 @@ class GetOpt extends Array
 
 		for(const key of newKeys)
 		{
-			if(!oldKeys.has(key) && Object.isObject(_value[key]))
+			if(!oldKeys.has(key) && this.constructor.checkVectorItem(_value[key]))
 			{
 				this.addItem(key, _value[key]);
 			}
@@ -269,7 +274,6 @@ class GetOpt extends Array
 
 	//
 	//TODO/maybe use this.. for filtering or error `throw` if(.options.throw); ..
-	//TODO/more checks here??? .. and/or more complex ones!? hm .. .addItem();
 	//
 	static checkVector(_vector)
 	{
@@ -280,16 +284,21 @@ class GetOpt extends Array
 
 		for(const idx in _vector)
 		{
-			//
-			//TODO/maybe even more complex checks somewhere..!??!1
-			//
-			if(!Object.isObject(_vector[idx]))
+			if(!this.checkVectorItem(_vector[idx]))
 			{
 				return false;
 			}
 		}
 
 		return true;
+	}
+	
+	//
+	//TODO/maybe even more complex checks somewhere..!??!1
+	//
+	static checkVectorItem(_value)
+	{
+		return Object.isObject(_value);
 	}
 
 	get isValidVector()
@@ -304,7 +313,7 @@ class GetOpt extends Array
 
 		return result;
 	}
-
+	
 	get simple()
 	{
 		return this.emptyVector;
@@ -466,14 +475,14 @@ class GetOpt extends Array
 		}
 
 		const item = this._vector[_index];
+		delete this._vector[_index];
 
-		if(!Object.isObject(item))
+		if(!this.constructor.checkVectorItem(item))
 		{
 			return undefined;
 		}
 
 		this.map.delete(_index);
-		delete this._vector[_index];
 
 		if(item.long)
 		{
@@ -518,7 +527,7 @@ class GetOpt extends Array
 			result.long = _index;
 		}
 
-		if(Object.isObject(this._vector[_index]))
+		if(this.constructor.checkVectorItem(this._vector[_index]))
 		{
 			if(_force)
 			{
