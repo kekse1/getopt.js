@@ -26,6 +26,7 @@ const
 	DEFAULT_EXPAND = false,
 	DEFAULT_ARRAY = true,
 	DEFAULT_THROW = false,
+	DEFAULT_FORCE = false,
 	DEFAULT_ALL = false,
 	DEFAULT_CAMEL = true;
 
@@ -217,7 +218,7 @@ class GetOpt extends Array
 
 	set vector(_value)
 	{
-		if(!Object.isObject(_value))
+		if(!this.constructor.checkVector(_value))
 		{
 			this.long = this.short = null;
 			return this._vector = null;
@@ -229,10 +230,79 @@ class GetOpt extends Array
 
 		for(const idx in _value)
 		{
-			this.appendItem(idx, _value);
+			this.addItem(idx, _value);
 		}
 
 		return this._vector;
+	}
+
+	setVector(_value)
+	{
+		return this.vector = _value;
+	}
+
+	addVector(_value)
+	{
+		if(!this.constructor.checkVector(_value))
+		{
+			return this.vector;
+		}
+
+		if(!this.isValidVector)
+		{
+			return this.vector = _value;
+		}
+		
+		const	oldKeys = new Set(Object.keys(this._vector)),
+			newKeys = Object.keys(_value);
+
+		for(const key of newKeys)
+		{
+			if(!oldKeys.has(key) && Object.isObject(_value[key]))
+			{
+				this.addItem(key, _value[key]);
+			}
+		}
+
+		return this.vector;
+	}
+
+	//
+	//TODO/maybe use this.. for filtering or error `throw` if(.options.throw); ..
+	//TODO/more checks here??? .. and/or more complex ones!? hm .. .addItem();
+	//
+	static checkVector(_vector)
+	{
+		if(!Object.isObject(_vector))
+		{
+			return null;
+		}
+
+		for(const idx in _vector)
+		{
+			//
+			//TODO/maybe even more complex checks somewhere..!??!1
+			//
+			if(!Object.isObject(_vector[idx]))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	get isValidVector()
+	{
+		const result = !!this.constructor.
+			checkVector(this._vector);
+
+		if(!result)
+		{
+			this._vector = this.long = this.short = null;
+		}
+
+		return result;
 	}
 
 	get simple()
@@ -259,6 +329,7 @@ class GetOpt extends Array
 			assign: DEFAULT_ASSIGN,
 			split: DEFAULT_SPLIT,
 			throw: DEFAULT_THROW,
+			force: DEFAULT_FORCE,
 			help: DEFAULT_HELP,
 			expand: DEFAULT_EXPAND,
 			param: DEFAULT_PARAM,
@@ -309,8 +380,7 @@ class GetOpt extends Array
 			}
 		}
 		
-		_param.options = Object.assign(
-			opts, _param.options);
+		_param.options = Object.assign(opts, _param.options);
 
 		if(typeof _parse !== 'boolean' && typeof _param.parse === 'boolean')
 		{
@@ -349,22 +419,92 @@ class GetOpt extends Array
 	}
 
 	//
-	appendItem(_index, _item)
+	removeItem(... _keys)
 	{
-		if(!Object.isObject(this._vector))
+		if(!this.isValidVector)
 		{
-			this._vector = {};
-			this.long = new Map();
-			this.short = new Map();
+			return null;
+		}
+
+		const	result = {};
+		var	item;
+
+		for(var i = 0, j = 0; i < _keys.length; ++i)
+		{
+			if(typeof _keys[i] !== 'string' || !_keys[i])
+			{
+				continue;
+			}
+
+			if(!(item = this._vector[_keys[i]]))
+			{
+				continue;
+			}
+
+			if(item.long)
+			{
+				this.long.delete(item.long);
+			}
+
+			if(item.short)
+			{
+				this.short.delete(item.short);
+			}
+
+			this.map.delete(_keys[i]);
+			result[j++] = _keys[i];
+		}
+
+		return result;
+	}
+
+	purgeItem(_index)
+	{
+		if(!this.isValidVector)
+		{
+			return null;
+		}
+
+		const item = this._vector[_index];
+
+		if(!Object.isObject(item))
+		{
+			return undefined;
+		}
+
+		this.map.delete(_index);
+		delete this._vector[_index];
+
+		if(item.long)
+		{
+			this.long.delete(item.long);
+		}
+
+		if(item.short)
+		{
+			this.short.delete(item.short);
+		}
+
+		return item;
+	}
+
+	addItem(_index, _item, _force = this.options.force)
+	{
+		if(typeof _force !== 'boolean')
+		{
+			_force = this.options.force;
 		}
 		
-		const result = Object.assign(
-				this.item, _item);
+		if(!this.isValidVector)
+		{
+			this.vector = {};
+		}
+		
+		const result = Object.assign(this.item, _item);
 
 		if(!(_index = this.prepareKey(_index, false, this.options.camel)))
 		{
-			if(result.long = this.prepareKey(
-				result.long, false, this.options.camel))
+			if(result.long = this.prepareKey(result.long, false, this.options.camel))
 			{
 				_index = result.long;
 			}
@@ -373,27 +513,42 @@ class GetOpt extends Array
 				throw new Error('Missing index/key');
 			}
 		}
-		else if(!(result.long = this.prepareKey(
-			result.long, false, this.options.camel)))
+		else if(!(result.long = this.prepareKey(result.long, false, this.options.camel)))
 		{
 			result.long = _index;
 		}
 
-		if(Object.hasOwn(this._vector, _index))
+		if(Object.isObject(this._vector[_index]))
 		{
-			throw new Error('Index already exists');
+			if(_force)
+			{
+				this.purgeItem(_index);
+			}
+			else
+			{
+				throw new Error('Index already exists');
+			}
 		}
 
-		if(this.long.has(result.long))
+		if(this.long.has(result.long) && !_force)
 		{
 			throw new Error('This long key already exists');
 		}
 
+		this.long.set(result.long, _index);
+		
 		if(Object.hasOwn(result, 'short'))
 		{
 			if(!(result.short = this.prepareKey(result.short, false)))
 			{
-				throw new Error('Invalid short key');
+				if(_force)
+				{
+					result.short = '';
+				}
+				else
+				{
+					throw new Error('Invalid short key');
+				}
 			}
 		}
 		else if(this.options.make)
@@ -410,7 +565,7 @@ class GetOpt extends Array
 
 		if(result.short)
 		{
-			if(this.short.has(result.short))
+			if(this.short.has(result.short) && !_force)
 			{
 				throw new Error('Short key already exists');
 			}
@@ -487,7 +642,7 @@ class GetOpt extends Array
 	}
 
 	//
-	//TODO/take the logics to '.makeShort()' (called on each '.appendItem()'),
+	//TODO/take the logics to '.makeShort()' (called on each '.addItem()'),
 	//	then remove this whole old, static version..!1
 	//
 	static makeShorts(_vector, _item)
@@ -589,7 +744,8 @@ class GetOpt extends Array
 	{
 		this.options = this.
 			constructor.options;
-		this.vector = null;
+		this._vector = this.long =
+			this.short = null;
 		this.clear();
 	}
 
@@ -1105,10 +1261,8 @@ class GetOpt extends Array
 	
 	get KEYS()
 	{
-		if(!Object.isObject(this._vector))
+		if(!this.isValidVector)
 		{
-			this._vector = this.long =
-				this.short = null;
 			return [];
 		}
 
@@ -1118,7 +1272,7 @@ class GetOpt extends Array
 
 	get emptyVector()
 	{
-		if(!Object.isObject(this._vector))
+		if(!this.isValidVector)
 		{
 			return !(this._vector =
 				this.long =
