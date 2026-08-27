@@ -1,40 +1,29 @@
 #!/usr/bin/env node
 
 //
-import * as polyfill from './polyfill.js';
-import getopt from './getopt.js';
+import getopt from './getopt.mjs';
 
-//
-const PARSE = true;
-const ASSIGN = true;
+//all of the following are *optional*.
+const _vector = null;
+//see also `static get options()`.. plus
+//plus all `const DEFAULT_*` on the top.
+const _options = null;
+const _argv = null;
+const _start = null;
+const _throw = false;
 
-//
-//first, biggest vector to test most functionality
-//second is the absolute minimum, so only keys to access, rest should be filled into the vector automatically
-//
-const vector = {
-	erstes: { short: 'e', long: 'eins', index: 0, params: 3, help: 'erster test, dazu [help] beschreibung', group: 'erste gruppe', undefined: '(undef)', null: '(null)' },
-	zweites: { short: 'z', long: 'zwei', params: 1, help: 'nummer zwei [help] beschreibung', group: 'erste gruppe', default: [ '(def 1)', '(def 2)', '(def 3)' ] },
-	drittes: { short: 'd', long: 'drei', index: -1, params: 3, help: 'nummer drei [help] beschreibung', group: 'zweite gruppe' },
-	viertes: { short: true, long: true, params: true, assign: false, group: 'abcv' },
-	fuenftes: { short: 's', long: 'dies-ist-ein-langer-test', help: 'ebenso-noch-ein-langer-test [help] description.. even longer now!', group: 'eine ganz lange gruppe wg. help() scaling' },
-	sechstes: { short: 'S' },
-	siebtes: { group: 'abcv' }
-};
-/*const vector = {
-	erstes: {},
-	zweites: {},
-	drittes: {}
-};*/
-//TODO/test w/ '-p1337', AND if short is automatically inserted!
-/*const vector = {
-	port: { parse: true, params: 1 },
-	test: { params: 1 }
-};*/
+const create = {
+	vector: _vector,
+	options: _options,
+	argv: _argv,
+	start: _start,
+	throw: _throw };
 
-//
-const testVector = getopt(vector, PARSE, PARSE, ASSIGN, ASSIGN);
-console.dir(testVector);
+//'process.args' is *my* location for it...
+//but it can also be 'only' a variable..!!1
+//as above, the `create` param is optional.
+process.args = getopt.create(create);
 
-//
+//the `.object` is best for debugging. ^_^ ...
+console.dir(process.args.object, { depth: 2 });
 

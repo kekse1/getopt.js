@@ -4,101 +4,55 @@
 <br><br>
 
 > [!IMPORTANT]
-> **Currently I'm preparing one bigger version of all of this.
-> But you'll have to wait some days/weeks (dunno exactly atm.).**
-> And, btw., it'll run 'as is'.. all my extensions are integrated.
+> This is my **newest** version, updated **2026-08-26**.
+> The original, old code is to be found in [`./src.ORIG/`](./src.ORIG/).
+> And it works 'as is', all my extensions are available [here](./src/).
+
+> [!NOTE]
+> It's **not yet finished**.. just the current state.
+> See also the [TODO section](#todo) (below) - more or less..
 
 <br><br>
 
 # `getopt.js`
 This is my own interpretation of the well known `getopt` functionality.
-And now there's also a [**tiny alternative version**](#tiny-alternative-version).
 
 <br>
 
-> [!NOTE]
-> The regular/big version has at least one bug. And my [**tiny alternative version**](#tiny-alternative-version)
-> is maintained a bit more frequently (currently I'm not in the mood of fixing the regular version).
-
-> [!TIP]
-> So the [tiny alternative version](#tiny-alternative-version) (which got it's own polyfill, so it should
-> run 'as is'..) got the latest feature of supporting multiple radix (if parsing/etc. of paramters is
-> enabled), like `--perm '(8)1777'` or `--int '(16)ffff'`. ;-)
-
-> [!NOTE]
-> Polyfill `out of date`!
+**No other dependencies**, only real plain **Vanilla JavaScript** (for
+the [Node.js](https://nodejs.org/) interpreter). Run's 'as is' (with
+**three modules**).
 
 <br><br>
 
-## Index
-1. [News](#news)
-2. [Start](#getoptjs)
-    * [Download](#download)
-    * [Tiny alternative version](#tiny-alternative-version)
-    * [Description](#description)
-        * [Features](#features)
-        * [Function call](#function-call)
-        * [Vector items](#vector-items)
-        * [Finding best `short` keys](#finding-best-short-keys)
-        * [Configuration](#configuration)
-        * [`DEFAULT_EXPAND`](#default_expand)
-    	* [Dependencies](#dependencies)
-	* [Namespace](#namespace)
-	* [Bugs](#bugs)
-    * [References](#references)
-3. [Contact](#contact)
-4. [Copyright and License](#copyright-and-license)
-
-<br><br><br>
-
 ## Download
-* [**`getopt.js`**](src/getopt.js) (**252** code lines, in v**0.4.0**)
-* [`polyfill.js`](src/polyfill.js) (**321** code lines) if you don't use [my library](https://github.com/kekse1/v4/)
-* [**`getopt.tiny.js`**](src/getopt.tiny.js) (updated **2026-08-07**, w/ **887** code lines in total);
-* [`test.js`](src/test.js) (tiny test, jfyi..);
-* [`type.js`](src/type.js) (more **type check** features for the **tiny version**);
+As said above.. this code is still **TODO**. It's a first preview snapshot.
 
-## Info
-Just for your info: Both versions stop parsing the rest of the command line after the
-occurence of an 'empty' `--` parameter. That's a (good) convention.
+* [`./src/`](./src/): **current** `.js` modules, plus one `test.sh`
+* [`./src.ORIG/`](./src.ORIG/): the old, original code (from here!)
 
-Another info: with enabled `_cast` also the regular parameters (not only those with the
-`--` prefix, or rather (only) their values) are being converted (e.g. to Numbers).
+<br>
 
-## Tiny alternative version
-The tiny alternative version doesn't have most of the features of the regular version. But works great as well.
-There are not so many features, but the main difference is that you don't define a 'vector' with all possible/allowed
-parameters, so any `--` prefixed parameter will be interpreted as valid key. So handling this version is
-also much easier and quicker.
+This whole **`class GetOpt extends Array`** is divided in (currently)
+**three modules**. You want all of them to really run it 'as is'.
 
-The [**`getopt.tiny.js`**](src/getopt.tiny.js) does **not** need an extra polyfill (at least until now.. I don't really know now);
-Everything's included on the file's bottom.
+As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
+
+<br><br>
+
+## TODO
+- [ ] my favorite kind of `cast`: smth. like `--perm '(8)1777'` or `--hexa '(16)ffff'` (again..);
+- [ ] some other things.. including real usage (and tests) of the (this time) **optional** {vector};
+- [ ] testing all of this, beyond the first [`test.sh`](./src/test.sh);
+- [ ] a good/full **documentation** in this `README.md`;
+
+<br>
 
 > [!TIP]
-> Since v**2.4.0** it also supports different radix/base, e.g. `--perm '(8)1777'`
-> or `--int '(16)ffff'`. ;-) Well, it's really untested, but should work well..
+> In this `README.md` there's some text commented out (see the source file, below this `[!TIP]`).
+> I'll partially use it as a reference. Don't know how much of it. Just seeing ideas.
 
-### Newest features
-The newest version also supports **C unescaping** now. So `--separator \\n` or `--separator '\n'`
-will unescape the string to interprete with a newline character `\n`.
-
-Since v**2.0.0** the keys are stored **with `--`** prefix, to prevent collisions with the
-`.prototype` implementation of the resulting **Array** (which is preferred over
-`Object.create(null)` because that's the best way to also store the complete (filtered)
-command line).
-
-With v**2.1.0** there's also an interface (`extends Array`) to manage this thing better.
-
-And since v**2.2.0** assigning via `=` char (so e.g. `--key=value`) will directly replace
-the whole value with the newest one, even when it's set to count multiple occurences of
-the same key into an array (see parameter/const `_array = DEFAULT_ARRAY`).
-
-These new features are **barely tested**...
-
-## Description
-You all know the `getopt` feature, either in shells or in C and much more. Nearly every language will have an implementation of it.
-Since I really love to implement any feature I need for myself, I also created this implementation. Maybe you like it, or my way of handling it? :-)
-
+<!--
 ### Features
 I'm not sure if the following list is really complete. But most things are encountered here:
 
@@ -168,33 +122,7 @@ If enabled, arguments like `-abc` (so **short**s!) are expanded to `-a -b -c`, o
 > **Warning**
 > If enabled, you can't use strings with `.length > 1`, so only single chars! Otherwise also possible 'd be `-short`.
 
-### Dependencies
-I implemented it with the help of my own JavaScript Library (all my own, just from scratch).
-
-The library is originally the [**libjs.de**](https://libjs.de/), but this one was replaced by a newer,
-_more compact_ version which I'm using at [**kekse.biz**](https://kekse.biz/): this is the GitHub link
-to my [**`v4`** repository](https://github.com/kekse1/v4/); also visible (with rendered `.md`) on my
-[**kekse.biz**/projects page](https://kekse.biz/#github://kekse1/).
-
-> **Warning**
-> If using this script stand-alone, without my library being loaded/used, you should also import the [**`polyfill.js`**](src/polyfill.js).
-> I **hope** this file is complete, I neither tested any case, nor did I scrolled through the [**`getopt.js`**](src/getopt.js).. xD~
-
-### Namespace
-The whole base **`getopt()`** function is being exported under the **`global`** namespace! So you just have to **`getopt(vector, ...)`**.
-
-### Bugs
-This only holds for the regular, big version. The tiny alternative version should have no bugs at all..
-
-* _ONE_ atm: multiple `[params]` are not being collected (but the first only).. even though they disappear from the list of regular cmd-line-arguments.. :-/
-
-## References
-Maybe also interesting for you: the **`config.js`**? And a reference to my documentation for this **`getopt.js`**:
-
-* [**`getopt`**.md](https://github.com/kekse1/v4/blob/git/docs/modules/lib/getopt.md)
-* [**`config`**.md](https://github.com/kekse1/v4/blob/git/docs/modules/lib/config.md)
-
-The documentation (located in my `v4` repository) is also still TODO.
+  -->
 
 <br><br><br>
 
