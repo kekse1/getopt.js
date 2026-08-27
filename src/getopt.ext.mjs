@@ -229,7 +229,6 @@ Reflect.defineProperty(Array.prototype, 'sort', { value: function(_asc = true)
 		{
 			if(_a < _b) return (_asc ? -1 : 1);
 			if(_a > _b) return (_asc ? 1 : -1);
-			return 0;
 		}
 		catch(_err)
 		{
