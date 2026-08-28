@@ -73,6 +73,11 @@ As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 
 <br>
 
+> [!NOTE]
+> Please do not set your `{vector}` yet. Then it'll work great. The rest will be done s00n.
+
+<br>
+
 > [!TIP]
 > In this `README.md` there's some text commented out (see the source file, below this `[!TIP]`).
 > I'll partially use it as a reference. Don't know how much of it. Just seeing ideas.
