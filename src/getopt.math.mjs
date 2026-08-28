@@ -229,7 +229,7 @@ Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_thre
 	if(split[1]) { while(split[1][split[1].length - ++c] === '0');
 		if(--c) split[1] = split[1].slice(0, -c).trim(); }
 
-	for(var i = split[0].length - 1; i >= 0; --i)	
+	if(split[0]) for(var i = split[0].length - 1; i >= 0; --i)	
 	{
 		if(split[0][i] === '.')
 		{
@@ -250,7 +250,7 @@ Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_thre
 		mul *= _radix;
 	}
 
-	if(split.length > 1)
+	if(split[1])
 	{
 		mul = (1 / _radix);
 		
@@ -266,12 +266,12 @@ Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_thre
 		}
 	}
 
-	if(negative)
+	if(negative && result)
 	{
 		result = -result;
 	}
 	
-	if(typeof _int_threshold === 'number')
+	if(result && typeof _int_threshold === 'number')
 	{
 		var test = result.toString().split('.');
 
