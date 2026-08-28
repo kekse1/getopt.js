@@ -13,7 +13,7 @@
 
 > [!NOTE]
 > It's **not yet finished**.. just the current state.
-> See also the [TODO section](#todo) (below) - more or less..
+> See also the [**Features/TODO** section](#features--todo) (below) - more or less..
 
 <br><br>
 
@@ -28,7 +28,10 @@ the [Node.js](https://nodejs.org/) interpreter). Run it 'as is' (in
 <br><br>
 
 ## Download
-As said above.. this code is still **TODO**. It's a first preview snapshot.
+As said above.. this code is still **TODO**. It works great right now,
+but some features are not yet fully implemented (e.g. the `{vector}` thing).
+
+But you can use it nevertheless..
 
 * [`./src/`](./src/): all my **new** modules
 * plus some [**test** scripts](./src/test/)
