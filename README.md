@@ -91,7 +91,7 @@ place them in one directory - or change the `import`s).
 <br>
 
 > [!TIP]
-> In this `README.md` there's some text commented out (see the source file, below this `[!TIP]`).
+> In this `README.md` there's some text commented out (see the source of this markdown file).
 > I'll partially use it as a reference. Don't know how much of it. Just seeing ideas.
 
 <!--
