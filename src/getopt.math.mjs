@@ -223,6 +223,10 @@ Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_thre
 		split.length = 1;
 	}
 
+	split[0] = split[0].trim();
+	if(split[1]) split[1] =
+		split[1].trim();
+
 	var c = 0;
 	while(split[0][c++] === '0');
 	if(--c) { split[0] = split[0].substr(c).trim(); c = 0; }
