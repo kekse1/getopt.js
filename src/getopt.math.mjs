@@ -75,7 +75,7 @@ Reflect.defineProperty(String, 'radixCast', { value: (_string, _length_max = 256
 				return null;
 			}
 			
-			if(Number.isNaN(radix = Number(radix.trim())))
+			if(Number.isNaN(radix = Number(radix)))
 			{
 				return null;
 			}
@@ -103,14 +103,17 @@ Reflect.defineProperty(String, 'radixCast', { value: (_string, _length_max = 256
 	
 	if(radix[radix.length - 1] === 'n')
 	{
-		if(!(value = value.trim()))
+		if(!value)
 		{
 			return 0n;
 		}
 		
-		value = value.split('.')[0].trim();
+		if(!(value = value.split('.')[0]))
+		{
+			return 0n;
+		}
 	}
-	else if(!(value = value.trim()))
+	else if(!value)
 	{
 		return (bigInt ? 0n : 0);
 	}
@@ -223,15 +226,11 @@ Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_thre
 		split.length = 1;
 	}
 
-	split[0] = split[0].trim();
-	if(split[1]) split[1] =
-		split[1].trim();
-
 	var c = 0;
 	while(split[0][c++] === '0');
-	if(--c) { split[0] = split[0].substr(c).trim(); c = 0; }
+	if(--c) { split[0] = split[0].substr(c); c = 0; }
 	if(split[1]) { while(split[1][split[1].length - ++c] === '0');
-		if(--c) split[1] = split[1].slice(0, -c).trim(); }
+		if(--c) split[1] = split[1].slice(0, -c); }
 
 	if(split[0]) for(var i = split[0].length - 1; i >= 0; --i)	
 	{
@@ -369,7 +368,7 @@ Reflect.defineProperty(BigInt, 'parse', { value: (_value, _radix = 10) => {
 	
 	if(_radix === 10 && _value[_value.length - 1] === 'n')
 	{
-		_value = _value.slice(0, -1).trim();
+		_value = _value.slice(0, -1);
 	}
 	
 	const [ negative, cut ] = sign(_value);
@@ -382,10 +381,8 @@ Reflect.defineProperty(BigInt, 'parse', { value: (_value, _radix = 10) => {
 	var c = 0;
 	while(_value[c++] === '0');
 	if(--c) { _value = _value.substr(c); c = 0; }
-	while(_value[_value.length - ++c] === '0');
-	if(--c) _value = _value.slice(0, -c);
 	
-	if(!(_value = _value.trim()))
+	if(!_value)
 	{
 		return 0n;
 	}
@@ -401,7 +398,7 @@ Reflect.defineProperty(BigInt, 'parse', { value: (_value, _radix = 10) => {
 		return null;
 	}
 	
-	if(!(_value = _value[0].trim()))
+	if(!(_value = _value[0]))
 	{
 		return 0n;
 	}
