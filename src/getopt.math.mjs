@@ -422,7 +422,7 @@ Reflect.defineProperty(BigInt, 'parse', { value: (_value, _radix = 10) => {
 }});
 
 //
-Reflect.defineProperty(global, 'isNumeric', { value: (_value, _string = true) => {
+Reflect.defineProperty(globalThis, 'isNumeric', { value: (_value, _string = true) => {
 	if(Number.isNumber(_value) || typeof _value === 'bigint')
 	{
 		return true;
