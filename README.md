@@ -22,7 +22,7 @@
 This is my own interpretation of the well known `getopt` functionality.
 
 **ZERO other dependencies**, only real plain **Vanilla JavaScript**
-(and the [Node.js](https://nodejs.org/) interpreter, of course).
+(but of course you need the [Node.js](https://nodejs.org/) interpreter).
 
 <br><br>
 
