@@ -15,6 +15,7 @@ const
 	DEFAULT_CAST = true,
 	DEFAULT_CAST_REGULAR = false,
 	DEFAULT_CAST_RADIX = true,
+	DEFAULT_CAST_EMPTY = true,
 	DEFAULT_INDEX = -1,
 	DEFAULT_UNESCAPE = true,
 	DEFAULT_UNESCAPE_REGULAR = false,
@@ -284,6 +285,7 @@ class GetOpt extends Array
 		return {
 			cast: DEFAULT_CAST,
 			castRegular: DEFAULT_CAST_REGULAR,
+			empty: DEFAULT_CAST_EMPTY,
 			radix: DEFAULT_CAST_RADIX,
 			array: DEFAULT_ARRAY,
 			list: DEFAULT_LIST,
@@ -581,6 +583,7 @@ class GetOpt extends Array
 		return [
 			'assign',
 			'split',
+			'empty',
 			'array',
 			'list',
 			'cast',
@@ -830,6 +833,7 @@ class GetOpt extends Array
 			unescape,
 			idx, tmp,
 			string,
+			empty,
 			radix,
 			array,
 			list,
@@ -868,6 +872,7 @@ class GetOpt extends Array
 					item = vector[item];
 
 					unescape = item.unescape;
+					empty = item.empty;
 					array = item.array;
 					radix = item.radix;
 					list = item.list;
@@ -886,6 +891,7 @@ class GetOpt extends Array
 			else
 			{
 				unescape = this.options.unescape;
+				empty = this.options.empty;
 				array = this.options.array;
 				radix = this.options.radix;
 				list = this.options.list;
@@ -893,7 +899,7 @@ class GetOpt extends Array
 			}
 
 			_value = this.constructor.handleString(_value, {
-				unescape, cast, array, radix, empty: true });
+				unescape, cast, array, radix, empty });
 
 			//
 			if(!_reset && this.options.list && this.map.has(key))
