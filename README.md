@@ -35,11 +35,17 @@ As said above.. this code is still **TODO**. It's a first preview snapshot.
 
 <br>
 
+As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
+
+<br>
+
 This whole **`class GetOpt extends Array`** is divided in (currently)
 **five modules**. Use all of them to get this thing alive (so just
 place them in one directory - or change the `import`s).
 
-As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
+> [!NOTE]
+> I'll create a script which allows you to concatenate all modules
+> into only one file. Maybe you'd prefer it..
 
 <br><br>
 
