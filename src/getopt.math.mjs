@@ -188,12 +188,6 @@ Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_thre
 		_value = _value.substr(cut);
 	}
 
-	var c = 0;
-	while(_value[c++] === '0');
-	if(--c) { _value = _value.substr(c); c = 0; }
-	while(_value[_value.length - ++c] === '0');
-	if(--c) _value =  _value.slice(0, -c);
-
 	if(!(_value = _value.trim()))
 	{
 		return 0;
@@ -228,6 +222,12 @@ Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_thre
 	{
 		split.length = 1;
 	}
+
+	var c = 0;
+	while(split[0][c++] === '0');
+	if(--c) { split[0] = split[0].substr(c).trim(); c = 0; }
+	if(split[1]) { while(split[1][split[1].length - ++c] === '0');
+		if(--c) split[1] = split[1].slice(0, -c).trim(); }
 
 	for(var i = split[0].length - 1; i >= 0; --i)	
 	{
