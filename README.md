@@ -41,8 +41,7 @@ But you can use it nevertheless..
 
 As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 
-<br>
-
+### Modules
 This whole **`class GetOpt extends Array`** is divided in (currently)
 **five modules**. Use all of them to get this thing alive (so just
 place them in one directory - or change the `import`s).
