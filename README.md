@@ -13,7 +13,7 @@
 
 > [!NOTE]
 > It's **not yet finished**.. just the current state.
-> See also the [**Features/TODO** section](#features--todo) (below) - more or less..
+> See also the [**Features/TODO** section](#features--todo) (below).
 
 <br><br>
 
