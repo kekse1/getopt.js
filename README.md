@@ -21,9 +21,8 @@
 # `class GetOpt extends Array`
 This is my own interpretation of the well known `getopt` functionality.
 
-**No other dependencies**, only real plain **Vanilla JavaScript** (for
-the [Node.js](https://nodejs.org/) interpreter). Run it 'as is' (in
-**five modules**).
+**ZERO other dependencies**, only real plain **Vanilla JavaScript**
+(and the [Node.js](https://nodejs.org/) interpreter, of course).
 
 <br><br>
 
