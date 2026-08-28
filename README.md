@@ -34,6 +34,8 @@ but some features are not yet fully implemented (e.g. the `{vector}` thing).
 
 But you can use it nevertheless..
 
+<br>
+
 * [`./src/`](./src/): all my **new** modules
 * plus some [**test** scripts](./src/test/)
 
@@ -41,14 +43,15 @@ But you can use it nevertheless..
 
 As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 
+<br>
+
 ### Modules
 This whole **`class GetOpt extends Array`** is divided in (currently)
 **five modules**. Use all of them to get this thing alive (so just
 place them in one directory - or change the `import`s).
 
 > [!NOTE]
-> I'll create a script which allows you to concatenate all modules
-> into only one file. Maybe you'd prefer it..
+> I'll create a script to concatenate all modules into one file. So it depends on you.
 
 <br><br>
 
