@@ -5,7 +5,7 @@
 
 > [!IMPORTANT]
 > This is my **newest** version, updated **2026-08-26**.
-> The original, old code is to be found in [`./src.OLD/`](./src.OLD/).
+> The original, old code can be found in [`./src.OLD/`](./src.OLD/).
 > The new code is really **re-created all from scratch**!
 
 <br>
