@@ -6,7 +6,6 @@
 > [!IMPORTANT]
 > This is my **newest** version, updated **2026-08-26**.
 > The original, old code is to be found in [`./src.OLD/`](./src.OLD/).
-> And it works 'as is', all my extensions are available [here](./src/).
 > The new code is really **re-created all from scratch**!
 
 <br>
