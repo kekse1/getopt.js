@@ -5,7 +5,7 @@
 
 > [!IMPORTANT]
 > This is my **newest** version, updated **2026-08-26**.
-> The original, old code is to be found in [`./src.ORIG/`](./src.ORIG/).
+> The original, old code is to be found in [`./src.OLD/`](./src.OLD/).
 > And it works 'as is', all my extensions are available [here](./src/).
 > The new code is really **re-created all from scratch**!
 
@@ -36,8 +36,8 @@ But you can use it nevertheless..
 
 <br>
 
-* [`./src/`](./src/): all my **new** modules
-* plus some [**test** scripts](./src/test/)
+* [`./src/`](./src/): the **new** version;
+* plus some [**test** scripts](./src/test/);
 
 <br>
 
@@ -46,12 +46,9 @@ As usual, it's plain **Vanilla JavaScript**. So **no other dependencies**!!
 <br>
 
 ### Modules
-This whole **`class GetOpt extends Array`** is divided in (currently)
-**five modules**. Use all of them to get this thing alive (so just
-place them in one directory - or change the `import`s).
-
-> [!NOTE]
-> I'll create a script to concatenate all modules into one file. So it depends on you.
+Now (**2026-08-31**) all five modules are integrated in the one
+[`getopt.js`](./src/getopt.js) file (exporting the whole
+**`class GetOpt extends Array`**).
 
 <br><br>
 
@@ -60,7 +57,6 @@ place them in one directory - or change the `import`s).
 - [x] Possible (configurable) type casts, both for any parameter, specific parameters and/or the regular `argc`.
 - [x] My favorite [`(cast)`](./src/getopt.num.mjs) logics, smth. like `--perm '(8)1777'` or `--big '(16n)ffff'`.
 - [x] An (optional, as usual) automatic [`unescape`](./src/getopt.ext.mjs) of cmdline arguments and parameters.
-- [x] Division into **five modules (atm.)** for some really clean/general/.. architecture.
 - [x] If activated, it's using the [`getopt.camel.mjs` module](./src/getopt.camel.mjs) to correct 'wrong' key strings.
 - [x] Own [`type.js`](./src/getopt.type.mjs) for own, special **type checks** on the resulting getopt params.
 - [x] Many `{options}`, both global per instance and local per {vector}-item (the possible parameters).

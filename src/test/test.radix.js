@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 //
-import '../getopt.ext.mjs';
+import '../getopt.js';
 
 //
 const str = [

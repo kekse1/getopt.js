@@ -26,15 +26,13 @@ const
 	DEFAULT_MAKE = true,
 	DEFAULT_EXPAND = false,
 	DEFAULT_ARRAY = true,
-	DEFAULT_THROW = false,
+	DEFAULT_THROW_GETOPT = false,
+	DEFAULT_THROW = true,
 	DEFAULT_FORCE = false,
 	DEFAULT_ALL = false,
-	DEFAULT_CAMEL = true;
-
-//
-import './getopt.ext.mjs';
-import type from './getopt.type.mjs';
-import camel from './getopt.camel.mjs';
+	DEFAULT_CAMEL = true,
+	DEFAULT_CAMEL_CHAR = '-',
+	DEFAULT_CAMEL_FIX = true;
 
 //
 class GetOpt extends Array
@@ -294,7 +292,7 @@ class GetOpt extends Array
 			unescapeRegular: DEFAULT_UNESCAPE_REGULAR,
 			assign: DEFAULT_ASSIGN,
 			split: DEFAULT_SPLIT,
-			throw: DEFAULT_THROW,
+			throw: DEFAULT_THROW_GETOPT,
 			force: DEFAULT_FORCE,
 			help: DEFAULT_HELP,
 			expand: DEFAULT_EXPAND,
@@ -327,7 +325,7 @@ class GetOpt extends Array
 
 		_param = Object.assign({ vector: null, options: {},
 			argv: process.argv, parse: null,
-			throw: DEFAULT_THROW }, _param);
+			throw: DEFAULT_THROW_GETOPT }, _param);
 		
 		if(!Object.isObject(_param.options))
 		{
@@ -373,7 +371,7 @@ class GetOpt extends Array
 		}
 		else
 		{
-			THROW = _param.options.throw = DEFAULT_THROW;
+			THROW = _param.options.throw = DEFAULT_THROW_GETOPT;
 		}
 
 		if(_parse)
@@ -1262,7 +1260,7 @@ class GetOpt extends Array
 		return _string;
 	}
 
-	static keyCharacterFilter(_string, _throw = DEFAULT_THROW)
+	static keyCharacterFilter(_string, _throw = DEFAULT_THROW_GETOPT)
 	{
 		var result = '';
 		
@@ -1296,7 +1294,7 @@ class GetOpt extends Array
 		return result.trim();
 	}
 	
-	static key(_string, _prefix, _throw = DEFAULT_THROW, _camel = DEFAULT_CAMEL)
+	static key(_string, _prefix, _throw = DEFAULT_THROW_GETOPT, _camel = DEFAULT_CAMEL)
 	{
 		if(typeof _string !== 'string' || _string.length === 0)
 		{
@@ -1326,7 +1324,7 @@ class GetOpt extends Array
 		return ('--' + _string);
 	}
 
-	static checkTypes(_item, _types, _throw = DEFAULT_THROW)
+	static checkTypes(_item, _types, _throw = DEFAULT_THROW_GETOPT)
 	{
 		if(type.noTypes(_types))
 		{
@@ -1680,5 +1678,1186 @@ var	ALLOWED_KEY_CHARACTERS = '',
 		ALLOWED_KEY_CHARACTERS.
 			split(''));
 })();
+
+//
+const kekse1 = Symbol.for(import.meta?.url || 'kekse1/getopt.js');
+
+if(!globalThis[kekse1])
+{
+	//
+	globalThis[kekse1] = Date.now();
+	
+	//
+	Reflect.defineProperty(String.prototype, 'escape', { value: function()
+	{
+		var result = '', byte;
+
+		for(var i = 0; i < this.length; ++i)
+		{
+			if((byte = this.charCodeAt(i)) < 32) switch(byte)
+			{
+				case 0: result += '\\0'; break;
+				case 7: result += '\\a'; break;
+				case 8: result += '\\b'; break;
+				case 9: result += '\\t'; break;
+				case 10: result += '\\n'; break;
+				case 11: result += '\\v'; break;
+				case 12: result += '\\f'; break;
+				case 13: result += '\\r'; break;
+				case 27: result += '\\e'; break;
+				default: result += this[i]; break;
+			}
+			else
+			{
+				result += this[i];
+			}
+		}
+
+		return result;
+	}});
+
+	Reflect.defineProperty(String.prototype, 'unescape', { value: function()
+	{
+		var result = '', byte;
+
+		for(var i = 0; i < this.length; ++i)
+		{
+			if(this[i] === '\\' && i < (this.length - 1))
+			{
+				if(this[i + 1] === '\\')
+				{
+					result += this[++i];
+					continue;
+				}
+
+				byte = this.charCodeAt(++i);
+
+				switch(byte)
+				{
+					case 48:
+						result += String.fromCharCode(0);
+						break;
+					case 97:
+						result += String.fromCharCode(7);
+						break;
+					case 98:
+						result += String.fromCharCode(8);
+						break;
+					case 101:
+						result += String.fromCharCode(27);
+						break;
+					case 116:
+						result += String.fromCharCode(9);
+						break;
+					case 110:
+						result += String.fromCharCode(10);
+						break;
+					case 118:
+						result += String.fromCharCode(11);
+						break;
+					case 102:
+						result += String.fromCharCode(12);
+						break;
+					case 114:
+						result += String.fromCharCode(13);
+						break;
+					default:
+						result += this[--i];
+						break;
+				}
+			}
+			else
+			{
+				result += this[i];
+			}
+		}
+
+		return result;
+	}});
+
+	Reflect.defineProperty(String, 'tryCast', { value: (_item, _opts) => {
+		if(typeof _item !== 'string')
+		{
+			return _item;
+		}
+		
+		_opts = Object.assign({},
+			{ empty: false, array: false },
+			_opts);
+
+		var original = _item;
+		_item = _item.trim();
+		
+		if(_item.length === 0)
+		{
+			return (_opts.empty ? true : '');
+		}
+
+		if(isNumeric(_item, true))
+		{
+			if(_item[_item.length - 1] === 'n')
+			{
+				return BigInt(_item.slice(0, -1));
+			}
+
+			return Number(_item);
+		}
+		
+		if(_opts.radix)
+		{
+			const radixCast = String.radixCast(_item);
+			
+			if(radixCast !== null)
+			{
+				return radixCast;
+			}
+		}
+
+		switch(_item.toLowerCase())
+		{
+			case 'true':
+			case 'yes':
+			case 'on':
+				return true;
+			case 'false':
+			case 'no':
+			case 'off':
+				return false;
+			case 'null':
+				return null;
+			case 'undefined':
+				return undefined;
+		}
+
+		if(_opts.array && _item.includes(':'))
+		{
+			_item = _item.split(':');
+			const res = new Array(_item.length);
+
+			for(var i = 0; i < _item.length; ++i)
+			{
+				res[i] = String.tryCast(_item[i].trim(),
+					Object.assign({}, _opts, { array: false }));
+			}
+
+			return res;
+		}
+
+		return original;
+	}});
+
+	//
+	Reflect.defineProperty(Object, 'isObject', { value: (_item) => {
+		return (typeof _item === 'object' && _item !== null);
+	}});
+
+	//
+	const _sort = Array.prototype.sort;
+	Reflect.defineProperty(Array.prototype, '_sort', { value: _sort });
+
+	Reflect.defineProperty(Array.prototype, 'sort', { value: function(_asc = true, ... _args)
+	{
+		if(typeof _asc === 'function')
+		{
+			return _sort.call(this, _asc, ... _args);
+		}
+
+		return _sort.call(this, (_a, _b) => {
+			if((_a instanceof Date) && (_b instanceof Date))
+			{
+				_a = _a.getTime();
+				_b = _b.getTime();
+			}
+			else if(Object.isObject(_a) && Object.isObject(_b))
+			{
+				_a = Object.keys(_a).length;
+				_b = Object.keys(_b).length;
+			}
+
+			if(Number.isFinite(_a) && Number.isFinite(_b))
+			{
+				return (_asc ? (_a - _b) : (_b - _a));
+			}
+			
+			if(typeof _a === 'bigint' && typeof _b === 'bigint')
+			{
+				if(_a < _b) return (_asc ? -1 : 1);
+				if(_a > _b) return (_asc ? 1 : -1);
+				return 0;
+			}
+			
+			if(typeof _a === 'string' && typeof _b === 'string')
+			{
+				if(_asc) return _a.localeCompare(_b);
+				return _b.localeCompare(_a);
+			}
+			
+			try
+			{
+				if(_a < _b) return (_asc ? -1 : 1);
+				if(_a > _b) return (_asc ? 1 : -1);
+			}
+			catch(_err)
+			{
+			}
+
+			return 0;
+		});
+	}});
+
+	//
+	Reflect.defineProperty(String.prototype, 'isLowerCase', { get: function()
+	{
+		return (this.toLowerCase() === this.valueOf());
+	}});
+
+	Reflect.defineProperty(String.prototype, 'isUpperCase', { get: function()
+	{
+		return (this.toUpperCase() === this.valueOf());
+	}});
+
+	//
+	Reflect.defineProperty(Math, 'getIndex', { value: (_index, _length) => {
+		if(!Number.isInt(_index))
+		{
+			return undefined;
+		}
+
+		if(!Number.isInt(_length) || _length < 1)
+		{
+			return null;
+		}
+
+		if((_index %= _length) < 0)
+		{
+			return (_length + _index);
+		}
+
+		return _index;
+	}});
+
+	//
+	Reflect.defineProperty(String, 'radixCast', { value: (_string, _length_max = 256) => {
+		if(typeof _string !== 'string')
+		{
+			return undefined;
+		}
+
+		// mehr effizienz vs. sicherheit; quasi?!
+		if(_string.length > (_length_max || 256))
+		{
+			return null;
+		}
+		
+		if(!(_string = _string.trim()))
+		{
+			return 0;
+		}
+		
+		if(_string[0] !== '(')
+		{
+			if(isNumeric(_string, true))
+			{
+				if(_string[_string.length - 1] === 'n')
+				{
+					return BigInt(_string.slice(0, -1));
+				}
+				
+				return Number(_string);
+			}
+			
+			return null;
+		}
+		
+		var	hasRadix = false,
+			bigInt = false,
+			radix = '',
+			value = '',
+			result;
+		
+		for(var i = 1; i < _string.length; ++i)
+		{
+			if(hasRadix)
+			{
+				value += _string[i];
+			}
+			else if(_string[i] === ')')
+			{
+				if(radix.length === 0)
+				{
+					return null;
+				}
+				
+				if(Number.isNaN(radix = Number(radix)))
+				{
+					return null;
+				}
+				
+				if(!Number.isRadix(radix))
+				{
+					return null;
+				}
+				
+				hasRadix = true;
+			}
+			else if(bigInt)
+			{
+				return null;
+			}
+			else if(_string[i] === 'n')
+			{
+				bigInt = true;
+			}
+			else
+			{
+				radix += _string[i];
+			}
+		}
+		
+		if(radix[radix.length - 1] === 'n')
+		{
+			if(!value)
+			{
+				return 0n;
+			}
+			
+			if(!(value = value.split('.')[0]))
+			{
+				return 0n;
+			}
+		}
+		else if(!value)
+		{
+			return (bigInt ? 0n : 0);
+		}
+
+		if(bigInt)
+		{
+			return BigInt.parse(value, radix);
+		}
+		
+		return Number.parse(value, radix);
+	}});
+
+	Reflect.defineProperty(Number, 'isRadix', { value: (_value) => {
+		if(!Number.isInt(_value))
+		{
+			return false;
+		}
+		
+		return (_value >= 2 && _value <= 36);
+	}});
+
+	const	ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
+	const	sign = (_string) => {
+			if(!_string)
+			{
+				return [ null, 0 ];
+			}
+			
+			var minus = false, cut;
+			
+			for(cut = 0; cut < _string.length; ++cut)
+			{
+				if(_string[cut] === '-')
+				{
+					minus = !minus;
+				}
+				else if(_string[cut] !== '+')
+				{
+					break;
+				}
+			}
+			
+			return [ minus, cut ];
+		};
+
+	/*	... gegen rundungsfehler in javascript (w/ `Number.EPSILON`); siehe <lol> auch: ..
+			# < https://0.30000000000000004.com/ >
+				# < https://github.com/erikwiffin/0.30000000000000004/ >
+			# < https://floating-point-gui.de/ >
+			# < https://docs.oracle.com/cd/E19957-01/806-3568/ >
+	... */
+	const	artefactThreshold = 5;
+	Reflect.defineProperty(Number, 'artefactThreshold', { value: artefactThreshold });
+
+	Reflect.defineProperty(Number, 'parse', { value: (_value, _radix = 10, _int_threshold = artefactThreshold) => {
+		if(typeof _value === 'number')
+		{
+			if(Number.isNumber(_value))
+			{
+				return _value;
+			}
+			
+			return null;
+		}
+		
+		if(typeof _value !== 'string')
+		{
+			return null;
+		}
+		
+		const [ negative, cut ] = sign(_value);
+
+		if(cut)
+		{
+			_value = _value.substr(cut);
+		}
+
+		if(!(_value = _value.trim()))
+		{
+			return 0;
+		}
+		
+		if(!Number.isRadix(_radix))
+		{
+			if(Number.isInt(_radix))
+			{
+				throw new Error('Invalid radix/base argument [ 2 .. 36 ]');
+			}
+			
+			_radix = 10;
+		}
+
+		if(typeof _int_threshold !== 'boolean' && !Number.isInt(_int_threshold))
+		{
+			_int_threshold = artefactThreshold;
+		}
+
+		const	alphabet = ALPHABET.substr(0, _radix),
+			split = _value.split('.');
+		var	result = 0,
+			mul = 1,
+			index;
+
+		if(split.length > 2)
+		{
+			return null;
+		}
+		else if(_int_threshold === true)
+		{
+			split.length = 1;
+		}
+
+		var c = 0;
+		while(split[0][c++] === '0');
+		if(--c) { split[0] = split[0].substr(c); c = 0; }
+		if(split[1]) { while(split[1][split[1].length - ++c] === '0');
+			if(--c) split[1] = split[1].slice(0, -c); }
+
+		if(split[0]) for(var i = split[0].length - 1; i >= 0; --i)	
+		{
+			if(split[0][i] === '.')
+			{
+				if(_int_threshold === false)
+				{
+					point = i;
+				}
+
+				break;
+			}
+			
+			if((index = alphabet.indexOf(split[0][i])) === -1)
+			{
+				return null;
+			}
+			
+			result += (mul * index);
+			mul *= _radix;
+		}
+
+		if(split[1])
+		{
+			mul = (1 / _radix);
+			
+			for(var i = 0; i < split[1].length; ++i)
+			{
+				if((index = alphabet.indexOf(split[1][i])) === -1)
+				{
+					return null;
+				}
+				
+				result += (mul * index);
+				mul /= _radix;
+			}
+		}
+
+		if(negative && result)
+		{
+			result = -result;
+		}
+		
+		if(result && typeof _int_threshold === 'number')
+		{
+			var test = result.toString().split('.');
+
+			if(test.length > 1)
+			{
+				var	digit = null,
+					artefact = 0,
+					intact = 0;
+
+				test = test[1];
+				
+				for(var i = 0; i < test.length; ++i)
+				{
+					if(test[i] === '0')
+					{
+						if(digit === null)
+						{
+							digit = 0;
+						}
+						else if(digit !== 0)
+						{
+							digit = null;
+							artefact = 0;
+							++intact;
+						}
+						else if(++artefact >= _int_threshold)
+						{
+							break;
+						}
+					}
+					else if(test[i] === '9')
+					{
+						if(digit === null)
+						{
+							digit = 9;
+						}
+						else if(digit !== 9)
+						{
+							digit = null;
+							artefact = 0;
+							++intact;
+						}
+						else if(++artefact >= _int_threshold)
+						{
+							break;
+						}
+					}
+					else
+					{
+						artefact = 0;
+						++intact;
+					}
+				}
+
+				if(artefact >= _int_threshold && intact)
+				{
+					const factor = Math.pow(10, _int_threshold);
+					result = (Math.round(result * factor) / factor);
+				}
+			}
+		}
+		
+		return result;
+	}});
+
+	Reflect.defineProperty(BigInt, 'parse', { value: (_value, _radix = 10) => {
+		if(typeof _value === 'bigint')
+		{
+			return _value;
+		}
+		
+		if(Number.isNumber(_value))
+		{
+			return BigInt(_value);
+		}
+		
+		if(typeof _value !== 'string')
+		{
+			return null;
+		}
+		
+		if(!Number.isRadix(_radix))
+		{
+			if(Number.isInt(_radix))
+			{
+				throw new Error('Invalid radix/base argument [ 2 .. 36 ]');
+			}
+
+			_radix = 10;
+		}
+		
+		if(_radix === 10 && _value[_value.length - 1] === 'n')
+		{
+			_value = _value.slice(0, -1);
+		}
+		
+		const [ negative, cut ] = sign(_value);
+		
+		if(cut)
+		{
+			_value = _value.substr(cut);
+		}
+		
+		var c = 0;
+		while(_value[c++] === '0');
+		if(--c) { _value = _value.substr(c); c = 0; }
+		
+		if(!_value)
+		{
+			return 0n;
+		}
+		
+		const	alphabet = ALPHABET.substr(0, _radix),
+			radix = BigInt(_radix);
+		var	result = 0n,
+			mul = 1n,
+			index;
+		
+		if((_value = _value.split('.')).length > 2)
+		{
+			return null;
+		}
+		
+		if(!(_value = _value[0]))
+		{
+			return 0n;
+		}
+		
+		for(var i = _value.length - 1; i >= 0; --i)
+		{
+			if((index = alphabet.indexOf(_value[i])) === -1)
+			{
+				return null;
+			}
+			
+			result += (mul * BigInt(index));
+			mul *= radix;
+		}
+		
+		if(negative)
+		{
+			result = -result;
+		}
+		
+		return result;
+	}});
+
+	//
+	Reflect.defineProperty(globalThis, 'isNumeric', { value: (_value, _string = true) => {
+		if(Number.isNumber(_value) || typeof _value === 'bigint')
+		{
+			return true;
+		}
+
+		if(!_string || typeof _value !== 'string')
+		{
+			return false;
+		}
+
+		if(!_value)
+		{
+			// i don't like the default behavior of `isNaN()`... :-/
+			return false;
+		}
+
+		if(_value[_value.length - 1] === 'n' && !_value.includes('.'))
+		{
+			return !isNaN(_value.slice(0, -1));
+		}
+
+		return !isNaN(_value);
+	}});
+
+	Reflect.defineProperty(Number, 'isNumber', { value: (_value) => {
+		return Number.isFinite(_value);
+		
+		/*if(typeof _value !== 'number')
+		{
+			return false;
+		}
+
+		if(!Number.isFinite(_value))
+		{
+			return false;
+		}
+
+		if(Number.isNaN(_value))
+		{
+			return false;
+		}*/
+	}});
+
+	Reflect.defineProperty(Number, 'isInt', { value: (_value) => {
+		if(!Number.isNumber(_value))
+		{
+			return false;
+		}
+
+		return ((_value % 1) === 0);
+	}});
+
+	Reflect.defineProperty(Number, 'isFloat', { value: (_value) => {
+		if(!Number.isNumber(_value))
+		{
+			return false;
+		}
+
+		return ((_value % 1) !== 0);
+	}});
+	
+	//
+	const camel = globalThis.camel = (_string, _camel = DEFAULT_CAMEL_CHAR) => {
+		if(typeof _string !== 'string')
+		{
+			return null;
+		}
+		
+		if(!(_string = _string.trim()))
+		{
+			return '';
+		}
+		
+		if(typeof _camel !== 'string' || !(_camel = _camel.trim()))
+		{
+			_camel = DEFAULT_CAMEL_CHAR;
+		}
+		
+		if(_string.includes(_camel + _camel))
+		{
+			return null;
+		}
+		
+		if(_string.includes(_camel))
+		{
+			return false;
+		}
+		
+		if(!_string.isLowerCase)
+		{
+			return true;
+		}
+		
+		return null;
+	};
+
+	//
+	camel.enable = (_string, _camel = DEFAULT_CAMEL_CHAR, _fix = DEFAULT_CAMEL_FIX) => {
+		if(typeof _string !== 'string')
+		{
+			return null;
+		}
+		
+		if(!(_string = _string.trim()))
+		{
+			return '';
+		}
+		
+		if(typeof _camel !== 'string' || !(_camel = _camel.trim()))
+		{
+			_camel = DEFAULT_CAMEL_CHAR;
+		}
+		
+		if(camel(_string, _camel) !== false)
+		{
+			return _string;
+		}
+		
+		if(typeof _fix !== 'boolean')
+		{
+			_fix = DEFAULT_CAMEL_FIX;
+		}
+
+		const	split = _string.split(_camel);
+		var	result = split.shift();
+		
+		for(const s of split)
+		{
+			if(s)
+			{
+				if(_fix)
+				{
+					result += s[0].toUpperCase() + s.substr(1).toLowerCase();
+				}
+				else
+				{
+					result += s[0].toUpperCase() + s.substr(1);
+				}
+			}
+		}
+		
+		return result;
+	};
+
+	camel.disable = (_string, _camel = DEFAULT_CAMEL_CHAR, _fix = DEFAULT_CAMEL_FIX) => {
+		if(typeof _string !== 'string')
+		{
+			return null;
+		}
+		
+		if(!(_string = _string.trim()))
+		{
+			return '';
+		}
+		
+		if(typeof _camel !== 'string' || !(_camel = _camel.trim()))
+		{
+			_camel = DEFAULT_CAMEL_CHAR;
+		}
+		
+		if(camel(_string, _camel) !== true)
+		{
+			return _string;
+		}
+
+		if(typeof _fix !== 'boolean')
+		{
+			_fix = DEFAULT_CAMEL_FIX;
+		}
+
+		var	result = '',
+			lastWasUpper = null;
+
+		for(var i = 0; i < _string.length; ++i)
+		{
+			if(_string[i].isUpperCase)
+			{
+				if(lastWasUpper)
+				{
+					result += _string[i];
+				}
+				else if(_fix && i < (_string.length - 1))
+				{
+					if(_string[i + 1].isUpperCase)
+					{
+						result += _camel + _string[i];
+					}
+					else
+					{
+						result += _camel + _string[i].toLowerCase();
+					}
+				}
+				else
+				{
+					result += _camel + _string[i].toLowerCase();
+				}
+				
+				lastWasUpper = true;
+			}
+			else
+			{
+				lastWasUpper = false;
+				result += _string[i];
+			}
+		}
+		
+		return result;
+	};
+
+	//
+	//TODO/the specific tests.. atm mostly only string-check, etc... ^_^
+	//
+	const type = (_value, _types, _throw = DEFAULT_THROW) => {
+		if(type.noTypes(_types))
+		{
+			return undefined;
+		}
+
+		if(!(_types = typesArgument(_types)))
+		{
+			if(_throw)
+			{
+				throw new Error('Invalid _types argument');
+			}
+			
+			return null;
+		}
+		
+		for(const t of _types) switch(t)
+		{
+			case 'string':
+			case 'str':
+			case 'path':
+			case 'directory':
+			case 'dir':
+				if(typeof _value === 'string')
+				{
+					return true;
+				}
+				break;
+			case 'file':
+			case 'link':
+			case 'symlink':
+			case 'device':
+			case 'fifo':
+			case 'socket':
+			case 'hostname':
+			case 'host':
+				if(typeof _value === 'string' && _value.length > 0)
+				{
+					return true;
+				}
+				break;
+			case 'port':
+				if(Number.isInt(_value) && _value >= 0 && _value < 65536)
+				{
+					return true;
+				}
+				break;
+			case 'char':
+			case 'character':
+				if(typeof _value === 'string' && _value.length === 1)
+				{
+					return true;
+				}
+				break;
+			case 'byte':
+				if(Number.isInt(_value) && _value >= 0 && _value <= 255)
+				{
+					return true;
+				}
+				break;
+			case 'integer':
+			case 'int':
+				if(Number.isInt(_value))
+				{
+					return true;
+				}
+				break;
+			case 'float':
+			case 'double':
+				if(Number.isFloat(_value))
+				{
+					return true;
+				}
+				break;
+			case 'number':
+				if(Number.isNumber(_value))
+				{
+					return true;
+				}
+				break;
+			case 'numeric':
+				if(typeof _value === 'bigint')
+				{
+					return true;
+				}
+				
+				if(Number.isNumber(_value))
+				{
+					return true;
+				}
+				break;
+			case 'radix':
+			case 'rdx':
+				if(Number.isInt(_value) && _value >= 2 && _value <= 36)
+				{
+					return true;
+				}
+				break;
+			case 'boolean':
+			case 'bool':
+				if(typeof _value === 'boolean')
+				{
+					return true;
+				}
+				break;
+			case 'regexp':
+				if(_value instanceof RegExp)
+				{
+					return true;
+				}
+				break;
+			case 'bigint':
+			case 'big':
+				if(typeof _value === 'bigint')
+				{
+					return true;
+				}
+				break;
+			case 'function':
+			case 'func':
+				if(typeof _value === 'function')
+				{
+					return true;
+				}
+				break;
+			case 'object':
+			case 'obj':
+				if(Object.isObject(_value))
+				{
+					return true;
+				}
+				break;
+			case 'null':
+			case 'nul':
+				if(_value === null)
+				{
+					return true;
+				}
+				break;
+			case 'undefined':
+			case 'undef':
+				if(typeof _value === 'undefined')
+				{
+					return true;
+				}
+				break;
+		}
+		
+		return false;
+	};
+
+	//
+	type.noTypes = (_types) => (typeof _types ===
+			'undefined' || _types === null);
+
+	type.validTypesString = (_types) => {
+		if(typeof _types === 'string')
+		{
+			if(_types.length === 0)
+			{
+				return '[]';
+			}
+
+			return '[ ' + _types.toLowerCase() + ' ]';
+		}
+
+		if(Array.isArray(_types))
+		{
+			if(_types.length === 0)
+			{
+				return '[]';
+			}
+
+			var result = '[ ';
+
+			for(var i = 0; i < _types.length; ++i)
+			{
+				result += _types[i].toLowerCase() + ', ';
+			}
+
+			return (result.slice(0, -2) + ' ]');
+		}
+
+		return null;
+	};
+
+	type.isError = (_types) => {
+		if(type.noTypes(_types))
+		{
+			return false;
+		}
+
+		if(typesArgument(_types))
+		{
+			return false;
+		}
+
+		return true;
+	};
+
+	type.isTypes = (_types) => {
+		if(type.noTypes(_types))
+		{
+			return null;
+		}
+
+		if(typesArgument(_types))
+		{
+			return true;
+		}
+
+		return false;
+	};
+
+	const typesArgument = (_types) => {
+		if(type.noTypes)
+		{
+			return undefined;
+		}
+
+		var result;
+		
+		if(typeof _types === 'string')
+		{
+			result = [ _types ];
+		}
+		else if(Array.isArray(_types))
+		{
+			result = _types;
+		}
+		else
+		{
+			return null;
+		}
+		
+		if(result.length === 0)
+		{
+			return null;
+		}
+		
+		for(var i = 0; i < result.length; ++i)
+		{
+			if(typeof result[i] !== 'string')
+			{
+				return null;
+			}
+			
+			if(!(result[i] = result[i].trim()))
+			{
+				return null;
+			}
+			
+			result[i] = result[i].toLowerCase();
+		}
+		
+		return result;
+	};
+
+	//
+	const types = [
+		'path',
+		'directory',
+		'dir',
+		'file',
+		'link',
+		'symlink',
+		'device',
+		'fifo',
+		'socket',
+		'hostname',
+		'host',
+		'port',
+		'string',
+		'str',
+		'char',
+		'character',
+		'byte',
+		'integer',
+		'int',
+		'float',
+		'double',
+		'number',
+		'numeric',
+		'radix',
+		'rdx',
+		'boolean',
+		'bool',
+		'regexp',
+		'bigint',
+		'big',
+		'function',
+		'func',
+		'object',
+		'obj',
+		'null',
+		'nul',
+		'undefined',
+		'undef'
+	];
+
+	//
+	const TYPES = new Set(types);
+
+	Reflect.defineProperty(type, 'types', {
+		get: () => [ ... types ] });
+	Reflect.defineProperty(type, 'TYPES', {
+		get: () => new Set(types) });
+
+	//
+}
 
 //
