@@ -177,7 +177,7 @@ class GetOpt extends Array
 			this.long = this.short = null;
 			return this._vector = null;
 		}
-
+throw new Error('todo');
 		this._vector = {};
 		this.long = new Map();
 		this.short = new Map();
