@@ -20,7 +20,7 @@
 # `class GetOpt extends Array`
 This is my own interpretation of the well known `getopt` functionality.
 
-**ZERO other dependencies**, only real plain **Vanilla JavaScript**.
+**ZERO dependencies**, only plain **Vanilla JavaScript**.
 
 But of course you need the [Node.js](https://nodejs.org/) interpreter.
 I don't know if it works with [Bun](https://bun.com/).
