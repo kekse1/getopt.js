@@ -945,7 +945,8 @@ throw new Error('todo');
 			{
 				break;
 			}
-			else if(string[0] === '-' && isNaN(string))
+			//else if(string[0] === '-' && isNaN(string))//string[1];!??
+			else if(string[0] === '-' && !string[1].isNumeric)
 			{
 				flush();
 
@@ -1688,6 +1689,47 @@ if(!globalThis[kekse1])
 	globalThis[kekse1] = Date.now();
 	
 	//
+	Reflect.defineProperty(String.prototype, 'isNumeric', { get: function()
+	{
+		var	string = this.valueOf(),
+			hadChar = false,
+			c = 0, byte;
+
+		while(string[0] === '-' || string[0] === '+')
+		{
+			++c;
+		}
+		
+		if(string.length === 0)
+		{
+			return null;
+		}
+		
+		if(c > 0)
+		{
+			string = string.substr(c);
+		}
+		
+		for(var i = 0; i < string.length; ++i)
+		{
+			if(string[i] === '.')
+			{
+				if(hadChar)
+				{
+					return false;
+				}
+				
+				hadChar = true;
+			}
+			else if((byte = string.charCodeAt(i)) < 48 || byte > 57)
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}});
+
 	Reflect.defineProperty(String.prototype, 'escape', { value: function()
 	{
 		var result = '', byte;
@@ -2355,10 +2397,12 @@ if(!globalThis[kekse1])
 
 		if(_value[_value.length - 1] === 'n' && !_value.includes('.'))
 		{
-			return !isNaN(_value.slice(0, -1));
+			return _value.slice(0, -1).isNumeric;
+			//return !isNaN(_value.slice(0, -1));
 		}
 
-		return !isNaN(_value);
+		return _value.isNumeric;
+		//return !isNaN(_value);
 	}});
 
 	Reflect.defineProperty(Number, 'isNumber', { value: (_value) => {
