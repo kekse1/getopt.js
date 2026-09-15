@@ -1695,19 +1695,19 @@ if(!globalThis[kekse1])
 			hadChar = false,
 			c = 0, byte;
 
-		while(string[0] === '-' || string[0] === '+')
+		while(string[c] === '-' || string[c] === '+')
 		{
 			++c;
 		}
-		
-		if(string.length === 0)
-		{
-			return null;
-		}
-		
+
 		if(c > 0)
 		{
 			string = string.substr(c);
+		}
+
+		if(string.length === 0)
+		{
+			return null;
 		}
 		
 		for(var i = 0; i < string.length; ++i)
