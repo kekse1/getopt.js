@@ -1824,9 +1824,10 @@ if(!globalThis[kekse1])
 		}
 		
 		_opts = Object.assign({
+				radix: false,
 				empty: false,
-				array: false },
-			_opts);
+				array: false
+			}, _opts);
 
 		var original = _item;
 		_item = _item.trim();
