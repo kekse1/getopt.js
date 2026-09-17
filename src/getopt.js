@@ -1823,8 +1823,9 @@ if(!globalThis[kekse1])
 			return _item;
 		}
 		
-		_opts = Object.assign({},
-			{ empty: false, array: false },
+		_opts = Object.assign({
+				empty: false,
+				array: false },
 			_opts);
 
 		var original = _item;
