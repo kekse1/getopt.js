@@ -4,7 +4,7 @@
 <br><br>
 
 > [!IMPORTANT]
-> This is my **newest** version, updated **2026-09-15**.
+> This is my **newest** version, updated **2026-09-17**.
 > The original, old code can be found in [`./src.OLD/`](./src.OLD/).
 > The new code is really **re-created all from scratch**!
 
