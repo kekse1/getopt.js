@@ -32,7 +32,8 @@ const
 	DEFAULT_ALL = false,
 	DEFAULT_CAMEL = true,
 	DEFAULT_CAMEL_CHAR = '-',
-	DEFAULT_CAMEL_FIX = true;
+	DEFAULT_CAMEL_FIX = true,
+	DEFAULT_STRING_MAX = 96;
 
 //
 class GetOpt extends Array
@@ -2146,6 +2147,11 @@ if(!globalThis[kekse1])
 		{
 			return null;
 		}
+
+		if(_value.length > DEFAULT_STRING_MAX)
+		{
+			return null;
+		}
 		
 		const [ negative, cut ] = sign(_value);
 
@@ -2324,6 +2330,16 @@ if(!globalThis[kekse1])
 			return null;
 		}
 		
+		if(!_value)
+		{
+			return 0n;
+		}
+
+		if(_value.length > DEFAULT_STRING_MAX)
+		{
+			return null;
+		}
+
 		if(!Number.isRadix(_radix))
 		{
 			if(Number.isInt(_radix))
@@ -2337,6 +2353,11 @@ if(!globalThis[kekse1])
 		if(_radix === 10 && _value[_value.length - 1] === 'n')
 		{
 			_value = _value.slice(0, -1);
+		}
+
+		if(!(_value = _value.trim()))
+		{
+			return null;
 		}
 		
 		_value = _value.toLowerCase();
