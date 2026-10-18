@@ -2092,7 +2092,14 @@ if(!globalThis[kekse1])
 		return (_value >= 2 && _value <= 36);
 	}});
 
-	const	ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
+	const	ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz',
+		LOOKUP = (() => {
+			const result = new Uint8Array(256).fill(255);
+			for(var i = 0; i < ALPHABET.length; ++i)
+				result[ALPHABET.charCodeAt(i)] = i;
+			return result;		
+		})();
+
 	const	sign = (_string) => {
 			if(!_string)
 			{
@@ -2168,8 +2175,7 @@ if(!globalThis[kekse1])
 			_int_threshold = artefactThreshold;
 		}
 
-		const	alphabet = ALPHABET.substr(0, _radix),
-			split = _value.split('.');
+		const	split = _value.split('.');
 		var	result = 0,
 			mul = 1,
 			index;
@@ -2201,7 +2207,9 @@ if(!globalThis[kekse1])
 				break;
 			}
 			
-			if((index = alphabet.indexOf(split[0][i])) === -1)
+			index = LOOKUP[split[0].charCodeAt(i)];
+			
+			if((index + 1) > _radix)
 			{
 				return null;
 			}
@@ -2216,7 +2224,9 @@ if(!globalThis[kekse1])
 			
 			for(var i = 0; i < split[1].length; ++i)
 			{
-				if((index = alphabet.indexOf(split[1][i])) === -1)
+				index = LOOKUP[split[1].charCodeAt(i)];
+				
+				if((index + 1) > _radix)
 				{
 					return null;
 				}
@@ -2344,8 +2354,7 @@ if(!globalThis[kekse1])
 			return 0n;
 		}
 		
-		const	alphabet = ALPHABET.substr(0, _radix),
-			radix = BigInt(_radix);
+		const	radix = BigInt(_radix);
 		var	result = 0n,
 			mul = 1n,
 			index;
@@ -2362,7 +2371,9 @@ if(!globalThis[kekse1])
 		
 		for(var i = _value.length - 1; i >= 0; --i)
 		{
-			if((index = alphabet.indexOf(_value[i])) === -1)
+			index = LOOKUP[_value.charCodeAt(i)];
+			
+			if((index + 1) > _radix)
 			{
 				return null;
 			}

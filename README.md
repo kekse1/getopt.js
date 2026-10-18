@@ -4,9 +4,13 @@
 <br><br>
 
 > [!IMPORTANT]
-> This is my **newest** version, updated **2026-09-17**.
+> This is my **newest** version, updated **2026-10-18**.
 > The original, old code can be found in [`./src.OLD/`](./src.OLD/).
 > The new code is really **re-created all from scratch**!
+
+> [!TIP]
+> Now with my most efficient radix conversion (or number parsing)
+> functionality, using a **LookUp-Table** (`Uint8Array`) this time!
 
 <br>
 
@@ -77,6 +81,7 @@ Now (**2026-08-31**) all five modules are integrated in the one
 - [ ] Some more features are missing yet...!! Also most of the {vector} thing.. it's prepared, but not yet (fully) running.
 - [ ] Much testing is still necessary..!
 - [ ] A good/full (markdown) **documentation** here in this repository is also still TODO!
+- [x] My most efficient radix conversion (or string-to-number parser) now also included here (using a **LookUp Table**)!
 
 <br>
 
