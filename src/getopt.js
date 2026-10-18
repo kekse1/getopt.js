@@ -2174,6 +2174,8 @@ if(!globalThis[kekse1])
 			_int_threshold = artefactThreshold;
 		}
 
+		_value = _value.toLowerCase();
+
 		const	split = _value.split('.');
 		var	result = 0,
 			mul = 1,
@@ -2337,6 +2339,8 @@ if(!globalThis[kekse1])
 			_value = _value.slice(0, -1);
 		}
 		
+		_value = _value.toLowerCase();
+
 		const [ negative, cut ] = sign(_value);
 		
 		if(cut)
