@@ -945,8 +945,7 @@ throw new Error('todo');
 			{
 				break;
 			}
-			//else if(string[0] === '-' && isNaN(string))//string[1];!??
-			else if(string[0] === '-' && !string[1].isNumeric)
+			else if(string[0] === '-' && !string[1].isDecimal)
 			{
 				flush();
 
@@ -1689,7 +1688,7 @@ if(!globalThis[kekse1])
 	globalThis[kekse1] = Date.now();
 	
 	//
-	Reflect.defineProperty(String.prototype, 'isNumeric', { get: function()
+	Reflect.defineProperty(String.prototype, 'isDecimal', { get: function()
 	{
 		var	string = this.valueOf(),
 			hadChar = false,
@@ -1837,7 +1836,7 @@ if(!globalThis[kekse1])
 			return (_opts.empty ? true : '');
 		}
 
-		if(isNumeric(_item, true))
+		if(isDecimal(_item, true))
 		{
 			if(_item[_item.length - 1] === 'n')
 			{
@@ -2000,7 +1999,7 @@ if(!globalThis[kekse1])
 		
 		if(_string[0] !== '(')
 		{
-			if(isNumeric(_string, true))
+			if(isDecimal(_string, true))
 			{
 				if(_string[_string.length - 1] === 'n')
 				{
@@ -2391,7 +2390,7 @@ if(!globalThis[kekse1])
 	}});
 
 	//
-	Reflect.defineProperty(globalThis, 'isNumeric', { value: (_value, _string = true) => {
+	Reflect.defineProperty(globalThis, 'isDecimal', { value: (_value, _string = true) => {
 		if(Number.isNumber(_value) || typeof _value === 'bigint')
 		{
 			return true;
@@ -2410,12 +2409,10 @@ if(!globalThis[kekse1])
 
 		if(_value[_value.length - 1] === 'n' && !_value.includes('.'))
 		{
-			return _value.slice(0, -1).isNumeric;
-			//return !isNaN(_value.slice(0, -1));
+			return _value.slice(0, -1).isDecimal;
 		}
 
-		return _value.isNumeric;
-		//return !isNaN(_value);
+		return _value.isDecimal;
 	}});
 
 	Reflect.defineProperty(Number, 'isNumber', { value: (_value) => {
