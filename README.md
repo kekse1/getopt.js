@@ -39,7 +39,7 @@ But you can use it nevertheless..
 
 <br>
 
-* [`./src/`](./src/): the **new** version;
+* [`./src/`](./src/getopt.js): the **new** version;
 * plus some [**test** scripts](./src/test/);
 
 <br>
