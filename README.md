@@ -58,10 +58,10 @@ Now (**2026-08-31**) all five modules are integrated in the one
 ## Features / TODO
 - [x] Both **LONG** and **SHORT** parameters possible (optionally!). .. w/ an extended alphabet for your keys.
 - [x] Possible (configurable) type casts, both for any parameter, specific parameters and/or the regular `argc`.
-- [x] My favorite [`(cast)`](./src/getopt.num.mjs) logics, smth. like `--perm '(8)1777'` or `--big '(16n)ffff'`.
-- [x] An (optional, as usual) automatic [`unescape`](./src/getopt.ext.mjs) of cmdline arguments and parameters.
-- [x] If activated, it's using the [`getopt.camel.mjs` module](./src/getopt.camel.mjs) to correct 'wrong' key strings.
-- [x] Own [`type.js`](./src/getopt.type.mjs) for own, special **type checks** on the resulting getopt params.
+- [x] My favorite **radix cast** logics, smth. like `--perm '(8)1777'` or `--big '(16n)ffff'`.
+- [x] An (optional, as usual) automatic **(un-)escape** of cmdline arguments and parameters.
+- [x] If activated, it's using the **camel case** logics to correct 'wrong' key strings.
+- [x] Type list for checking parameter value types.
 - [x] Many `{options}`, both global per instance and local per {vector}-item (the possible parameters).
 - [x] Either simple logics (to use all recognized parameters) or the possibility for a special {vector};
 - [x] With a special {vector} each of its items can contain both **long** and **short** to be grouped under it!

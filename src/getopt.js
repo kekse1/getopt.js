@@ -2774,6 +2774,25 @@ if(!globalThis[kekse1])
 					return true;
 				}
 				break;
+			case 'encoding':
+				if(_value === null)
+				{
+					return true;
+				}
+
+				if(typeof Buffer !== 'undefined')
+				{
+					if(Buffer.isEncoding(_value))
+					{
+						return true;
+					}
+				}
+				else if(typeof _value === 'string' && _value.length > 0)
+				{
+					return true;
+				}
+
+				break;
 		}
 		
 		return false;
@@ -2925,7 +2944,8 @@ if(!globalThis[kekse1])
 		'null',
 		'nul',
 		'undefined',
-		'undef'
+		'undef',
+		'encoding'
 	];
 
 	//
