@@ -33,7 +33,8 @@ const
 	DEFAULT_CAMEL = true,
 	DEFAULT_CAMEL_CHAR = '-',
 	DEFAULT_CAMEL_FIX = true,
-	DEFAULT_STRING_MAX = 96;
+	DEFAULT_STRING_MAX = 96,
+	DEFAULT_KEEP_PUSH = true;
 var
 	DEFAULT_KEEP = '';
 
@@ -132,7 +133,8 @@ class GetOpt extends Array
 	//TODO/alle drei folgenden sind eher fuer's NACHTRAEGLICHE entfernen gedacht..
 	//	regulaer wird beim .PARSE() direkt aussortiert... ;-)
 	//TODO/rueckgabe immer die keys der aussortierten, die danach fehlen!
-	//TODO/bedenke: die gefilterten kommen direkt in die argv[] (w/o keys)! ...
+	//TODO/bedenke: die gefilterten kommen direkt in die argv[] (w/ keys @ [-1]),
+	//	FALLS !!DEFAULT_KEEP_PUSH (evtl. weitere .options{}???); ...
 	//
 	keep()
 	{
@@ -971,16 +973,24 @@ throw new Error('todo');
 					case 'l':
 						if(key[1] !== '-')
 						{
-							push(orig);
-							push(_value);
+							if(DEFAULT_KEEP_PUSH)
+							{
+								push(orig);
+								push(_value);
+							}
+							
 							return;
 						}
 						break;
 					case 's':
 						if(key[1] === '-')
 						{
-							push(orig);
-							push(_value);
+							if(DEFAULT_KEEP_PUSH)
+							{
+								push(orig);
+								push(_value);
+							}
+
 							return;
 						}
 						break;
