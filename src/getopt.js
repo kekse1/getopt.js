@@ -125,47 +125,96 @@ class GetOpt extends Array
 		{
 			result.keep = null;
 		}
+
+		if(typeof result.keepPush !== 'boolean')
+		{
+			result.keepPush = DEFAULT_KEEP_PUSH;
+		}
 		
 		return result;
 	}
 	
 	//
-	//TODO/alle drei folgenden sind eher fuer's NACHTRAEGLICHE entfernen gedacht..
+	//TODO/folgendes eher fuer's NACHTRAEGLICHE entfernen gedacht..
 	//	regulaer wird beim .PARSE() direkt aussortiert... ;-)
-	//TODO/rueckgabe immer die keys der aussortierten, die danach fehlen!
-	//TODO/bedenke: die gefilterten kommen direkt in die argv[] (w/ keys @ [-1]),
-	//	FALLS !!DEFAULT_KEEP_PUSH (evtl. weitere .options{}???); ...
 	//
-	keep()
+	//NOTE/ABSOLUT UNGETESTET (in dieser variante)!!1 ;-/
+	//
+	keep(_type, _push = this.options.keepPush)
 	{
 		if(typeof this.options.keep === 'string' && this.options.keep)
 		{
 			switch(this.options.keep[0].toLowerCase())
 			{
-				case 'l': return this.keepLong();
-				case 's': return this.keepShort();
+				case 'l':	_type = 'long';		break;
+				case 's':	_type = 'short';	break;
+				default:	_type = null;		break;
 			}
 		}
-		
-		return [];
+		else
+		{
+			_type = null;
+		}
+
+		if(!_type)
+		{
+			throw new Error('Invalid _type argument [ `long`, `short` ]');
+		}
+
+		if(typeof _push !== 'boolean')
+		{
+			if(typeof this.options.keepPush === 'boolean')
+			{
+				_push = this.options.keepPush;
+			}
+			else
+			{
+				_push = DEFAULT_KEEP_PUSH;
+			}
+		}
+
+		const	keys = this.keys,
+			result = [];
+		var	resultIndex = 0,
+			remove;
+
+		for(const key of keys)
+		{
+			switch(_type)
+			{
+				case 'long':
+					remove = (key[1] !== '-');
+					break;
+				case 'short':
+					remove = (key[1] === '-');
+					break;
+			}
+
+			if(remove)
+			{
+				if(_push)
+				{
+					this.push(key);
+					this.push(this.get(key,
+						null, false));
+				}
+
+				this.remove(key, false);
+				result[resultIndex++] = key;
+			}
+		}
+
+		return	result;
 	}
 
-	keepLong()
+	keepLong(_push = this.options.keepPush)
 	{
-		throw new Error('todo (return filtered out keys)');
-		
-		//
-		const	result = [];
-		return	result;
+		return this.keep('long', _push);
 	}
 	
-	keepShort()
+	keepShort(_push = this.options.keepPush)
 	{
-		throw new Error('todo (return filtered out keys)');
-		
-		//
-		const	result = [];
-		return	result;
+		return this.keep('short', _push);
 	}
 
 	get object()
@@ -189,7 +238,7 @@ class GetOpt extends Array
 			size: this.size,
 			length: this.length,
 			keys: this.keys,
-			map: this.map,
+			map: this.map
 		});
 
 		return result;
@@ -400,7 +449,8 @@ throw new Error('todo');
 			make: DEFAULT_MAKE,
 			all: DEFAULT_ALL,
 			camel: DEFAULT_CAMEL,
-			keep: DEFAULT_KEEP
+			keep: DEFAULT_KEEP,
+			keepPush: DEFAULT_KEEP_PUSH
 		};
 	}
 
@@ -973,7 +1023,7 @@ throw new Error('todo');
 					case 'l':
 						if(key[1] !== '-')
 						{
-							if(DEFAULT_KEEP_PUSH)
+							if(this.options.keepPush)
 							{
 								push(orig);
 								push(_value);
@@ -985,7 +1035,7 @@ throw new Error('todo');
 					case 's':
 						if(key[1] === '-')
 						{
-							if(DEFAULT_KEEP_PUSH)
+							if(this.options.keepPush)
 							{
 								push(orig);
 								push(_value);
