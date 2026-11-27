@@ -34,6 +34,43 @@ const
 	DEFAULT_CAMEL_CHAR = '-',
 	DEFAULT_CAMEL_FIX = true,
 	DEFAULT_STRING_MAX = 96;
+var
+	DEFAULT_KEEP = '';
+
+//
+((_throw = true) => {
+	if(typeof DEFAULT_KEEP === 'string' && DEFAULT_KEEP)
+		switch(DEFAULT_KEEP[0].toLowerCase())
+		{
+			case 'l':
+				DEFAULT_KEEP = 'long';
+				break;
+			case 's':
+				DEFAULT_KEEP = 'short';
+				break;
+			default:
+				if(_throw)
+				{
+					throw new Error('Invalid value for `DEFAULT_KEEP`');
+				}
+				
+				DEFAULT_KEEP = null;
+				break;
+		}
+	else if(DEFAULT_KEEP === '')
+	{
+		DEFAULT_KEEP = null;
+	}
+	else if(DEFAULT_KEEP !== null)
+	{
+		if(_throw)
+		{
+			throw new Error('Invalid value for `DEFAULT_KEEP`');
+		}
+		
+		DEFAULT_KEEP = null;
+	}
+})();
 
 //
 class GetOpt extends Array
@@ -42,9 +79,8 @@ class GetOpt extends Array
 	{
 		super();
 
-		this.options = Object.assign(this.
-			constructor.options,
-			_options);
+		this.options = this.constructor.checkOptions(
+						_options);
 		this.map = new Map();
 
 		if(!Array.isArray(_argv))
@@ -67,6 +103,67 @@ class GetOpt extends Array
 		this.start = _start;
 		this.argv = _argv;
 		this.vector = _vector;
+	}
+	
+	static checkOptions(_options)
+	{
+		const	result = Object.assign(
+				this.options,
+				_options);
+		
+		if(typeof result.keep === 'string' && result.keep)
+		{
+			switch(result.keep[0].toLowerCase())
+			{
+				case 'l': result.keep = 'long'; break;
+				case 's': result.keep = 'short'; break;
+				default: result.keep = null; break;
+			}
+		}
+		else
+		{
+			result.keep = null;
+		}
+		
+		return result;
+	}
+	
+	//
+	//TODO/alle drei folgenden sind eher fuer's NACHTRAEGLICHE entfernen gedacht..
+	//	regulaer wird beim .PARSE() direkt aussortiert... ;-)
+	//TODO/rueckgabe immer die keys der aussortierten, die danach fehlen!
+	//TODO/bedenke: die gefilterten kommen direkt in die argv[] (w/o keys)! ...
+	//
+	keep()
+	{
+		if(typeof this.options.keep === 'string' && this.options.keep)
+		{
+			switch(this.options.keep[0].toLowerCase())
+			{
+				case 'l': return this.keepLong();
+				case 's': return this.keepShort();
+			}
+		}
+		
+		return [];
+	}
+
+	keepLong()
+	{
+		throw new Error('todo (return filtered out keys)');
+		
+		//
+		const	result = [];
+		return	result;
+	}
+	
+	keepShort()
+	{
+		throw new Error('todo (return filtered out keys)');
+		
+		//
+		const	result = [];
+		return	result;
 	}
 
 	get object()
@@ -300,7 +397,8 @@ throw new Error('todo');
 			param: DEFAULT_PARAM,
 			make: DEFAULT_MAKE,
 			all: DEFAULT_ALL,
-			camel: DEFAULT_CAMEL
+			camel: DEFAULT_CAMEL,
+			keep: DEFAULT_KEEP
 		};
 	}
 
@@ -856,6 +954,39 @@ throw new Error('todo');
 				return push(_value);
 			}
 
+			const orig = keys.shift();
+			key = this.prepareKey(orig,
+				this.options.all === null,
+				this.options.camel);
+			
+			if(!key || key[0] !== '-')
+			{
+				return push(_value);
+			}
+			
+			if(this.options.keep && typeof this.options.keep === 'string')
+			{
+				switch(this.options.keep[0].toLowerCase())
+				{
+					case 'l':
+						if(key[1] !== '-')
+						{
+							push(orig);
+							push(_value);
+							return;
+						}
+						break;
+					case 's':
+						if(key[1] === '-')
+						{
+							push(orig);
+							push(_value);
+							return;
+						}
+						break;
+				}
+			}
+			
 			if(!(key = this.prepareKey(keys.shift(),
 				this.options.all === null,
 				this.options.camel)))

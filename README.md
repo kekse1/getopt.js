@@ -56,6 +56,13 @@ Now (**2026-08-31**) all five modules are integrated in the one
 <br><br>
 
 ## Features / TODO
+
+> [!WARNING]
+> Parts of the code are really **untested**!
+>
+
+<br>
+
 - [x] Both **LONG** and **SHORT** parameters possible (optionally!). .. w/ an extended alphabet for your keys.
 - [x] Possible (configurable) type casts, both for any parameter, specific parameters and/or the regular `argc`.
 - [x] My favorite **radix cast** logics, smth. like `--perm '(8)1777'` or `--big '(16n)ffff'`.
@@ -82,6 +89,7 @@ Now (**2026-08-31**) all five modules are integrated in the one
 - [ ] Much testing is still necessary..!
 - [ ] A good/full (markdown) **documentation** here in this repository is also still TODO!
 - [x] My most efficient radix conversion (or string-to-number parser) now also included here (using a **LookUp Table**)!
+- [x] Option to **keep only** long or short keys w/ values. The rest comes to the regular argv[] (both, directly on parsing or later);
 
 <br>
 
